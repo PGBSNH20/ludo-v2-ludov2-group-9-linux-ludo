@@ -2,6 +2,8 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LinuxLudo.API", "LinuxLudo.API\LinuxLudo.API.csproj", "{C48F942B-CBC4-4ED5-8A20-B9D354A84537}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LinuxLudo.Web", "LinuxLudo.Web\LinuxLudo.Web.csproj", "{86E997E0-F48A-4D5D-BDE2-41E9D070D00A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -12,5 +14,9 @@ Global
 		{C48F942B-CBC4-4ED5-8A20-B9D354A84537}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C48F942B-CBC4-4ED5-8A20-B9D354A84537}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C48F942B-CBC4-4ED5-8A20-B9D354A84537}.Release|Any CPU.Build.0 = Release|Any CPU
+		{86E997E0-F48A-4D5D-BDE2-41E9D070D00A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{86E997E0-F48A-4D5D-BDE2-41E9D070D00A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{86E997E0-F48A-4D5D-BDE2-41E9D070D00A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{86E997E0-F48A-4D5D-BDE2-41E9D070D00A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
