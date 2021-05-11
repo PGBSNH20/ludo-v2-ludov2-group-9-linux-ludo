@@ -1,8 +1,7 @@
-/* Put all tailwind css in here! It will be automatically produce regular css in wwwroot destination */
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
 
 .game-container
 {

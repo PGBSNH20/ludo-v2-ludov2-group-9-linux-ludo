@@ -1,17 +1,14 @@
-@import '';
-
-/* /Pages/Index.razor.rz.scp.css */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-h1[b-m53w0cp7ne]
+h1
 {
     font-weight: bold;
     font-size: 48px;
 }
 
-.index-body[b-m53w0cp7ne]
+.index-body
 {
     padding: 10px;
     display: flex;
