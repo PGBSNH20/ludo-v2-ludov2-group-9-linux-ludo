@@ -1,0 +1,18 @@
+version: '3'
+
+services:
+  db:
+    image: postgres:13.2
+    container_name: linux-ludo-db
+    environment:
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=secret
+      - POSTGRES_DB=ludo
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+volumes:
+  pgdata:
+    driver: local
