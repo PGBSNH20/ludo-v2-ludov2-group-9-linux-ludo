@@ -1,3 +1,36 @@
-<div class="p-6 bg-blue-500 text-white">
-    <h1>Your site!</h1>
+<!-- Container for the actual navbar, class determines styling (padding, colors etc.) -->
+<div class="bg-purple-500 text-white md:flex md:justify-between md:items-center">
+
+    <!-- Flexbox to put the text to the left and menu button to the right -->
+    <div class="flex items-center justify-between p-4">
+        <h1>LinuxLudo</h1>
+
+        <!-- Navbar menu button -->
+        <button @onclick="ToggleMenu" class="md:hidden">
+            <!-- Button icon -->
+            <svg class="h-6 w-6 fill-current" viewBox="0 0 24 24">
+                <path fill-rule="evenodd"
+                    d="M4 5h16a1 1 0 0 1 0 2H4a1 1 0 1 1 0-2zm0 6h16a1 1 0 0 1 0 2H4a1 1 0 0 1 0-2zm0 6h16a1 1 0 0 1 0 2H4a1 1 0 0 1 0-2z" />
+            </svg>
+        </button>
+    </div>
+
+    @{
+        <!-- Determines what to put as the list class/whether or not to show/hide the list -->
+        var menuVisibleStr = menuVisible ? "" : "hidden";
+    }
+
+    <!-- A list to display the menu options, flex-col makes them stack on eachother as opposed to left-right -->
+    <!-- The list is only displayed if menuVisible is true -->
+    <ul class="@($"flex flex-col {menuVisibleStr} bg-gray-700 px-4 py-2 md:flex md:flex-row md:bg-transparent")">
+        <NavLink class="md:pl-2 md:pr-4" href="/">Home</NavLink>
+        <NavLink class="md:px-4" href="/game">Play</NavLink>
+        <NavLink class="md:px-4" href="/login">Login</NavLink>
+    </ul>
 </div>
+
+@code
+{
+    private bool menuVisible;
+    private void ToggleMenu() => menuVisible = !menuVisible;
+}
