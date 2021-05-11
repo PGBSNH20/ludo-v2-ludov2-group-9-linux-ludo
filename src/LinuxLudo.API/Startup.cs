@@ -1,19 +1,17 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using LinuxLudo.API.Database.Context;
 using LinuxLudo.API.Domain.Models.Auth;
+using LinuxLudo.API.Domain.Response;
+using LinuxLudo.API.Extentions;
+using LinuxLudo.API.Middleware;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 
 namespace LinuxLudo.API
@@ -38,7 +36,15 @@ namespace LinuxLudo.API
                 })
                 .AddEntityFrameworkStores<AppDbContext>()
                 .AddDefaultTokenProviders();
-            services.AddControllers();
+            services.AddAutoMapper(typeof(Startup));
+            services.AddControllers()
+                .AddJsonOptions(opts =>
+                {
+                    opts.JsonSerializerOptions.WriteIndented = true;
+                    opts.JsonSerializerOptions.IgnoreNullValues = true;
+                    opts.JsonSerializerOptions.IgnoreReadOnlyFields = true;
+                    opts.JsonSerializerOptions.IgnoreReadOnlyProperties = true;
+                });
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo {Title = "LinuxLudo.API", Version = "v1"});
@@ -58,10 +64,11 @@ namespace LinuxLudo.API
             app.UseHttpsRedirection();
 
             app.UseRouting();
-
+            app.ApplyCustomMiddleware();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
+            app.ApplyRouteNotFoundMiddleware();
         }
     }
 }
