@@ -21,6 +21,7 @@ A multiplayer Ludo game developd by **Adam Brodin** and **Leo Rönnebro**.
       <li>Registration form</li>
     </ul>
   </li>
+</ul>
   
 # Dependencies
 * Blazor
