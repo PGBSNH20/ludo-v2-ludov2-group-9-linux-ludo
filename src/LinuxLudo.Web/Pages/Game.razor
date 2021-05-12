@@ -5,6 +5,16 @@
 
 <div class="game-container">
     <div class="game-board">
-        
+
     </div>
 </div>
+
+@code
+{
+    GameController _gameController;
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        _gameController = new GameController();
+    }
+}
