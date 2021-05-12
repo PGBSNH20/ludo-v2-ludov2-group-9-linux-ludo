@@ -1,5 +1,5 @@
 # LinuxLudo
-A multiplayer Ludo game developd by **Adam Brodin** and **Leo Rönnebro**.
+A multiplayer Ludo game developed by **Adam Brodin** and **Leo Rönnebro**.
 
 # Website structure
 <ul>
