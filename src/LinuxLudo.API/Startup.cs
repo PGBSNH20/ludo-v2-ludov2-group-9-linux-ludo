@@ -1,8 +1,10 @@
 using LinuxLudo.API.Database.Context;
 using LinuxLudo.API.Domain.Models.Auth;
 using LinuxLudo.API.Domain.Response;
+using LinuxLudo.API.Domain.Services;
 using LinuxLudo.API.Extentions;
 using LinuxLudo.API.Middleware;
+using LinuxLudo.API.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -49,6 +51,8 @@ namespace LinuxLudo.API
             {
                 c.SwaggerDoc("v1", new OpenApiInfo {Title = "LinuxLudo.API", Version = "v1"});
             });
+
+            services.AddTransient<IAuthService, AuthService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
