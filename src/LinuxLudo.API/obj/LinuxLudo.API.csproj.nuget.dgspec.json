@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "/home/leo/Projects/school/ludo-v2-ludov2-group-9-linux-ludo/src/LinuxLudo.API/LinuxLudo.API/LinuxLudo.API.csproj": {}
+    "/home/leo/Projects/school/ludo-v2-ludov2-group-9-linux-ludo/src/LinuxLudo.API/LinuxLudo.API.csproj": {}
   },
   "projects": {
-    "/home/leo/Projects/school/ludo-v2-ludov2-group-9-linux-ludo/src/LinuxLudo.API/LinuxLudo.API/LinuxLudo.API.csproj": {
+    "/home/leo/Projects/school/ludo-v2-ludov2-group-9-linux-ludo/src/LinuxLudo.API/LinuxLudo.API.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/home/leo/Projects/school/ludo-v2-ludov2-group-9-linux-ludo/src/LinuxLudo.API/LinuxLudo.API/LinuxLudo.API.csproj",
+        "projectUniqueName": "/home/leo/Projects/school/ludo-v2-ludov2-group-9-linux-ludo/src/LinuxLudo.API/LinuxLudo.API.csproj",
         "projectName": "LinuxLudo.API",
-        "projectPath": "/home/leo/Projects/school/ludo-v2-ludov2-group-9-linux-ludo/src/LinuxLudo.API/LinuxLudo.API/LinuxLudo.API.csproj",
+        "projectPath": "/home/leo/Projects/school/ludo-v2-ludov2-group-9-linux-ludo/src/LinuxLudo.API/LinuxLudo.API.csproj",
         "packagesPath": "/home/leo/.nuget/packages/",
-        "outputPath": "/home/leo/Projects/school/ludo-v2-ludov2-group-9-linux-ludo/src/LinuxLudo.API/LinuxLudo.API/obj/",
+        "outputPath": "/home/leo/Projects/school/ludo-v2-ludov2-group-9-linux-ludo/src/LinuxLudo.API/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "/home/leo/.nuget/NuGet/NuGet.Config"
@@ -38,6 +38,40 @@
         "net5.0": {
           "targetAlias": "net5.0",
           "dependencies": {
+            "AutoMapper": {
+              "target": "Package",
+              "version": "[10.1.1, )"
+            },
+            "AutoMapper.Extensions.Microsoft.DependencyInjection": {
+              "target": "Package",
+              "version": "[8.1.1, )"
+            },
+            "Microsoft.AspNetCore.Http": {
+              "target": "Package",
+              "version": "[2.2.2, )"
+            },
+            "Microsoft.AspNetCore.Http.Abstractions": {
+              "target": "Package",
+              "version": "[2.2.0, )"
+            },
+            "Microsoft.AspNetCore.Identity": {
+              "target": "Package",
+              "version": "[2.2.0, )"
+            },
+            "Microsoft.AspNetCore.Identity.EntityFrameworkCore": {
+              "target": "Package",
+              "version": "[5.0.6, )"
+            },
+            "Microsoft.EntityFrameworkCore.Tools": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[5.0.6, )"
+            },
+            "Npgsql.EntityFrameworkCore.PostgreSQL": {
+              "target": "Package",
+              "version": "[5.0.5.1, )"
+            },
             "Swashbuckle.AspNetCore": {
               "target": "Package",
               "version": "[5.6.3, )"
