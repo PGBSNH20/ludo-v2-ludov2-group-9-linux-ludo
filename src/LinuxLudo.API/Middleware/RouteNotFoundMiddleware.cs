@@ -18,7 +18,7 @@ namespace LinuxLudo.API.Middleware
         {
             var err = new ErrorResponse()
             {
-                Error = "Requested endpoint dosen't exist!",
+                Error = "Requested endpoint doesn't exist!",
                 StatusCode = 404,
                 RequestId = ctx.TraceIdentifier
             };

@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Builder;
 
 namespace LinuxLudo.API.Extentions
 {
-    public static class ApplyCustomMiddlewareExtension
+    public static class MiddlewareExtension
     {
         public static IApplicationBuilder ApplyCustomMiddleware(this IApplicationBuilder app)
         {
