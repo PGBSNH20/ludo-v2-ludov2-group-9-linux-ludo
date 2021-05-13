@@ -1,3 +1,4 @@
+using System.Text.Json;
 using System.Threading.Tasks;
 using LinuxLudo.API.Domain.Response;
 using Microsoft.AspNetCore.Http;
@@ -16,15 +17,13 @@ namespace LinuxLudo.API.Middleware
 
         public async Task InvokeAsync(HttpContext ctx)
         {
-            var err = new ErrorResponse()
+            var err = new ErrorResponse("Requested endpoint dosen't exist!", 404, ctx.TraceIdentifier).Respond();
+            var res = new JsonResult(err).Value;
+            ctx.Response.StatusCode = 404;
+            await ctx.Response.WriteAsJsonAsync(res, new JsonSerializerOptions()
             {
-                Error = "Requested endpoint doesn't exist!",
-                StatusCode = 404,
-                RequestId = ctx.TraceIdentifier
-            };
-
-            var res = new ObjectResult(err) {StatusCode = err.StatusCode };
-            await ctx.Response.WriteAsJsonAsync(res);
+                IgnoreNullValues = true
+            });
         }
     }
 }

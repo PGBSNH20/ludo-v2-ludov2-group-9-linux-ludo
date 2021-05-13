@@ -1,4 +1,5 @@
 using System;
+using System.Text.Json;
 using System.Threading.Tasks;
 using LinuxLudo.API.Domain.Response;
 using Microsoft.AspNetCore.Http;
@@ -28,15 +29,14 @@ namespace LinuxLudo.API.Middleware
             catch (Exception ex)
             {
                 logger.LogError(ex, $"Error: {ex.Message}");
-                var err = new ErrorResponse()
-                {
-                    Error = "Server encountered an unexpected error",
-                    StatusCode = 500,
-                    RequestId = ctx.TraceIdentifier
-                };
+                var err = new ErrorResponse("Server encounterd an unexpected error", 500, ctx.TraceIdentifier).Respond();
 
-                var res = new ObjectResult(err) {StatusCode = err.StatusCode };
-                await ctx.Response.WriteAsJsonAsync(res);
+                var res = new JsonResult(err).Value;
+                ctx.Response.StatusCode = 500;
+                await ctx.Response.WriteAsJsonAsync(res, new JsonSerializerOptions()
+                {
+                    IgnoreNullValues = true
+                });
             }
         }
     }
