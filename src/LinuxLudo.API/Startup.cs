@@ -1,3 +1,5 @@
+using System.Linq;
+using System.Text.Json.Serialization;
 using LinuxLudo.API.Database.Context;
 using LinuxLudo.API.Domain.Models.Auth;
 using LinuxLudo.API.Domain.Response;
@@ -40,12 +42,19 @@ namespace LinuxLudo.API
                 .AddDefaultTokenProviders();
             services.AddAutoMapper(typeof(Startup));
             services.AddControllers()
+                .ConfigureApiBehaviorOptions(opts =>
+                {
+                    opts.SuppressMapClientErrors = true;
+                    opts.InvalidModelStateResponseFactory = ctx =>
+                    {
+                        var err = new ErrorResponse(ctx.ModelState.First().Value.Errors.First().ErrorMessage, 400, ctx.HttpContext.TraceIdentifier).Respond();
+                        return new ObjectResult(err) {StatusCode = err.StatusCode};
+                    };
+                })
                 .AddJsonOptions(opts =>
                 {
                     opts.JsonSerializerOptions.WriteIndented = true;
-                    opts.JsonSerializerOptions.IgnoreNullValues = true;
-                    opts.JsonSerializerOptions.IgnoreReadOnlyFields = true;
-                    opts.JsonSerializerOptions.IgnoreReadOnlyProperties = true;
+                    opts.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
                 });
             services.AddSwaggerGen(c =>
             {

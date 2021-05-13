@@ -1,7 +1,10 @@
 using System;
+using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using AutoMapper;
 using LinuxLudo.API.Domain.Resources.Auth;
+using LinuxLudo.API.Domain.Response;
 using LinuxLudo.API.Domain.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -22,7 +25,8 @@ namespace LinuxLudo.API.Controllers
         [HttpPost("SignUp")]
         public async Task<IActionResult> SignUp([FromBody] SignUpResource resource)
         {
-            throw new NotImplementedException();
+            var test = new ErrorResponse("Auth failed", 400, null).Respond();
+            return Conflict(test);
         }
         [HttpPost("SignIn")]
         public async Task<IActionResult> SignIn([FromBody] SignInResource resource)
