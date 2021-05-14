@@ -28,12 +28,12 @@ namespace LinuxLudo.API.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return Json(new ErrorResponse(ModelState.Values.First().Errors.First().ErrorMessage, 500, null));
+                return Ok(new ErrorResponse(ModelState.Values.First().Errors.First().ErrorMessage, 500, null));
             }
 
             var user = _mapper.Map<SignUpResource, User>(resource);
 
-            var res = await _authService.SingUpAsync(user);
+            var res = await _authService.SingUpAsync(user, resource.Password);
 
             if (res.Status == "Error")
                 return BadRequest(res);
@@ -43,7 +43,17 @@ namespace LinuxLudo.API.Controllers
         [HttpPost("SignIn")]
         public async Task<IActionResult> SignIn([FromBody] SignInResource resource)
         {
-            throw new NotImplementedException();
+            if (!ModelState.IsValid)
+                return Json(new ErrorResponse(ModelState.Values.First().Errors.First().ErrorMessage, 500, null));
+
+            var user = _mapper.Map<SignInResource, User>(resource);
+
+            var res = await _authService.SignInAsync(user, resource.Password);
+
+            if (res.Status == "Error")
+                return BadRequest(res);
+
+            return Ok(res);
         }
     }
 }

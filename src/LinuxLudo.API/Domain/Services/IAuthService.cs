@@ -7,7 +7,7 @@ namespace LinuxLudo.API.Domain.Services
 {
     public interface IAuthService
     {
-        Task<BaseResponse> SignInAsync(User user);
-        Task<BaseResponse> SingUpAsync(User user);
+        Task<BaseResponse> SignInAsync(User user, string password);
+        Task<BaseResponse> SingUpAsync(User user, string password);
     }
 }

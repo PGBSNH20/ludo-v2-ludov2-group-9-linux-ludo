@@ -9,6 +9,7 @@ namespace LinuxLudo.API.Mappings
         public ResourceToModelMapper()
         {
             CreateMap<SignUpResource, User>();
+            CreateMap<SignInResource, User>();
         } 
     }
 }
