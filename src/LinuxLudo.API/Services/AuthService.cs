@@ -13,10 +13,12 @@ namespace LinuxLudo.API.Services
     public class AuthService : IAuthService
     {
         private readonly UserManager<User> _userManager;
+        private readonly IJwtService _jwtService;
 
-        public AuthService(UserManager<User> userManager)
+        public AuthService(UserManager<User> userManager, IJwtService jwtService)
         {
             _userManager = userManager;
+            _jwtService = jwtService;
         }
 
         public async Task<BaseResponse> SignInAsync(User user, string password)
@@ -31,7 +33,9 @@ namespace LinuxLudo.API.Services
             if (!isValid)
                 return new ErrorResponse("Auth failed", 400, null).Respond();
 
-            return new SuccessResponse("Auth Success", 200, null).Respond();
+            var roles = await _userManager.GetRolesAsync(existing);
+            var token = _jwtService.GenerateJwt(existing, roles);
+            return new SuccessResponse(token, 200, null).Respond();
         }
 
         public async Task<BaseResponse> SingUpAsync(User user, string password)

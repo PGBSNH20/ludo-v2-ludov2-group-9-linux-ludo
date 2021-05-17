@@ -1,7 +1,7 @@
 using LinuxLudo.API.Middleware;
 using Microsoft.AspNetCore.Builder;
 
-namespace LinuxLudo.API.Extentions
+namespace LinuxLudo.API.Extensions
 {
     public static class MiddlewareExtension
     {
