@@ -6,18 +6,21 @@ namespace LinuxLudo.API.Domain.Response
     {
         public string Message { get; }
         private int Code { get; }
-        private Object Data { get; }
 
-        public SuccessResponse(string message, int status, Object data)
+        public SuccessResponse(string message, int status)
         {
             Message = message;
             Code = status;
-            Data = data;
         }
 
         public BaseResponse Respond()
         {
             return new("Success", Code, this);
+        }
+        
+        public BaseResponse Respond(object data)
+        {
+            return new("Success", Code, data);
         }
     }
 }

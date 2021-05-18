@@ -3,6 +3,7 @@ using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using LinuxLudo.API.Domain.Models.Auth;
+using LinuxLudo.API.Domain.Resources.Response;
 using LinuxLudo.API.Domain.Response;
 using LinuxLudo.API.Domain.Services;
 using Microsoft.AspNetCore.Identity;
@@ -35,7 +36,8 @@ namespace LinuxLudo.API.Services
 
             var roles = await _userManager.GetRolesAsync(existing);
             var token = _jwtService.GenerateJwt(existing, roles);
-            return new SuccessResponse(token, 200, null).Respond();
+            TokenResponse res = new TokenResponse(token);
+            return new SuccessResponse(null, 200).Respond(res);
         }
 
         public async Task<BaseResponse> SingUpAsync(User user, string password)
@@ -50,7 +52,7 @@ namespace LinuxLudo.API.Services
             if (!isCreated.Succeeded)
                 return new ErrorResponse(isCreated.Errors.Select(e => e.Description).First(), 400, null).Respond();
 
-            return new SuccessResponse("Account created", 201, null).Respond();
+            return new SuccessResponse("Account created", 201).Respond();
         }
     }
 }
