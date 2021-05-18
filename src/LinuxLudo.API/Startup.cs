@@ -1,12 +1,14 @@
+using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json.Serialization;
 using LinuxLudo.API.Database.Context;
 using LinuxLudo.API.Domain.Models.Auth;
 using LinuxLudo.API.Domain.Response;
 using LinuxLudo.API.Domain.Services;
-using LinuxLudo.API.Extentions;
+using LinuxLudo.API.Extensions;
 using LinuxLudo.API.Middleware;
 using LinuxLudo.API.Services;
+using LinuxLudo.API.Settings;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -32,6 +34,8 @@ namespace LinuxLudo.API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.Configure<JwtSettings>(Configuration.GetSection("Jwt"));
+            var jwtSettings = Configuration.GetSection("Jwt").Get<JwtSettings>();
             services.AddDbContext<AppDbContext>(opts => opts.UseNpgsql(Configuration.GetConnectionString("Default")));
             services.AddIdentity<User, Role>(opts =>
                 {
@@ -59,9 +63,38 @@ namespace LinuxLudo.API
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo {Title = "LinuxLudo.API", Version = "v1"});
+                
+                c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
+                {
+                    Description = "JWT containing userid claim",
+                    Name = "Authorization",
+                    In = ParameterLocation.Header,
+                    Type = SecuritySchemeType.ApiKey,
+                });
+
+                var security = new OpenApiSecurityRequirement()
+                {
+                    {
+                    new OpenApiSecurityScheme()
+                    {
+                        Reference = new OpenApiReference()
+                        {
+                            Id = "Bearer",
+                            Type = ReferenceType.SecurityScheme
+                        },
+                        UnresolvedReference = true
+                    },
+                    new List<string>()
+                    }
+                };
+                
+                c.AddSecurityRequirement(security);
             });
 
+            services.AddTransient<IJwtService, JwtService>();
             services.AddTransient<IAuthService, AuthService>();
+
+            services.AddAuth(jwtSettings);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -78,8 +111,8 @@ namespace LinuxLudo.API
 
             app.UseRouting();
             app.ApplyCustomMiddleware();
-            app.UseAuthorization();
 
+            app.UseAuth();
             app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
             app.ApplyRouteNotFoundMiddleware();
         }
