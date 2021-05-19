@@ -1,4 +1,4 @@
-<!-- Container for the actual navbar, class determines styling (padding, colors etc.) -->
+﻿<!-- Container for the actual navbar, class determines styling (padding, colors etc.) -->
 
 <h1 style="font-size: 32px;" class="bg-purple-500 text-white flex justify-center">
     LinuxLudo</h1>
@@ -25,7 +25,7 @@
     <!-- The list is only displayed if menuVisible is true -->
     <ul
         class="@($"flex flex-col {menuVisibleStr} bg-gray-700 px-4 py-2 md:flex md:flex-row md:bg-transparent items-center")">
-        <NavLink class="md:px-4 hover:bg-gray-700" href="/home">Home</NavLink>
+        <NavLink class="md:pl-2 md:pr-4 hover:bg-gray-700" href="/home">Home</NavLink>
         <NavLink class="md:px-4 hover:bg-gray-700" href="/game">Play</NavLink>
         <NavLink class="md:px-4 hover:bg-gray-700" href="/login">Login</NavLink>
     </ul>

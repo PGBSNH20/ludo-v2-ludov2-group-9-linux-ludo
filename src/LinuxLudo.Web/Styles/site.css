@@ -2,13 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-
-.game-container
-{
-    width: 500px;
-    height: 500px;
-}
-
 #blazor-error-ui {
     background: lightyellow;
     bottom: 0;

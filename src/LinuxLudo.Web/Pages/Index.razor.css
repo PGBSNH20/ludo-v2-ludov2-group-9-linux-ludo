@@ -1,15 +1,13 @@
-@tailwind base;
+﻿@tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-h1
-{
+h1 {
     font-weight: bold;
     font-size: 48px;
 }
 
-.index-body
-{
+.index-body {
     padding: 10px;
     display: flex;
     align-items: center;
