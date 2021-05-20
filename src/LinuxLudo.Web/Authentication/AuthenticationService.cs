@@ -10,7 +10,7 @@ using System.Net.Http.Headers;
 namespace LinuxLudo.Web.Authentication
 {
     // This class is responsible for actually logging in/out through the API
-    public class AuthenticationService
+    public class AuthenticationService : IAuthenticationService
     {
         private const string API_URL = "https://localhost:5001/api/auth/";
         private readonly HttpClient _client;
@@ -61,6 +61,11 @@ namespace LinuxLudo.Web.Authentication
 
             // Remove the logged in header to mark that there is no logged in user
             _client.DefaultRequestHeaders.Authorization = null;
+        }
+
+        public bool Equals(AuthenticationService other)
+        {
+            throw new System.NotImplementedException();
         }
     }
 }
