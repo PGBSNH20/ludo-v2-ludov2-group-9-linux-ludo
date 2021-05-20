@@ -1,9 +1,11 @@
 {
   "version": 2,
-  "dgSpecHash": "1RIVayP6ruDz80/BvEHRnVsP59VtcOfFzRZ6rRsPHiQm3MteGngt7GU8urqLBPj23QQY+nYmy0schscqkukqng==",
+  "dgSpecHash": "NXGlb3SMRa375LWPvFj/AoIDTxJMcrTvB3PRU+LqAfHYj/6JtjAoXTHqOx+QX9At7PGTH1dxKyUIPhKi7DFyow==",
   "success": true,
   "projectFilePath": "C:\\Users\\adam-\\Documents\\Workspace\\ludo-v2-ludov2-group-9-linux-ludo\\src\\LinuxLudo.Web\\LinuxLudo.Web.csproj",
   "expectedPackageFiles": [
+    "C:\\Users\\adam-\\.nuget\\packages\\blazored.localstorage\\4.1.1\\blazored.localstorage.4.1.1.nupkg.sha512",
+    "C:\\Users\\adam-\\.nuget\\packages\\bunit.core\\1.1.5\\bunit.core.1.1.5.nupkg.sha512",
     "C:\\Users\\adam-\\.nuget\\packages\\microsoft.aspnetcore.authorization\\5.0.6\\microsoft.aspnetcore.authorization.5.0.6.nupkg.sha512",
     "C:\\Users\\adam-\\.nuget\\packages\\microsoft.aspnetcore.components\\5.0.6\\microsoft.aspnetcore.components.5.0.6.nupkg.sha512",
     "C:\\Users\\adam-\\.nuget\\packages\\microsoft.aspnetcore.components.analyzers\\5.0.6\\microsoft.aspnetcore.components.analyzers.5.0.6.nupkg.sha512",
