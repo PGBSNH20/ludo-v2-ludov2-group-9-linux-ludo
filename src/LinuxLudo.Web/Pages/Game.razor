@@ -5,18 +5,22 @@
 
 <!-- This page displays the actual Ludo game and can only be accessed when logged in/authenticated -->
 
-<div class="game-container">
-    <div class="game-board">
-        <h1 class="username-text">Playing as @userName</h1>
-    </div>
-</div>
+<AuthorizeView>
+    <!-- Logged in/game view -->
+    <Authorized>
+        <div class="game-container">
+            <div class="game-board">
+                <h1 class="username-text">Playing as @userName</h1>
+            </div>
+        </div>
+    </Authorized>
+</AuthorizeView>
 
 
 @code
 {
     [CascadingParameter]
     public Task<AuthenticationState> AuthState { get; set; }
-    private bool isAuthenticated;
     private string userName;
 
     // When the page is fully loaded/on startup
@@ -28,12 +32,10 @@
         if (authState.User.Identity.IsAuthenticated)
         {
             userName = authState.User.Identity.Name;
-            isAuthenticated = true;
         }
         else
         {
-            // If the user isn't logged in, redirect to the login page/form
-            NavManager.NavigateTo("/login");
+            NavManager.NavigateTo("/Login");
         }
     }
 }
