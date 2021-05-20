@@ -1,0 +1,8 @@
+#heading img{
+    width: 32px;
+    height: 32px;
+    float: left;
+    margin-right: 5px;
+    margin-top: 5px;
+    position: relative;
+}

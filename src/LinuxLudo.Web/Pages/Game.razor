@@ -7,7 +7,7 @@
 
 <div class="game-container">
     <div class="game-board">
-        <h1>Playing as @userName</h1>
+        <h1 class="username-text">Playing as @userName</h1>
     </div>
 </div>
 
@@ -16,8 +16,10 @@
 {
     [CascadingParameter]
     public Task<AuthenticationState> AuthState { get; set; }
+    private bool isAuthenticated;
     private string userName;
 
+    // When the page is fully loaded/on startup
     protected override async Task OnInitializedAsync()
     {
         var authState = await AuthState;
@@ -26,10 +28,11 @@
         if (authState.User.Identity.IsAuthenticated)
         {
             userName = authState.User.Identity.Name;
+            isAuthenticated = true;
         }
         else
         {
-            // If the user isn't logged in, redirecto the login page/form
+            // If the user isn't logged in, redirect to the login page/form
             NavManager.NavigateTo("/login");
         }
     }

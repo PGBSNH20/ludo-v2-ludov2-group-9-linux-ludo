@@ -1,5 +1,13 @@
 @import '';
 
+/* /Pages/Game.razor.rz.scp.css */
+.username-text[b-0legnhbyhg]
+{
+    font-size: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
 /* /Pages/Index.razor.rz.scp.css */
 @tailwind base;
 @tailwind components;
@@ -135,4 +143,13 @@ h1[b-m53w0cp7ne] {
         padding-left: 2rem !important;
         padding-right: 1.5rem !important;
     }
+}
+/* /Shared/NavMenu.razor.rz.scp.css */
+#heading img[b-2zu9a2f2m5]{
+    width: 32px;
+    height: 32px;
+    float: left;
+    margin-right: 5px;
+    margin-top: 5px;
+    position: relative;
 }
