@@ -6,29 +6,32 @@
 @if (showAuthError)
 {
     <div class="alert alert-danger" role="alert">
-        <h1>@errorMsg</h1>
+        <h1 style="color: black;">@errorMsg</h1>
     </div>
 }
 
+<h1 class="title-text">Please login to continue</h1>
 <div class="login-container">
     <EditForm Model="userModel" OnValidSubmit="LoginUser" class="card card-body bg-dark">
         <DataAnnotationsValidator />
 
-        <!-- Creates two forms (email/password) and binds the data in them to the userModel variables -->
+        <!-- Creates two forms (username/password) and binds the data in them to the userModel variables -->
         <div class="form-container">
             <div class="form-group row">
-                <label for="email" class="col-md-2 col-form-label">Email</label>
+                <label for="username" class="col-md-2 col-form-label">Username</label>
                 <div class="col-md-10">
-                    <InputText id="email" class="form-control" @bind-Value="userModel.Email" />
+                    <InputText id="username" class="form-control" @bind-Value="userModel.Username"
+                        placeholder="Your username" />
                     <div class="validation-message">
-                        <ValidationMessage For="@(() => userModel.Email)" />
-                        <!-- Displays any error messages from the email form -->
+                        <ValidationMessage For="@(() => userModel.Username)" />
+                        <!-- Displays any error messages from the username form -->
                     </div>
                 </div>
 
                 <label for="password" class="col-md-2 col-form-label">Password</label>
                 <div class="col-md-10">
-                    <InputText type="password" id="password" class="form-control" @bind-Value="userModel.Password" />
+                    <InputText type="password" id="password" class="form-control" @bind-Value="userModel.Password"
+                        placeholder="Your password" />
                     <div class="validation-message">
                         <ValidationMessage For="@(() => userModel.Password)" />
                         <!-- Displays any error messages from the password form -->
@@ -55,16 +58,16 @@
     private async Task LoginUser()
     {
         showAuthError = false;
-        var response = AuthService.Login(userModel);
+        var response = await AuthService.Login(userModel);
 
         // If the login failed
-        if (response is null)
+        if (response is not null)
         {
-            errorMsg = "An error occurred whilst logging in, try again!";
-            showAuthError = true;
+            // Login was successful
+            NavManager.NavigateTo("/home");
         }
 
-        // Login was successful
-        NavManager.NavigateTo("/home");
+        errorMsg = "An error occurred whilst logging in, try again!";
+        showAuthError = true;
     }
 }

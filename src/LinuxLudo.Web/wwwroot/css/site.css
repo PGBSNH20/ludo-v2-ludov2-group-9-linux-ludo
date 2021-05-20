@@ -21637,6 +21637,15 @@ video {
           animation: bounce 1s infinite;
 }
 
+#loading-text
+{
+  font-size: 48px;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+
 #blazor-error-ui {
   background: lightyellow;
   bottom: 0;

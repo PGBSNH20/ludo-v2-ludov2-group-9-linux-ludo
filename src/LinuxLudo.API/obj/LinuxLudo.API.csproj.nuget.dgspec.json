@@ -1,25 +1,30 @@
 {
   "format": 1,
   "restore": {
-    "/home/leo/Projects/school/ludo-v2-ludov2-group-9-linux-ludo/src/LinuxLudo.API/LinuxLudo.API/LinuxLudo.API.csproj": {}
+    "C:\\Users\\adam-\\Documents\\Workspace\\ludo-v2-ludov2-group-9-linux-ludo\\src\\LinuxLudo.API\\LinuxLudo.API.csproj": {}
   },
   "projects": {
-    "/home/leo/Projects/school/ludo-v2-ludov2-group-9-linux-ludo/src/LinuxLudo.API/LinuxLudo.API/LinuxLudo.API.csproj": {
+    "C:\\Users\\adam-\\Documents\\Workspace\\ludo-v2-ludov2-group-9-linux-ludo\\src\\LinuxLudo.API\\LinuxLudo.API.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/home/leo/Projects/school/ludo-v2-ludov2-group-9-linux-ludo/src/LinuxLudo.API/LinuxLudo.API/LinuxLudo.API.csproj",
+        "projectUniqueName": "C:\\Users\\adam-\\Documents\\Workspace\\ludo-v2-ludov2-group-9-linux-ludo\\src\\LinuxLudo.API\\LinuxLudo.API.csproj",
         "projectName": "LinuxLudo.API",
-        "projectPath": "/home/leo/Projects/school/ludo-v2-ludov2-group-9-linux-ludo/src/LinuxLudo.API/LinuxLudo.API/LinuxLudo.API.csproj",
-        "packagesPath": "/home/leo/.nuget/packages/",
-        "outputPath": "/home/leo/Projects/school/ludo-v2-ludov2-group-9-linux-ludo/src/LinuxLudo.API/LinuxLudo.API/obj/",
+        "projectPath": "C:\\Users\\adam-\\Documents\\Workspace\\ludo-v2-ludov2-group-9-linux-ludo\\src\\LinuxLudo.API\\LinuxLudo.API.csproj",
+        "packagesPath": "C:\\Users\\adam-\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\adam-\\Documents\\Workspace\\ludo-v2-ludov2-group-9-linux-ludo\\src\\LinuxLudo.API\\obj\\",
         "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
+        ],
         "configFilePaths": [
-          "/home/leo/.nuget/NuGet/NuGet.Config"
+          "C:\\Users\\adam-\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
           "net5.0"
         ],
         "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -38,9 +43,51 @@
         "net5.0": {
           "targetAlias": "net5.0",
           "dependencies": {
+            "AutoMapper": {
+              "target": "Package",
+              "version": "[10.1.1, )"
+            },
+            "AutoMapper.Extensions.Microsoft.DependencyInjection": {
+              "target": "Package",
+              "version": "[8.1.1, )"
+            },
+            "Microsoft.AspNetCore.Authentication.JwtBearer": {
+              "target": "Package",
+              "version": "[5.0.6, )"
+            },
+            "Microsoft.AspNetCore.Http": {
+              "target": "Package",
+              "version": "[2.2.2, )"
+            },
+            "Microsoft.AspNetCore.Http.Abstractions": {
+              "target": "Package",
+              "version": "[2.2.0, )"
+            },
+            "Microsoft.AspNetCore.Identity": {
+              "target": "Package",
+              "version": "[2.2.0, )"
+            },
+            "Microsoft.AspNetCore.Identity.EntityFrameworkCore": {
+              "target": "Package",
+              "version": "[5.0.6, )"
+            },
+            "Microsoft.EntityFrameworkCore.Tools": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[5.0.6, )"
+            },
+            "Npgsql.EntityFrameworkCore.PostgreSQL": {
+              "target": "Package",
+              "version": "[5.0.5.1, )"
+            },
             "Swashbuckle.AspNetCore": {
               "target": "Package",
               "version": "[5.6.3, )"
+            },
+            "System.IdentityModel.Tokens.Jwt": {
+              "target": "Package",
+              "version": "[6.11.0, )"
             }
           },
           "imports": [
@@ -53,12 +100,6 @@
           ],
           "assetTargetFallback": true,
           "warn": true,
-          "downloadDependencies": [
-            {
-              "name": "Microsoft.AspNetCore.App.Ref",
-              "version": "[5.0.0, 5.0.0]"
-            }
-          ],
           "frameworkReferences": {
             "Microsoft.AspNetCore.App": {
               "privateAssets": "none"
@@ -67,7 +108,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/5.0.202/RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.203\\RuntimeIdentifierGraph.json"
         }
       }
     }

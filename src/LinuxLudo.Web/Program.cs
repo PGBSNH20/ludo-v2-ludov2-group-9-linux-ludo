@@ -23,6 +23,7 @@ namespace LinuxLudo.Web
             builder.Services.AddBlazoredLocalStorage();
             builder.Services.AddAuthorizationCore();
 
+
             await builder.Build().RunAsync();
         }
     }

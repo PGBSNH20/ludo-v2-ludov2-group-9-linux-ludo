@@ -31,14 +31,14 @@ namespace LinuxLudo.Web
                 return _state;
 
             // Set the current auth token to the saved token
-            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-            return new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity(JWTParser.ParseClaims(token), "JWTauthType")));
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", token);
+            return new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity(JWTParser.ParseClaims(token), "jwtAuthType")));
         }
 
         public void NotifyUserAuthentication(string token)
         {
             // Fetch the current user and its auth state
-            var authUser = new ClaimsPrincipal(new ClaimsIdentity(JWTParser.ParseClaims(token), "JWTauthType"));
+            var authUser = new ClaimsPrincipal(new ClaimsIdentity(JWTParser.ParseClaims(token), "jwtAuthType"));
             var authState = Task.FromResult(new AuthenticationState(authUser));
 
             // Notify the client that the auth has been changed

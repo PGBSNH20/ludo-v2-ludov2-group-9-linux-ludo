@@ -1,3 +1,12 @@
+.title-text
+{
+    margin-top: 3%;
+    font-size: 34px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
 .col-form-label
 {
     font-weight: bold;
@@ -21,8 +30,10 @@
 
 .login-container
 {
-    padding: 10px;
-    margin: 10px;
+    padding: 5px;
+    margin-top: 5%;
+    margin-left: 35%;
+    margin-right: 35%;
     background-color: aquamarine;
     display: flex;
     align-items: center;

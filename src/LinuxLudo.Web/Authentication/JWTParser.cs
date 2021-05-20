@@ -30,7 +30,7 @@ namespace LinuxLudo.Web.Authentication
             if (roles is not null)
             {
                 // Cleans/formats the fetched roles
-                var parsedRoles = roles.ToString().Trim().TrimStart('[').TrimEnd(']').Split(",");
+                var parsedRoles = roles.ToString().Trim().TrimStart('[').TrimEnd(']').Split(',');
 
                 // Add the individual roles
                 if (parsedRoles.Length > 1)

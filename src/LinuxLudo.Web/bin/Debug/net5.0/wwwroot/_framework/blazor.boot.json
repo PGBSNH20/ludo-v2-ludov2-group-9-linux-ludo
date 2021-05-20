@@ -36,6 +36,7 @@
       "Microsoft.Extensions.Primitives.dll": "sha256-f2PgoftqEkKRuuiAk6S1MHygOuqZBHzB0HOB3vR93TU=",
       "Microsoft.JSInterop.dll": "sha256-qPIvEaHuBRFKLKbFwUK34ATZV69kdVFC+lzKmpVMxpQ=",
       "Microsoft.JSInterop.WebAssembly.dll": "sha256-PotMOSV6NCm1RFdQpG4oXzBipnkMHmHEr\/7e4q90k5k=",
+      "Newtonsoft.Json.dll": "sha256-cs8pHUurDt0IqbB8YXPh560au3q3J\/1wRL9jBddRVmE=",
       "System.IO.Pipelines.dll": "sha256-3ET+mpR7F058YRj9YaLHOVXBqOW6iUxtIpeiKPYw4PA=",
       "Microsoft.CSharp.dll": "sha256-8nKI+prFZGoXjtLAykW9nDisJwjBUBue3+jqE7+OY3M=",
       "Microsoft.VisualBasic.Core.dll": "sha256-UPRoOttoNgkJcaTuG8HaKvhZKRLk4EqpwZAGNiGiSr8=",
@@ -202,11 +203,11 @@
       "mscorlib.dll": "sha256-jU85t8bOVm2PPQRkPJ1kS0nCJIyBjjlet2IR1d9m+RI=",
       "netstandard.dll": "sha256-B6gmXEMfYgOuaOR1g1cGHLn2kDlZYAah4K2XNUZbTs4=",
       "System.Private.CoreLib.dll": "sha256-XY0bl1U8F\/iSbQzkmIHM8UtE\/R9VntZoy\/kMbvuMjTA=",
-      "LinuxLudo.Web.dll": "sha256-8F84ot87\/OorjjJuEqq5HbdRPb\/41onnflUGS70IhFw="
+      "LinuxLudo.Web.dll": "sha256-6ec\/S4d7zmuQbDrGZ7HifQ3U1wg7LmLWFYbcV57DVyE="
     },
     "lazyAssembly": null,
     "pdb": {
-      "LinuxLudo.Web.pdb": "sha256-KV8jHCffWNy5WkL0X9gvplVdIAWHt2NM5Amp6uUmh7Y="
+      "LinuxLudo.Web.pdb": "sha256-oN\/Ykrz9XjY9cn8BQNEY3zmVpxooBssYoqXzoNx4+4g="
     },
     "runtime": {
       "dotnet.timezones.blat": "sha256-OEDZp6noMH3AdT8qd0zd7ZXzy2CsPQ+CZeQnYmRoVWo=",

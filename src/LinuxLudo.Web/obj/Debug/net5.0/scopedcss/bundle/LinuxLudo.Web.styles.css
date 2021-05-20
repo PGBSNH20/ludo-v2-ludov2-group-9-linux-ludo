@@ -15,6 +15,15 @@ h1[b-m53w0cp7ne] {
     justify-content: center;
 }
 /* /Pages/Login.razor.rz.scp.css */
+.title-text[b-e0pvqm75em]
+{
+    margin-top: 3%;
+    font-size: 34px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
 .col-form-label[b-e0pvqm75em]
 {
     font-weight: bold;
@@ -38,8 +47,10 @@ h1[b-m53w0cp7ne] {
 
 .login-container[b-e0pvqm75em]
 {
-    padding: 10px;
-    margin: 10px;
+    padding: 5px;
+    margin-top: 5%;
+    margin-left: 35%;
+    margin-right: 35%;
     background-color: aquamarine;
     display: flex;
     align-items: center;

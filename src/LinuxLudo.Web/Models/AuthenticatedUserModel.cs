@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 namespace LinuxLudo.Web.Models
 {
     public class AuthenticatedUserModel

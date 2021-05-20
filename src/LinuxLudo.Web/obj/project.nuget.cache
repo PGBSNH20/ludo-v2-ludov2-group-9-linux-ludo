@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "NXGlb3SMRa375LWPvFj/AoIDTxJMcrTvB3PRU+LqAfHYj/6JtjAoXTHqOx+QX9At7PGTH1dxKyUIPhKi7DFyow==",
+  "dgSpecHash": "B4lHo4C/47qJLC0QiUM3GXVyKy8D2eDP9NlBv7OV4tSvN4fKsiWvxH46lfwm2DN1hyA0+wGzDeEBvQ7t3RaE7A==",
   "success": true,
-  "projectFilePath": "C:\\Users\\adam-\\Documents\\Workspace\\ludo-v2-ludov2-group-9-linux-ludo\\src\\LinuxLudo.Web\\LinuxLudo.Web.csproj",
+  "projectFilePath": "C:\\Users\\adam-\\Documents\\Workspace\\ludo-v2-ludov2-group-9-linux-ludo\\src\\linuxludo.web\\LinuxLudo.Web.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\adam-\\.nuget\\packages\\blazored.localstorage\\4.1.1\\blazored.localstorage.4.1.1.nupkg.sha512",
     "C:\\Users\\adam-\\.nuget\\packages\\bunit.core\\1.1.5\\bunit.core.1.1.5.nupkg.sha512",
@@ -32,6 +32,7 @@
     "C:\\Users\\adam-\\.nuget\\packages\\microsoft.extensions.primitives\\5.0.0\\microsoft.extensions.primitives.5.0.0.nupkg.sha512",
     "C:\\Users\\adam-\\.nuget\\packages\\microsoft.jsinterop\\5.0.6\\microsoft.jsinterop.5.0.6.nupkg.sha512",
     "C:\\Users\\adam-\\.nuget\\packages\\microsoft.jsinterop.webassembly\\5.0.6\\microsoft.jsinterop.webassembly.5.0.6.nupkg.sha512",
+    "C:\\Users\\adam-\\.nuget\\packages\\newtonsoft.json\\13.0.1\\newtonsoft.json.13.0.1.nupkg.sha512",
     "C:\\Users\\adam-\\.nuget\\packages\\system.io.pipelines\\5.0.1\\system.io.pipelines.5.0.1.nupkg.sha512",
     "C:\\Users\\adam-\\.nuget\\packages\\system.net.http.json\\5.0.0\\system.net.http.json.5.0.0.nupkg.sha512",
     "C:\\Users\\adam-\\.nuget\\packages\\microsoft.netcore.app.runtime.browser-wasm\\5.0.6\\microsoft.netcore.app.runtime.browser-wasm.5.0.6.nupkg.sha512"
