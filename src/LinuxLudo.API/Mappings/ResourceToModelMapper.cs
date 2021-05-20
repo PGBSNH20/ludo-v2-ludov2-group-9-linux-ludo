@@ -10,6 +10,6 @@ namespace LinuxLudo.API.Mappings
         {
             CreateMap<SignUpResource, User>();
             CreateMap<SignInResource, User>();
-        } 
+        }
     }
 }

@@ -43,8 +43,8 @@ namespace LinuxLudo.API.Services
                 issuer: _jwtSettings.Value.Issuer,
                 audience: _jwtSettings.Value.Issuer,
                 claims,
-                expires : expires,
-                signingCredentials : creds
+                expires: expires,
+                signingCredentials: creds
             );
 
             return new JwtSecurityTokenHandler().WriteToken(token);

@@ -7,9 +7,9 @@ namespace LinuxLudo.API.Domain.Models
     {
         // Workaround for foreign key needs id.
         public Guid Id { get; set; }
-        public Guid GameId { get; set; } 
-       public virtual Game Game { get; set; }
-       public Guid PlayerId { get; set; }
-       public virtual User Player { get; set; }
+        public Guid GameId { get; set; }
+        public virtual Game Game { get; set; }
+        public Guid PlayerId { get; set; }
+        public virtual User Player { get; set; }
     }
 }

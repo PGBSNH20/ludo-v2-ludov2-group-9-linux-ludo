@@ -52,7 +52,7 @@ namespace LinuxLudo.API
                     opts.InvalidModelStateResponseFactory = ctx =>
                     {
                         var err = new ErrorResponse(ctx.ModelState.First().Value.Errors.First().ErrorMessage, 400, ctx.HttpContext.TraceIdentifier).Respond();
-                        return new ObjectResult(err) {StatusCode = err.StatusCode};
+                        return new ObjectResult(err) { StatusCode = err.StatusCode };
                     };
                 })
                 .AddJsonOptions(opts =>
@@ -62,8 +62,8 @@ namespace LinuxLudo.API
                 });
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo {Title = "LinuxLudo.API", Version = "v1"});
-                
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "LinuxLudo.API", Version = "v1" });
+
                 c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
                 {
                     Description = "JWT containing userid claim",
@@ -87,7 +87,7 @@ namespace LinuxLudo.API
                     new List<string>()
                     }
                 };
-                
+
                 c.AddSecurityRequirement(security);
             });
 

@@ -13,7 +13,7 @@ namespace LinuxLudo.API.Database.Context
         public DbSet<GamePlayerPivot> GamePlayerPivot { get; set; }
         public DbSet<PlayerStats> PlayerStats { get; set; }
         public AppDbContext(DbContextOptions<AppDbContext> opts) : base(opts)
-        {}
+        { }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

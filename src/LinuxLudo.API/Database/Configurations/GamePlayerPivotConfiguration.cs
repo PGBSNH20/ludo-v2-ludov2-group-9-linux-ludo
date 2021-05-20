@@ -13,7 +13,7 @@ namespace LinuxLudo.API.Database.Configurations
                 .IsRequired()
                 .HasColumnType("uuid")
                 .HasDefaultValueSql("uuid_generate_v4()");
-            
+
             builder.HasOne(m => m.Game)
                 .WithMany(a => a.Players)
                 .HasForeignKey(m => m.GameId);

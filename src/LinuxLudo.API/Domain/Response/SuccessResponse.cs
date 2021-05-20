@@ -17,7 +17,7 @@ namespace LinuxLudo.API.Domain.Response
         {
             return new("Success", Code, this);
         }
-        
+
         public BaseResponse Respond(object data)
         {
             return new("Success", Code, data);

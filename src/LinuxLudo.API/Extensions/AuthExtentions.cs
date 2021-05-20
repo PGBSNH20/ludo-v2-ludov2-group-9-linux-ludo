@@ -38,7 +38,7 @@ namespace LinuxLudo.API.Extensions
         {
             app.UseAuthentication();
             app.UseAuthorization();
-            
+
             return app;
         }
     }
