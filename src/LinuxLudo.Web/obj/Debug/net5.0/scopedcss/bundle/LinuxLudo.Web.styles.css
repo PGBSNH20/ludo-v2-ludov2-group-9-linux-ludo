@@ -15,6 +15,16 @@ h1[b-m53w0cp7ne] {
     justify-content: center;
 }
 /* /Pages/Login.razor.rz.scp.css */
+.col-form-label[b-e0pvqm75em]
+{
+    font-weight: bold;
+}
+
+.validation-message[b-e0pvqm75em]
+{
+    color: red
+}
+
 .row[b-e0pvqm75em]
 {
     padding: 10px;

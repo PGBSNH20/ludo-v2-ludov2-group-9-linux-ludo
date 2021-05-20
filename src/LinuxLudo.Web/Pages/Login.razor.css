@@ -1,3 +1,13 @@
+.col-form-label
+{
+    font-weight: bold;
+}
+
+.validation-message
+{
+    color: red
+}
+
 .row
 {
     padding: 10px;
