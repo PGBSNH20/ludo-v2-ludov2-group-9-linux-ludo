@@ -646,3 +646,4 @@ C:\Users\adam-\Documents\Workspace\ludo-v2-ludov2-group-9-linux-ludo\src\LinuxLu
 C:\Users\adam-\Documents\Workspace\ludo-v2-ludov2-group-9-linux-ludo\src\LinuxLudo.Web\obj\Debug\net5.0\build-gz\8EEbIZBt.gz
 C:\Users\adam-\Documents\Workspace\ludo-v2-ludov2-group-9-linux-ludo\src\LinuxLudo.Web\obj\Debug\net5.0\RazorDeclaration\Pages\Login.razor.g.cs
 C:\Users\adam-\Documents\Workspace\ludo-v2-ludov2-group-9-linux-ludo\src\LinuxLudo.Web\obj\Debug\net5.0\Razor\Pages\Login.razor.g.cs
+C:\Users\adam-\Documents\Workspace\ludo-v2-ludov2-group-9-linux-ludo\src\LinuxLudo.Web\obj\Debug\net5.0\scopedcss\Pages\Login.razor.rz.scp.css

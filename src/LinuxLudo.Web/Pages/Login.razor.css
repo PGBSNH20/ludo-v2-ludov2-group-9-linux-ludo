@@ -1,0 +1,27 @@
+.row
+{
+    padding: 10px;
+}
+
+.form-container
+{
+    padding: 10px;
+    margin: 10px;
+}
+
+.login-container
+{
+    padding: 10px;
+    margin: 10px;
+    background-color: aquamarine;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-success
+{
+    background-color: black;
+    color: white;
+    width: 100%
+}
