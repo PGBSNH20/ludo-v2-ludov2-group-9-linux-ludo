@@ -1,0 +1,63 @@
+@page "/login"
+
+@inject IAuthenticationService AuthService; // Used to talk to the API
+@inject NavigationManager NavManager; // Used to navigate in the webbrowser to different urls
+
+@if (showAuthError)
+{
+    <div class="alert alert-danger" role="alert">
+        <h1>@errorMsg</h1>
+    </div>
+}
+
+<EditForm Model="userModel" OnValidSubmit="LoginUser" class="card card-body bg-dark">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <!-- Creates two forms (email/password) and binds the data in them to the userModel variables -->
+    <div class="form-group row">
+        <label for="email" class="col-md-2 col-form-label">Email</label>
+        <div class="col-md-10">
+            <InputText id="email" class="form-control" @bind-Value="userModel.Email" />
+            <ValidationMessage For="@(() => userModel.Email)" />
+            <!-- Displays any error messages from the email form -->
+        </div>
+
+        <label for="password" class="col-md-2 col-form-label">Password</label>
+        <div class="col-md-10">
+            <InputText type="password" id="password" class="form-control" @bind-Value="userModel.Password" />
+            <ValidationMessage For="@(() => userModel.Password)" />
+            <!-- Displays any error messages from the password form -->
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <button type="submit" class="btn btn-success">Login</button>
+            <!-- When the "submit" button type is clicked LoginUser is called (if valid form input) -->
+        </div>
+    </div>
+</EditForm>
+
+@code
+{
+    private AuthenticationUserModel userModel = new(); // The variable to store the form data (user/pass)
+    private bool showAuthError; // Whether or not to show errorMsg
+    private string errorMsg = ""; // This message shows up if the user has e.g entered invalid credentials
+
+    private async Task LoginUser()
+    {
+        showAuthError = false;
+        var response = AuthService.Login(userModel);
+
+        // If the login failed
+        if (response is null)
+        {
+            errorMsg = "An error occurred whilst logging in, try again!";
+            showAuthError = true;
+        }
+
+        // Login was successful
+        NavManager.NavigateTo("/home");
+    }
+}

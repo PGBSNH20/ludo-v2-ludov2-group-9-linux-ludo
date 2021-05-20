@@ -12,7 +12,7 @@ namespace LinuxLudo.Web.Authentication
     // This class is responsible for actually logging in/out through the API
     public class AuthenticationService : IAuthenticationService
     {
-        private const string API_URL = "https://localhost:5001/api/auth/";
+        private const string API_URL = "https://localhost:5001/api/Auth";
         private readonly HttpClient _client;
         private readonly AuthenticationStateProvider _authStateProvider;
         private readonly ILocalStorageService _localStorage;

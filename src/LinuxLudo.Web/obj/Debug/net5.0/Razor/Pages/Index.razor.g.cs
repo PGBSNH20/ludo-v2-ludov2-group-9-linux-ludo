@@ -93,6 +93,20 @@ using LinuxLudo.Web.Shared;
 #line default
 #line hidden
 #nullable disable
+#nullable restore
+#line 13 "C:\Users\adam-\Documents\Workspace\ludo-v2-ludov2-group-9-linux-ludo\src\LinuxLudo.Web\_Imports.razor"
+using LinuxLudo.Web.Models;
+
+#line default
+#line hidden
+#nullable disable
+#nullable restore
+#line 14 "C:\Users\adam-\Documents\Workspace\ludo-v2-ludov2-group-9-linux-ludo\src\LinuxLudo.Web\_Imports.razor"
+using LinuxLudo.Web.Authentication;
+
+#line default
+#line hidden
+#nullable disable
     [Microsoft.AspNetCore.Components.RouteAttribute("/")]
     [Microsoft.AspNetCore.Components.RouteAttribute("/home")]
     public partial class Index : Microsoft.AspNetCore.Components.ComponentBase

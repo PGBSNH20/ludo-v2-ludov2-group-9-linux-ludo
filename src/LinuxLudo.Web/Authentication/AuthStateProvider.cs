@@ -18,6 +18,7 @@ namespace LinuxLudo.Web
         {
             _httpClient = httpClient;
             _localStorage = localStorage;
+            _state = new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity()));
         }
 
         public override async Task<AuthenticationState> GetAuthenticationStateAsync()
