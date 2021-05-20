@@ -10,6 +10,8 @@
   "linkerEnabled": false,
   "resources": {
     "assembly": {
+      "Blazored.LocalStorage.dll": "sha256-TcFA5QZF0gtyVejGj9WtVja6TUlO91T102IftXHVKh0=",
+      "Bunit.Core.dll": "sha256-zovgNsbcjw0E1mKARotcbS2KOf6eBmcW1ZoYMMtVIQo=",
       "Microsoft.AspNetCore.Authorization.dll": "sha256-yk95Qg9j2YvS1MIGFzyQG2eMJl4wtdJvwb5lLx1Qcac=",
       "Microsoft.AspNetCore.Components.dll": "sha256-L3ojn6Z4Q4OwP1AJCHBw7tgy4N85YTvd4KtlvRZd3Lo=",
       "Microsoft.AspNetCore.Components.Authorization.dll": "sha256-WwbZVsj4r4snFRMzxxodJgD4u5wJAK0ByzeDNKzlEsk=",
@@ -200,11 +202,11 @@
       "mscorlib.dll": "sha256-jU85t8bOVm2PPQRkPJ1kS0nCJIyBjjlet2IR1d9m+RI=",
       "netstandard.dll": "sha256-B6gmXEMfYgOuaOR1g1cGHLn2kDlZYAah4K2XNUZbTs4=",
       "System.Private.CoreLib.dll": "sha256-XY0bl1U8F\/iSbQzkmIHM8UtE\/R9VntZoy\/kMbvuMjTA=",
-      "LinuxLudo.Web.dll": "sha256-TNQW\/6FYoDDdSsBaSV3C8l2XLCcPGy+nXARzJiaLbTA="
+      "LinuxLudo.Web.dll": "sha256-uNt2HWZUKsEUksMm6am0l+7jS4\/iSHZ2xFV1lphXiGA="
     },
     "lazyAssembly": null,
     "pdb": {
-      "LinuxLudo.Web.pdb": "sha256-WKh44NphSVH574z05iRINh12r68jqjPzhSXb3HuBjVA="
+      "LinuxLudo.Web.pdb": "sha256-gCXN2Z\/8dTwulOkwo7n9YSKZYGa8S8nDpU2BYETdkHI="
     },
     "runtime": {
       "dotnet.timezones.blat": "sha256-OEDZp6noMH3AdT8qd0zd7ZXzy2CsPQ+CZeQnYmRoVWo=",

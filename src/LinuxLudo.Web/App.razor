@@ -1,9 +1,9 @@
 <Router AppAssembly="@typeof(Program).Assembly" PreferExactMatches="@true">
     <Found Context="routeData">
         <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)">
-            <Microsoft.AspNetCore.Components.Authorization.CascadingAuthenticationState>
+            <Authorizing>
                 <text>Authorizing...</text>
-            </Microsoft.AspNetCore.Components.Authorization.CascadingAuthenticationState>
+            </Authorizing>
         </AuthorizeRouteView>
     </Found>
     <NotFound>
