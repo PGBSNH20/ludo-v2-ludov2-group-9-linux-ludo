@@ -3,7 +3,7 @@
     margin-top: 5%;
     margin-left: 35%;
     margin-right: 35%;
-    background-color: purple;
+    background-color: #9932CC;
     color: white;
     margin-top: 3%;
     font-size: 34px;
@@ -48,9 +48,17 @@
     justify-content: center;
 }
 
-.btn-success
+.btn-login
 {
     background-color: green;
     color: white;
     width: 100%
+}
+
+.btn-register
+{
+    background-color: brown;
+    color: white;
+    width: 100%;
+    margin-top: 10px;
 }

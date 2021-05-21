@@ -46,7 +46,7 @@ h1[b-m53w0cp7ne] {
     margin-top: 5%;
     margin-left: 35%;
     margin-right: 35%;
-    background-color: purple;
+    background-color: #9932CC;
     color: white;
     margin-top: 3%;
     font-size: 34px;
@@ -91,17 +91,50 @@ h1[b-m53w0cp7ne] {
     justify-content: center;
 }
 
-.btn-success[b-e0pvqm75em]
+.btn-login[b-e0pvqm75em]
 {
     background-color: green;
     color: white;
     width: 100%
+}
+
+.btn-register[b-e0pvqm75em]
+{
+    background-color: brown;
+    color: white;
+    width: 100%;
+    margin-top: 10px;
 }
 /* /Pages/Register.razor.rz.scp.css */
 .btn-success[b-1gvonqceen]
 {
     background-color: black;
     color: white;
+}
+
+.login-container[b-1gvonqceen]
+{
+    padding: 5px;
+    margin-left: 35%;
+    margin-right: 35%;
+    background-color: #343d52;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.title-text[b-1gvonqceen]
+{
+    margin-top: 5%;
+    margin-left: 35%;
+    margin-right: 35%;
+    background-color: purple;
+    color: white;
+    margin-top: 3%;
+    font-size: 34px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 /* /Shared/MainLayout.razor.rz.scp.css */
 .page[b-8j0glk41zk] {

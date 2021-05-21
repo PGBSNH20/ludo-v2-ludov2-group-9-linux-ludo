@@ -3,3 +3,28 @@
     background-color: black;
     color: white;
 }
+
+.login-container
+{
+    padding: 5px;
+    margin-left: 35%;
+    margin-right: 35%;
+    background-color: #343d52;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.title-text
+{
+    margin-top: 5%;
+    margin-left: 35%;
+    margin-right: 35%;
+    background-color: purple;
+    color: white;
+    margin-top: 3%;
+    font-size: 34px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
