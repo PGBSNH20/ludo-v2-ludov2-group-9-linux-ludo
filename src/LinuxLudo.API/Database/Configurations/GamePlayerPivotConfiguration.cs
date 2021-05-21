@@ -8,7 +8,9 @@ namespace LinuxLudo.API.Database.Configurations
     {
         public void Configure(EntityTypeBuilder<GamePlayerPivot> builder)
         {
-            builder.HasKey(m => m.Id);
+            builder.HasAlternateKey(m => new { m.GameId, m.PlayerId })
+                .HasName("AlternateKey_GameId_PlayerId");
+            
             builder.Property(m => m.Id)
                 .IsRequired()
                 .HasColumnType("uuid")
