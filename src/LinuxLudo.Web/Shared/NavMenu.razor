@@ -29,16 +29,16 @@
     <!-- The list is only displayed if menuVisible is true -->
     <ul
         class="@($"flex flex-col {menuVisibleStr} bg-gray-700 px-4 py-2 md:flex md:flex-row md:bg-transparent items-center")">
-        <NavLink class="md:pl-4 md:pr-4 hover:bg-gray-700" href="/Home">Home</NavLink>
-        <NavLink class="md:px-4 hover:bg-gray-700" href="/Play">Play</NavLink>
+        <NavLink class="md:pl-4 md:pr-4 md:py-1 hover:bg-gray-700" href="/Home">Home</NavLink>
+        <NavLink class="md:px-4 md:py-1 hover:bg-gray-700" href="/Play">Play</NavLink>
 
         <AuthorizeView>
             <Authorized>
-                <NavLink class="md:px-4 hover:bg-gray-700" href="/Logout">Logout</NavLink>
+                <NavLink class="md:px-4 md:py-1 hover:bg-gray-700" href="/Logout">Logout</NavLink>
             </Authorized>
 
             <NotAuthorized>
-                <NavLink class="md:px-4 hover:bg-gray-700" href="/Login">Login</NavLink>
+                <NavLink class="md:px-4 md:py-1 hover:bg-gray-700" href="/Login">Login</NavLink>
             </NotAuthorized>
         </AuthorizeView>
 
