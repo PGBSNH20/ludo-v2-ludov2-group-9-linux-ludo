@@ -3,15 +3,17 @@ using System;
 using LinuxLudo.API.Database.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace LinuxLudo.API.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210521212630_Game State Enum mapped")]
+    partial class GameStateEnummapped
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -128,11 +130,10 @@ namespace LinuxLudo.API.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("State")
-                        .IsRequired()
+                    b.Property<int>("State")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("text")
-                        .HasDefaultValue("Waiting");
+                        .HasColumnType("integer")
+                        .HasDefaultValue(0);
 
                     b.HasKey("Id");
 
@@ -154,8 +155,7 @@ namespace LinuxLudo.API.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasAlternateKey("GameId", "PlayerId")
-                        .HasName("AlternateKey_GameId_PlayerId");
+                    b.HasIndex("GameId");
 
                     b.HasIndex("PlayerId");
 
