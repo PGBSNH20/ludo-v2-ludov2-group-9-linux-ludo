@@ -218,6 +218,29 @@ h1[b-m53w0cp7ne] {
     }
 }
 /* /Shared/NavMenu.razor.rz.scp.css */
+.navbar-title[b-2zu9a2f2m5]
+{
+    color: white;
+    font-size: 28px;
+}
+
+#heading[b-2zu9a2f2m5]
+{
+    background-color: purple;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.nav-menu[b-2zu9a2f2m5]
+{
+    color: white;
+    background-color: purple;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
 #heading img[b-2zu9a2f2m5]{
     width: 32px;
     height: 32px;
@@ -225,4 +248,19 @@ h1[b-m53w0cp7ne] {
     margin-right: 5px;
     margin-top: 5px;
     position: relative;
+}
+
+.navbar-name-section[b-2zu9a2f2m5]
+{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.navbar-name-text[b-2zu9a2f2m5]
+{
+    color: black;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }

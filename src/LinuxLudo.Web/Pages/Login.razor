@@ -22,28 +22,28 @@
                     <InputText id="username" class="form-control" @bind-Value="userModel.UserName"
                         placeholder="Enter your username" />
                     <div class="validation-message">
-                        <ValidationMessage For="@(() => userModel.UserName)" />
                         <!-- Displays any error messages from the username form -->
+                        <ValidationMessage For="@(() => userModel.UserName)" />
                     </div>
                 </div>
                 <div class="col-md-10">
                     <InputText type="password" id="password" class="form-control" @bind-Value="userModel.Password"
                         placeholder="Enter your password" />
                     <div class="validation-message">
-                        <ValidationMessage For="@(() => userModel.Password)" />
                         <!-- Displays any error messages from the password form -->
+                        <ValidationMessage For="@(() => userModel.Password)" />
                     </div>
                 </div>
             </div>
 
             <div class="row">
                 <div class="col-md-12">
-                    <button type="submit" class="btn btn-login">Login</button>
                     <!-- When the "submit" button type is clicked LoginUser is called (if valid form input) -->
+                    <button type="submit" class="btn btn-login">Login</button>
                 </div>
                 <div class="col-md-12">
-                    <button type="submit" class="btn btn-register" @onclick=RedirectRegister>Register</button>
                     <!-- Redirects to /Register -->
+                    <button type="submit" class="btn btn-register" @onclick=RedirectRegister>Register</button>
                 </div>
             </div>
         </div>
@@ -80,7 +80,7 @@
         if (response is not null)
         {
             // Login was successful
-            NavManager.NavigateTo("/Home");
+            NavManager.NavigateTo("/Play");
         }
 
         errorMsg = "Invalid credentials, try again!";

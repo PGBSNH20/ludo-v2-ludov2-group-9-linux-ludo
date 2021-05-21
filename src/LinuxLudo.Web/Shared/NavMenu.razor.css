@@ -1,3 +1,26 @@
+.navbar-title
+{
+    color: white;
+    font-size: 28px;
+}
+
+#heading
+{
+    background-color: purple;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.nav-menu
+{
+    color: white;
+    background-color: purple;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
 #heading img{
     width: 32px;
     height: 32px;
@@ -5,4 +28,19 @@
     margin-right: 5px;
     margin-top: 5px;
     position: relative;
+}
+
+.navbar-name-section
+{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.navbar-name-text
+{
+    color: black;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
