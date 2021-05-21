@@ -1,29 +1,22 @@
-<!-- Defines that this is a page -->
-@page "/play"
-
+@page "/game/{id:int}"
 @inject NavigationManager NavManager; // Used to navigate in the webbrowser to different urls
 
-<!-- This page displays the actual Ludo game and can only be accessed when logged in/authenticated -->
+<h1 class="title-text">Game (@Id) - Playing as @userName</h1>
 
 <AuthorizeView>
-    <!-- Logged in/game view -->
-    <Authorized>
-        <div class="game-container">
-            <div class="game-board">
-                <h1 class="username-text">Playing as @userName</h1>
-            </div>
-        </div>
-    </Authorized>
-</AuthorizeView>
+    <div class="game-gui">
 
+    </div>
+</AuthorizeView>
 
 @code
 {
+    [Parameter]
+    public int Id { get; set; }
     [CascadingParameter]
-    public Task<AuthenticationState> AuthState { get; set; }
+    private Task<AuthenticationState> AuthState { get; set; }
     private string userName;
 
-    // When the page is fully loaded/on startup
     protected override async Task OnInitializedAsync()
     {
         var authState = await AuthState;
