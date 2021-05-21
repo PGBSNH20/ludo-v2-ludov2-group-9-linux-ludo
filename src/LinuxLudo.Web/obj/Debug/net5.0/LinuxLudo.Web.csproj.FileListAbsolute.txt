@@ -661,3 +661,4 @@ C:\Users\adam-\Documents\Workspace\ludo-v2-ludov2-group-9-linux-ludo\src\LinuxLu
 C:\Users\adam-\Documents\Workspace\ludo-v2-ludov2-group-9-linux-ludo\src\LinuxLudo.Web\bin\Debug\net5.0\wwwroot\_framework\Blazor.Extensions.Canvas.dll
 C:\Users\adam-\Documents\Workspace\ludo-v2-ludov2-group-9-linux-ludo\src\LinuxLudo.Web\obj\Debug\net5.0\RazorDeclaration\Pages\Register.razor.g.cs
 C:\Users\adam-\Documents\Workspace\ludo-v2-ludov2-group-9-linux-ludo\src\LinuxLudo.Web\obj\Debug\net5.0\Razor\Pages\Register.razor.g.cs
+C:\Users\adam-\Documents\Workspace\ludo-v2-ludov2-group-9-linux-ludo\src\LinuxLudo.Web\obj\Debug\net5.0\scopedcss\Pages\Register.razor.rz.scp.css

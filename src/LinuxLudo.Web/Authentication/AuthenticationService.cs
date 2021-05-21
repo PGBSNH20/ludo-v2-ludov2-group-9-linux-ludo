@@ -6,9 +6,9 @@ using Blazored.LocalStorage;
 using LinuxLudo.Web.Models;
 using Microsoft.AspNetCore.Components.Authorization;
 using System.Net.Http.Headers;
-using System;
 using System.Net.Http.Json;
 using Newtonsoft.Json.Linq;
+using System;
 
 namespace LinuxLudo.Web.Authentication
 {
@@ -27,23 +27,23 @@ namespace LinuxLudo.Web.Authentication
             _localStorage = localStorage;
         }
 
-        public async Task<AuthenticatedUserModel> Login(AuthenticationUserModel user)
+        public async Task<AuthenticatedUserModel> SignIn(AuthenticationUserModel user)
         {
             // Form/POST call data
             var body = new
             {
-                username = user.Username,
+                username = user.UserName,
                 password = user.Password
             };
 
             // Sends a request to login with provided parameters and fetches the response
             var authResult = await _client.PostAsJsonAsync(API_URL + "/SignIn", body);
-            var authContent = await authResult.Content.ReadAsStringAsync();
-
 
             // If the API call wasn't successful
             if (!authResult.IsSuccessStatusCode)
                 return null;
+
+            var authContent = await authResult.Content.ReadAsStringAsync();
 
             // Deserialize the response as an authenticated object
             var response = JsonSerializer.Deserialize<AuthenticatedUserModel>(authContent, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
@@ -66,6 +66,27 @@ namespace LinuxLudo.Web.Authentication
 
             // Remove the logged in header to mark that there is no logged in user
             _client.DefaultRequestHeaders.Authorization = null;
+        }
+
+        public async Task<RegisteredUserModel> SignUp(CreateUserModel user)
+        {
+            // Form/POST call data
+            var body = new
+            {
+                username = user.UserName,
+                password = user.Password
+            };
+
+            // Sends a request to login with provided parameters and fetches the response
+            var authResult = await _client.PostAsJsonAsync(API_URL + "/SignUp", body);
+            var authContent = await authResult.Content.ReadAsStringAsync();
+            var response = JsonSerializer.Deserialize<RegisteredUserModel>(authContent, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+
+            // If the API call wasn't successful
+            if (!authResult.IsSuccessStatusCode)
+                response.Message = JObject.Parse(authContent)["error"]["message"].ToString();
+
+            return response;
         }
     }
 }

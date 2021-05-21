@@ -19,10 +19,10 @@
         <div class="form-container">
             <div class="form-group row">
                 <div class="col-md-10">
-                    <InputText id="username" class="form-control" @bind-Value="userModel.Username"
+                    <InputText id="username" class="form-control" @bind-Value="userModel.UserName"
                         placeholder="Enter your username" />
                     <div class="validation-message">
-                        <ValidationMessage For="@(() => userModel.Username)" />
+                        <ValidationMessage For="@(() => userModel.UserName)" />
                         <!-- Displays any error messages from the username form -->
                     </div>
                 </div>
@@ -69,13 +69,13 @@
     private async Task LoginUser()
     {
         showAuthError = false;
-        var response = await AuthService.Login(userModel);
+        var response = await AuthService.SignIn(userModel);
 
-        // If the login failed
+        // If the login was successful
         if (response is not null)
         {
             // Login was successful
-            NavManager.NavigateTo("/home");
+            NavManager.NavigateTo("/Home");
         }
 
         errorMsg = "Invalid credentials, try again!";
