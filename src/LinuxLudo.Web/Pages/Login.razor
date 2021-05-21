@@ -42,8 +42,8 @@
                     <!-- When the "submit" button type is clicked LoginUser is called (if valid form input) -->
                 </div>
                 <div class="col-md-12">
-                    <button type="submit" class="btn btn-register">Register</button>
-                    <!-- When the "submit" button type is clicked LoginUser is called (if valid form input) -->
+                    <button type="submit" class="btn btn-register" @onclick=RedirectRegister>Register</button>
+                    <!-- Redirects to /Register -->
                 </div>
             </div>
         </div>
@@ -57,6 +57,7 @@
     private string errorMsg = ""; // This message shows up if the user has e.g entered invalid credentials
     [CascadingParameter]
     private Task<AuthenticationState> AuthState { get; set; }
+    private void RedirectRegister() => NavManager.NavigateTo("/Register");
 
     // When the page has fully loaded
     protected override async Task OnInitializedAsync()
