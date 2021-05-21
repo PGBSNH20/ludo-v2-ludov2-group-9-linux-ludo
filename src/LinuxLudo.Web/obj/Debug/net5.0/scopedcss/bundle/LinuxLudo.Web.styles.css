@@ -44,7 +44,7 @@ h1[b-m53w0cp7ne] {
     margin-top: 5%;
     margin-left: 35%;
     margin-right: 35%;
-    background-color: #9932CC;
+    background-color: #008000;
     color: white;
     margin-top: 3%;
     font-size: 34px;
@@ -91,14 +91,14 @@ h1[b-m53w0cp7ne] {
 
 .btn-login[b-e0pvqm75em]
 {
-    background-color: green;
+    background-color: #008000;
     color: white;
     width: 100%
 }
 
 .btn-register[b-e0pvqm75em]
 {
-    background-color: brown;
+    background-color: #a52a2a;
     color: white;
     width: 100%;
     margin-top: 10px;
@@ -106,8 +106,15 @@ h1[b-m53w0cp7ne] {
 /* /Pages/Register.razor.rz.scp.css */
 .btn-success[b-1gvonqceen]
 {
-    background-color: black;
+    width: 100%;
+    margin-top: 10px;
+    background-color: #008000;
     color: white;
+}
+
+.validation-message[b-1gvonqceen]
+{
+    color: red
 }
 
 .login-container[b-1gvonqceen]
@@ -126,13 +133,18 @@ h1[b-m53w0cp7ne] {
     margin-top: 5%;
     margin-left: 35%;
     margin-right: 35%;
-    background-color: purple;
+    background-color: #a52a2a;
     color: white;
     margin-top: 3%;
     font-size: 34px;
     display: flex;
     align-items: center;
     justify-content: center;
+}
+
+.col-form-label[b-1gvonqceen]
+{
+    color: white;
 }
 /* /Shared/MainLayout.razor.rz.scp.css */
 .page[b-8j0glk41zk] {

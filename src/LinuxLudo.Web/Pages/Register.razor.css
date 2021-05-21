@@ -1,7 +1,14 @@
 .btn-success
 {
-    background-color: black;
+    width: 100%;
+    margin-top: 10px;
+    background-color: #008000;
     color: white;
+}
+
+.validation-message
+{
+    color: red
 }
 
 .login-container
@@ -20,11 +27,16 @@
     margin-top: 5%;
     margin-left: 35%;
     margin-right: 35%;
-    background-color: purple;
+    background-color: #a52a2a;
     color: white;
     margin-top: 3%;
     font-size: 34px;
     display: flex;
     align-items: center;
     justify-content: center;
+}
+
+.col-form-label
+{
+    color: white;
 }

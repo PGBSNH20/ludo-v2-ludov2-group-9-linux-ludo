@@ -3,7 +3,7 @@
     margin-top: 5%;
     margin-left: 35%;
     margin-right: 35%;
-    background-color: #9932CC;
+    background-color: #008000;
     color: white;
     margin-top: 3%;
     font-size: 34px;
@@ -50,14 +50,14 @@
 
 .btn-login
 {
-    background-color: green;
+    background-color: #008000;
     color: white;
     width: 100%
 }
 
 .btn-register
 {
-    background-color: brown;
+    background-color: #a52a2a;
     color: white;
     width: 100%;
     margin-top: 10px;
