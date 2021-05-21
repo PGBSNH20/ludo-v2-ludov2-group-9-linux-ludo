@@ -1,6 +1,8 @@
+using LinuxLudo.API.Domain.Enums;
 using LinuxLudo.API.Domain.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace LinuxLudo.API.Database.Configurations
 {
@@ -19,8 +21,9 @@ namespace LinuxLudo.API.Database.Configurations
             builder.Property(m => m.MaxPlayers)
                 .IsRequired()
                 .HasMaxLength(1);
-            builder.Property(m => m.Completed)
-                .HasDefaultValue(false);
+            builder.Property(m => m.State)
+                .HasConversion(new EnumToStringConverter<GameStates>())
+                .HasDefaultValue(GameStates.Waiting);
         }
     }
 }
