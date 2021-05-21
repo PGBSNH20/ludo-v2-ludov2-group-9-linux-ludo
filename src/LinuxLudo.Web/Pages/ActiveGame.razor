@@ -1,6 +1,4 @@
 @page "/Game/{Id:int}"
-@using Blazor.Extensions
-@using Blazor.Extensions.Canvas.Canvas2D
 @inject NavigationManager NavManager; // Used to navigate in the webbrowser to different urls
 
 <h1 class="title-text">Game (@Id) - Playing as @userName</h1>
@@ -22,6 +20,7 @@
     // Canvas
     protected BECanvasComponent _canvas;
     private Canvas2DContext _context;
+    private GameStatus _gameStatus;
 
     // When the page has fully loaded
     protected override async Task OnInitializedAsync()
@@ -47,5 +46,7 @@
         // Draws a basic canvas background color
         await _context.SetFillStyleAsync("gray");
         await _context.FillRectAsync(0, 0, 512, 512);
+
+
     }
 }
