@@ -1,11 +1,13 @@
-@page "/game/{Id:int}"
+@page "/Game/{Id:int}"
+@using Blazor.Extensions
+@using Blazor.Extensions.Canvas.Canvas2D
 @inject NavigationManager NavManager; // Used to navigate in the webbrowser to different urls
 
 <h1 class="title-text">Game (@Id) - Playing as @userName</h1>
 
 <AuthorizeView>
-    <div class="game-gui">
-
+    <div class="game-canvas">
+        <BECanvas Width="512" Height="512" @ref="_canvas"></BECanvas>
     </div>
 </AuthorizeView>
 
@@ -17,6 +19,11 @@
     private Task<AuthenticationState> AuthState { get; set; }
     private string userName;
 
+    // Canvas
+    protected BECanvasComponent _canvas;
+    private Canvas2DContext _context;
+
+    // When the page has fully loaded
     protected override async Task OnInitializedAsync()
     {
         var authState = await AuthState;
@@ -30,5 +37,15 @@
         {
             NavManager.NavigateTo("/Login");
         }
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        // Creates a canvas
+        _context = await _canvas.CreateCanvas2DAsync();
+
+        // Draws a basic canvas background color
+        await _context.SetFillStyleAsync("gray");
+        await _context.FillRectAsync(0, 0, 512, 512);
     }
 }

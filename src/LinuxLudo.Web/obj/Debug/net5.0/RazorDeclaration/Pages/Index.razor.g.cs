@@ -110,8 +110,15 @@ using LinuxLudo.Web.Authentication;
 #line default
 #line hidden
 #nullable disable
+#nullable restore
+#line 15 "C:\Users\adam-\Documents\Workspace\ludo-v2-ludov2-group-9-linux-ludo\src\LinuxLudo.Web\_Imports.razor"
+using Blazor.Extensions.Canvas;
+
+#line default
+#line hidden
+#nullable disable
     [Microsoft.AspNetCore.Components.RouteAttribute("/")]
-    [Microsoft.AspNetCore.Components.RouteAttribute("/home")]
+    [Microsoft.AspNetCore.Components.RouteAttribute("/Home")]
     public partial class Index : Microsoft.AspNetCore.Components.ComponentBase
     {
         #pragma warning disable 1998

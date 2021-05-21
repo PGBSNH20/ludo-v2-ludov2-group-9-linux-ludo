@@ -107,6 +107,13 @@ using LinuxLudo.Web.Authentication;
 #line default
 #line hidden
 #nullable disable
+#nullable restore
+#line 15 "C:\Users\adam-\Documents\Workspace\ludo-v2-ludov2-group-9-linux-ludo\src\LinuxLudo.Web\_Imports.razor"
+using Blazor.Extensions.Canvas;
+
+#line default
+#line hidden
+#nullable disable
     public partial class MainLayout : LayoutComponentBase
     {
         #pragma warning disable 1998
