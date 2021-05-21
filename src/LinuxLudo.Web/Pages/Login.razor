@@ -51,6 +51,20 @@
     private AuthenticationUserModel userModel = new(); // The variable to store the form data (user/pass)
     private bool showAuthError; // Whether or not to show errorMsg
     private string errorMsg = ""; // This message shows up if the user has e.g entered invalid credentials
+    [CascadingParameter]
+    private Task<AuthenticationState> AuthState { get; set; }
+
+    // When the page has fully loaded
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthState;
+
+        // If the user already is logged in, redirect
+        if (authState.User.Identity.IsAuthenticated)
+        {
+            NavManager.NavigateTo("/Play");
+        }
+    }
 
     private async Task LoginUser()
     {
