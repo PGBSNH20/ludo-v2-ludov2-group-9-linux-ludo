@@ -409,7 +409,6 @@ C:\Users\adam-\Documents\Workspace\ludo-v2-ludov2-group-9-linux-ludo\src\LinuxLu
 C:\Users\adam-\Documents\Workspace\ludo-v2-ludov2-group-9-linux-ludo\src\LinuxLudo.Web\obj\Debug\net5.0\LinuxLudo.Web.RazorComponent.input.cache
 C:\Users\adam-\Documents\Workspace\ludo-v2-ludov2-group-9-linux-ludo\src\LinuxLudo.Web\obj\Debug\net5.0\RazorDeclaration\App.razor.g.cs
 C:\Users\adam-\Documents\Workspace\ludo-v2-ludov2-group-9-linux-ludo\src\LinuxLudo.Web\obj\Debug\net5.0\RazorDeclaration\Pages\Index.razor.g.cs
-C:\Users\adam-\Documents\Workspace\ludo-v2-ludov2-group-9-linux-ludo\src\LinuxLudo.Web\obj\Debug\net5.0\RazorDeclaration\Shared\LoginDisplay.razor.g.cs
 C:\Users\adam-\Documents\Workspace\ludo-v2-ludov2-group-9-linux-ludo\src\LinuxLudo.Web\obj\Debug\net5.0\RazorDeclaration\Shared\RedirectToLogin.razor.g.cs
 C:\Users\adam-\Documents\Workspace\ludo-v2-ludov2-group-9-linux-ludo\src\LinuxLudo.Web\obj\Debug\net5.0\RazorDeclaration\_Imports.razor.g.cs
 C:\Users\adam-\Documents\Workspace\ludo-v2-ludov2-group-9-linux-ludo\src\LinuxLudo.Web\obj\Debug\net5.0\RazorDeclaration\Shared\MainLayout.razor.g.cs
@@ -421,7 +420,6 @@ C:\Users\adam-\Documents\Workspace\ludo-v2-ludov2-group-9-linux-ludo\src\LinuxLu
 C:\Users\adam-\Documents\Workspace\ludo-v2-ludov2-group-9-linux-ludo\src\LinuxLudo.Web\obj\Debug\net5.0\LinuxLudo.Web.RazorCoreGenerate.cache
 C:\Users\adam-\Documents\Workspace\ludo-v2-ludov2-group-9-linux-ludo\src\LinuxLudo.Web\obj\Debug\net5.0\Razor\App.razor.g.cs
 C:\Users\adam-\Documents\Workspace\ludo-v2-ludov2-group-9-linux-ludo\src\LinuxLudo.Web\obj\Debug\net5.0\Razor\Pages\Index.razor.g.cs
-C:\Users\adam-\Documents\Workspace\ludo-v2-ludov2-group-9-linux-ludo\src\LinuxLudo.Web\obj\Debug\net5.0\Razor\Shared\LoginDisplay.razor.g.cs
 C:\Users\adam-\Documents\Workspace\ludo-v2-ludov2-group-9-linux-ludo\src\LinuxLudo.Web\obj\Debug\net5.0\Razor\Shared\RedirectToLogin.razor.g.cs
 C:\Users\adam-\Documents\Workspace\ludo-v2-ludov2-group-9-linux-ludo\src\LinuxLudo.Web\obj\Debug\net5.0\Razor\_Imports.razor.g.cs
 C:\Users\adam-\Documents\Workspace\ludo-v2-ludov2-group-9-linux-ludo\src\LinuxLudo.Web\obj\Debug\net5.0\Razor\Shared\MainLayout.razor.g.cs

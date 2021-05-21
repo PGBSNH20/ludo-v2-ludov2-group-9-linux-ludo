@@ -1,5 +1,10 @@
 .title-text
 {
+    margin-top: 5%;
+    margin-left: 35%;
+    margin-right: 35%;
+    background-color: purple;
+    color: white;
     margin-top: 3%;
     font-size: 34px;
     display: flex;
@@ -17,6 +22,10 @@
     color: red
 }
 
+.col-md-10{
+    margin-top: 5px;
+}
+
 .row
 {
     padding: 10px;
@@ -31,10 +40,9 @@
 .login-container
 {
     padding: 5px;
-    margin-top: 5%;
     margin-left: 35%;
     margin-right: 35%;
-    background-color: aquamarine;
+    background-color: #343d52;
     display: flex;
     align-items: center;
     justify-content: center;

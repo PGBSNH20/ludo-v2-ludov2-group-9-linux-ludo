@@ -33,6 +33,11 @@ h1[b-m53w0cp7ne] {
 /* /Pages/Login.razor.rz.scp.css */
 .title-text[b-e0pvqm75em]
 {
+    margin-top: 5%;
+    margin-left: 35%;
+    margin-right: 35%;
+    background-color: purple;
+    color: white;
     margin-top: 3%;
     font-size: 34px;
     display: flex;
@@ -50,6 +55,10 @@ h1[b-m53w0cp7ne] {
     color: red
 }
 
+.col-md-10[b-e0pvqm75em]{
+    margin-top: 5px;
+}
+
 .row[b-e0pvqm75em]
 {
     padding: 10px;
@@ -64,10 +73,9 @@ h1[b-m53w0cp7ne] {
 .login-container[b-e0pvqm75em]
 {
     padding: 5px;
-    margin-top: 5%;
     margin-left: 35%;
     margin-right: 35%;
-    background-color: aquamarine;
+    background-color: #343d52;
     display: flex;
     align-items: center;
     justify-content: center;
