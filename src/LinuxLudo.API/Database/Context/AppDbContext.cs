@@ -16,7 +16,7 @@ namespace LinuxLudo.API.Database.Context
         public DbSet<PlayerStats> PlayerStats { get; set; }
 
         public AppDbContext(DbContextOptions<AppDbContext> opts) : base(opts)
-        {}
+        { }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

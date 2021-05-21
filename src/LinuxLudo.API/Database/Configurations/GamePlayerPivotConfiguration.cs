@@ -10,7 +10,7 @@ namespace LinuxLudo.API.Database.Configurations
         {
             builder.HasAlternateKey(m => new { m.GameId, m.PlayerId })
                 .HasName("AlternateKey_GameId_PlayerId");
-            
+
             builder.Property(m => m.Id)
                 .IsRequired()
                 .HasColumnType("uuid")
