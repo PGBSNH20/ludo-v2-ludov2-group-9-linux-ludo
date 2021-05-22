@@ -1,8 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LinuxLudo.API", "LinuxLudo.API\LinuxLudo.API.csproj", "{C48F942B-CBC4-4ED5-8A20-B9D354A84537}"
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31313.79
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LinuxLudo.API", "LinuxLudo.API\LinuxLudo.API.csproj", "{C48F942B-CBC4-4ED5-8A20-B9D354A84537}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LinuxLudo.Web", "LinuxLudo.Web\LinuxLudo.Web.csproj", "{86E997E0-F48A-4D5D-BDE2-41E9D070D00A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LinuxLudo.Web", "LinuxLudo.Web\LinuxLudo.Web.csproj", "{0B9D43C3-E17F-4D2F-BA84-0984E3747B31}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -14,9 +17,15 @@ Global
 		{C48F942B-CBC4-4ED5-8A20-B9D354A84537}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C48F942B-CBC4-4ED5-8A20-B9D354A84537}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C48F942B-CBC4-4ED5-8A20-B9D354A84537}.Release|Any CPU.Build.0 = Release|Any CPU
-		{86E997E0-F48A-4D5D-BDE2-41E9D070D00A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{86E997E0-F48A-4D5D-BDE2-41E9D070D00A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{86E997E0-F48A-4D5D-BDE2-41E9D070D00A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{86E997E0-F48A-4D5D-BDE2-41E9D070D00A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0B9D43C3-E17F-4D2F-BA84-0984E3747B31}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0B9D43C3-E17F-4D2F-BA84-0984E3747B31}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0B9D43C3-E17F-4D2F-BA84-0984E3747B31}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0B9D43C3-E17F-4D2F-BA84-0984E3747B31}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {EDECF52A-833F-481A-99B0-04129E6BEC70}
 	EndGlobalSection
 EndGlobal

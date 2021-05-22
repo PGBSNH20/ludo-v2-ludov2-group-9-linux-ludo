@@ -95,6 +95,13 @@ namespace LinuxLudo.API
             services.AddTransient<IAuthService, AuthService>();
 
             services.AddAuth(jwtSettings);
+
+            services.AddCors(options =>
+{
+    options.AddPolicy(
+        "Open",
+        builder => builder.AllowAnyOrigin().AllowAnyHeader());
+});
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -110,6 +117,7 @@ namespace LinuxLudo.API
             app.UseHttpsRedirection();
 
             app.UseRouting();
+            app.UseCors("Open");
             app.ApplyCustomMiddleware();
 
             app.UseAuth();

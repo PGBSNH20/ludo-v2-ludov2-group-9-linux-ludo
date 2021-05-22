@@ -1,5 +1,3 @@
-using System;
-
 namespace LinuxLudo.API.Domain.Response
 {
     public class SuccessResponse
@@ -17,7 +15,6 @@ namespace LinuxLudo.API.Domain.Response
         {
             return new("Success", Code, this);
         }
-
         public BaseResponse Respond(object data)
         {
             return new("Success", Code, data);

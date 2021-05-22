@@ -19,5 +19,9 @@ A multiplayer Ludo game developed by **Adam Brodin** and **Leo Rönnebro**.
 * ASP.NET Core
 * PostgreSQL
 * Docker
+<<<<<<< HEAD
+* Tailwind CSS
+=======
 * Tailwind CSS
   
+>>>>>>> main

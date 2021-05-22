@@ -10,7 +10,6 @@ namespace LinuxLudo.API.Middleware
 {
     public class ExceptionHandlerMiddleware
     {
-
         private readonly RequestDelegate _next;
         private readonly ILoggerFactory _loggerFactory;
 

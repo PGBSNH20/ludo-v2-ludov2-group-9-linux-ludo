@@ -1,0 +1,40 @@
+@page "/Play"
+
+@inject NavigationManager NavManager; // Used to navigate in the webbrowser to different urls
+
+<!-- This page displays the actual Ludo game and can only be accessed when logged in/authenticated -->
+
+<AuthorizeView>
+    <!-- Logged in/game view -->
+    <Authorized>
+        <div class="game-container">
+            <div class="game-board">
+                <h1 class="username-text">Playing as @userName</h1>
+            </div>
+        </div>
+    </Authorized>
+</AuthorizeView>
+
+
+@code
+{
+    [CascadingParameter]
+    public Task<AuthenticationState> AuthState { get; set; }
+    private string userName;
+
+    // When the page is fully loaded/on startup
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthState;
+
+        // If the user is logged in
+        if (authState.User.Identity.IsAuthenticated)
+        {
+            userName = authState.User.Identity.Name;
+        }
+        else
+        {
+            NavManager.NavigateTo("/Login");
+        }
+    }
+}

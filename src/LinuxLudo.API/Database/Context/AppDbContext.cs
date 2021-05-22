@@ -5,7 +5,6 @@ using LinuxLudo.API.Domain.Models;
 using LinuxLudo.API.Domain.Models.Auth;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using Npgsql;
 
 namespace LinuxLudo.API.Database.Context
 {
@@ -16,7 +15,7 @@ namespace LinuxLudo.API.Database.Context
         public DbSet<PlayerStats> PlayerStats { get; set; }
 
         public AppDbContext(DbContextOptions<AppDbContext> opts) : base(opts)
-        {}
+        { }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -26,7 +25,6 @@ namespace LinuxLudo.API.Database.Context
             builder.ApplyConfiguration(new GameConfiguration());
             builder.ApplyConfiguration(new PlayerStatsConfiguration());
             builder.ApplyConfiguration(new GamePlayerPivotConfiguration());
-
         }
     }
 }

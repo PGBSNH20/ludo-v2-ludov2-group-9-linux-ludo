@@ -1,0 +1,89 @@
+@page "/Login"
+
+@inject IAuthenticationService AuthService; // Used to talk to the API
+@inject NavigationManager NavManager; // Used to navigate in the webbrowser to different urls
+
+@if (showAuthError)
+{
+    <div class="alert alert-danger" role="alert">
+        <h1 style="color: black;">@errorMsg</h1>
+    </div>
+}
+<h1 class="title-text">Please login to continue</h1>
+
+<div class="login-container">
+    <EditForm Model="userModel" OnValidSubmit="LoginUser" class="card card-body bg-dark">
+        <DataAnnotationsValidator />
+
+        <!-- Creates two forms (username/password) and binds the data in them to the userModel variables -->
+        <div class="form-container">
+            <div class="form-group row">
+                <div class="col-md-10">
+                    <InputText id="username" class="form-control" @bind-Value="userModel.UserName"
+                        placeholder="Enter your username" />
+                    <div class="validation-message">
+                        <!-- Displays any error messages from the username form -->
+                        <ValidationMessage For="@(() => userModel.UserName)" />
+                    </div>
+                </div>
+                <div class="col-md-10">
+                    <InputText type="password" id="password" class="form-control" @bind-Value="userModel.Password"
+                        placeholder="Enter your password" />
+                    <div class="validation-message">
+                        <!-- Displays any error messages from the password form -->
+                        <ValidationMessage For="@(() => userModel.Password)" />
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-12">
+                    <!-- When the "submit" button type is clicked LoginUser is called (if valid form input) -->
+                    <button type="submit" class="btn btn-login">Login</button>
+                </div>
+                <div class="col-md-12">
+                    <!-- Redirects to /Register -->
+                    <button type="submit" class="btn btn-register" @onclick=RedirectRegister>Register</button>
+                </div>
+            </div>
+        </div>
+    </EditForm>
+</div>
+
+@code
+{
+    private AuthenticationUserModel userModel = new(); // The variable to store the form data (user/pass)
+    private bool showAuthError; // Whether or not to show errorMsg
+    private string errorMsg = ""; // This message shows up if the user has e.g entered invalid credentials
+    [CascadingParameter]
+    private Task<AuthenticationState> AuthState { get; set; }
+    private void RedirectRegister() => NavManager.NavigateTo("/Register");
+
+    // When the page has fully loaded
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthState;
+
+        // If the user already is logged in, redirect
+        if (authState.User.Identity.IsAuthenticated)
+        {
+            NavManager.NavigateTo("/Play");
+        }
+    }
+
+    private async Task LoginUser()
+    {
+        showAuthError = false;
+        var response = await AuthService.SignIn(userModel);
+
+        // If the login was successful
+        if (response is not null)
+        {
+            // Login was successful
+            NavManager.NavigateTo("/Play", true);
+        }
+
+        errorMsg = "Invalid credentials, try again!";
+        showAuthError = true;
+    }
+}

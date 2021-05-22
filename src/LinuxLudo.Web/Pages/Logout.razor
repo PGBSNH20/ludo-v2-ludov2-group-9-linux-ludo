@@ -1,0 +1,14 @@
+@page "/Logout"
+@inject NavigationManager NavManager
+@inject IAuthenticationService AuthService
+
+@code
+{
+    // When the page is fully loaded
+    protected override async Task OnInitializedAsync()
+    {
+        // Log out internally and then redirect to the start page
+        await AuthService.Logout();
+        NavManager.NavigateTo("/home", true);
+    }
+}

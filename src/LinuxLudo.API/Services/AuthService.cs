@@ -25,7 +25,6 @@ namespace LinuxLudo.API.Services
         public async Task<BaseResponse> SignInAsync(User user, string password)
         {
             var existing = await _userManager.FindByNameAsync(user.UserName);
-
             if (existing == null)
                 return new ErrorResponse("Auth failed.", 409, null).Respond();
 

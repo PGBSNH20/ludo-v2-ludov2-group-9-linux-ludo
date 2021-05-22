@@ -1,0 +1,50 @@
+@page "/Game/{Id:int}"
+@inject NavigationManager NavManager; // Used to navigate in the webbrowser to different urls
+
+<h1 class="title-text">Game (@Id) - Playing as @userName</h1>
+
+<AuthorizeView>
+    <div class="game-canvas">
+        <BECanvas Width="512" Height="512" @ref="_canvas"></BECanvas>
+    </div>
+</AuthorizeView>
+
+@code
+{
+    [Parameter]
+    public int Id { get; set; }
+    [CascadingParameter]
+    private Task<AuthenticationState> AuthState { get; set; }
+    private string userName;
+
+    // Canvas
+    protected BECanvasComponent _canvas;
+    private Canvas2DContext _context;
+    private GameStatus _gameStatus;
+
+    // When the page has fully loaded
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthState;
+
+        // If the user is logged in
+        if (authState.User.Identity.IsAuthenticated)
+        {
+            userName = authState.User.Identity.Name;
+        }
+        else
+        {
+            NavManager.NavigateTo("/Login");
+        }
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        // Creates a canvas
+        _context = await _canvas.CreateCanvas2DAsync();
+
+        // Draws a basic canvas background color
+        await _context.SetFillStyleAsync("gray");
+        await _context.FillRectAsync(0, 0, 512, 512);
+    }
+}

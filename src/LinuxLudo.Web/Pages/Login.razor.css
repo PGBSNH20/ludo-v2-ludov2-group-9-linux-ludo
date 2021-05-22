@@ -1,0 +1,64 @@
+.title-text
+{
+    margin-top: 5%;
+    margin-left: 35%;
+    margin-right: 35%;
+    background-color: #008000;
+    color: white;
+    margin-top: 3%;
+    font-size: 34px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.col-form-label
+{
+    font-weight: bold;
+}
+
+.validation-message
+{
+    color: red
+}
+
+.col-md-10{
+    margin-top: 5px;
+}
+
+.row
+{
+    padding: 10px;
+}
+
+.form-container
+{
+    padding: 10px;
+    margin: 10px;
+}
+
+.login-container
+{
+    padding: 5px;
+    margin-left: 35%;
+    margin-right: 35%;
+    background-color: #343d52;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-login
+{
+    background-color: #008000;
+    color: white;
+    width: 100%
+}
+
+.btn-register
+{
+    background-color: #a52a2a;
+    color: white;
+    width: 100%;
+    margin-top: 10px;
+}

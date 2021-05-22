@@ -21,7 +21,6 @@ namespace LinuxLudo.API.Services
             _jwtSettings = jwtSettings;
         }
 
-
         public string GenerateJwt(User user, IList<string> roles)
         {
             var claims = new List<Claim>

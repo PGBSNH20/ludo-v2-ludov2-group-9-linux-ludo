@@ -1,38 +1,77 @@
-﻿<div class="top-row pl-4 navbar navbar-dark">
-    <a class="navbar-brand" href="">LinuxLudo.Web</a>
-    <button class="navbar-toggler" @onclick="ToggleNavMenu">
-        <span class="navbar-toggler-icon"></span>
-    </button>
-</div>
+﻿@inject IAuthenticationService AuthService
 
-<div class="@NavMenuCssClass" @onclick="ToggleNavMenu">
-    <ul class="nav flex-column">
-        <li class="nav-item px-3">
-            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                <span class="oi oi-home" aria-hidden="true"></span> Home
-            </NavLink>
-        </li>
-        <li class="nav-item px-3">
-            <NavLink class="nav-link" href="counter">
-                <span class="oi oi-plus" aria-hidden="true"></span> Counter
-            </NavLink>
-        </li>
-        <li class="nav-item px-3">
-            <NavLink class="nav-link" href="fetchdata">
-                <span class="oi oi-list-rich" aria-hidden="true"></span> Fetch data
-            </NavLink>
-        </li>
+<div id="heading">
+    <h1 class="navbar-title">
+        <img src="Images/logo.png">LinuxLudo
+    </h1>
+</div>
+<AuthorizeView>
+    <!-- Displayed only when logged IN -->
+    <Authorized>
+        <div class="navbar-name-section">
+            <h1 class="navbar-name-text">Playing as @userName</h1>
+        </div>
+    </Authorized>
+</AuthorizeView>
+
+<div class="nav-menu">
+    <!-- Flexbox to put the text to the left and menu button to the right -->
+    <div class="flex items-center justify-center p-3">
+
+        <!-- Navbar menu button -->
+        <button @onclick="ToggleMenu" class="md:hidden">
+            <!-- Button icon -->
+            <svg class="h-6 w-6 fill-current" viewBox="0 0 24 24">
+                <path fill-rule="evenodd"
+                    d="M4 5h16a1 1 0 0 1 0 2H4a1 1 0 1 1 0-2zm0 6h16a1 1 0 0 1 0 2H4a1 1 0 0 1 0-2zm0 6h16a1 1 0 0 1 0 2H4a1 1 0 0 1 0-2z" />
+            </svg>
+        </button>
+    </div>
+
+    @{
+        <!-- Determines what to put as the list class/whether or not to show/hide the list -->
+        var menuVisibleStr = menuVisible ? "" : "hidden";
+    }
+
+    <!-- A list to display the menu options, flex-col makes them stack on eachother as opposed to left-right -->
+    <!-- The list is only displayed if menuVisible is true -->
+    <ul
+        class="@($"flex flex-col {menuVisibleStr} bg-gray-700 px-4 py-2 md:flex md:flex-row md:bg-transparent items-center")">
+        <NavLink class="md:pl-4 md:pr-4 md:py-1 hover:bg-gray-700" href="/Home">Home</NavLink>
+        <NavLink class="md:px-4 md:py-1 hover:bg-gray-700" href="/Play">Play</NavLink>
+
+        <AuthorizeView>
+            <!-- Displayed only when logged IN -->
+            <Authorized>
+                <NavLink class="md:px-4 md:py-1 hover:bg-gray-700" href="/Logout">Logout</NavLink>
+            </Authorized>
+
+            <!-- Displayed only when logged OUT -->
+            <NotAuthorized>
+                <NavLink class="md:px-4 md:py-1 hover:bg-gray-700" href="/Login">Login</NavLink>
+            </NotAuthorized>
+        </AuthorizeView>
+
     </ul>
 </div>
 
-@code {
-    private bool collapseNavMenu = true;
+@code
+{
+    private bool menuVisible;
+    private void ToggleMenu() => menuVisible = !menuVisible;
+    [CascadingParameter]
+    public Task<AuthenticationState> AuthState { get; set; }
+    private string userName;
 
-    private string NavMenuCssClass => collapseNavMenu ? "collapse" : null;
-
-    private void ToggleNavMenu()
+    // When the page has fully loaded
+    protected override async Task OnInitializedAsync()
     {
-        collapseNavMenu = !collapseNavMenu;
-    }
+        var authState = await AuthState;
 
+        // If the user is succesfully authenticated
+        if (authState.User.Identity.IsAuthenticated)
+        {
+            userName = authState.User.Identity.Name;
+        }
+    }
 }
