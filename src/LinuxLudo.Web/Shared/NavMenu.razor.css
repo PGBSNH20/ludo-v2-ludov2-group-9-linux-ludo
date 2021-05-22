@@ -6,7 +6,7 @@
 
 #heading
 {
-    background-color: purple;
+    background-color: #9932CC;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -15,7 +15,7 @@
 .nav-menu
 {
     color: white;
-    background-color: purple;
+    background-color: #9932CC;
     display: flex;
     align-items: center;
     justify-content: center;

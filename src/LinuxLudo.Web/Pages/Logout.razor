@@ -9,6 +9,6 @@
     {
         // Log out internally and then redirect to the start page
         await AuthService.Logout();
-        NavManager.NavigateTo("/home");
+        NavManager.NavigateTo("/home", true);
     }
 }
