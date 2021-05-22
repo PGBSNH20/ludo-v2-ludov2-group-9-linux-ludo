@@ -222,6 +222,8 @@ h1[b-m53w0cp7ne] {
 /* /Shared/NavMenu.razor.rz.scp.css */
 .navbar-title[b-2zu9a2f2m5]
 {
+    margin-left: 15px;
+    margin-top: 5px;
     color: white;
     font-size: 28px;
 }
