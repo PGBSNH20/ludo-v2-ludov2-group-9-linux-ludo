@@ -24,6 +24,7 @@
     private GameStatus _gameStatus;
     private GameBoard _board;
     private int _tileSize => (int)_canvas.Width / 16;
+    private int _tokenSize => (int)_canvas.Width / 48;
     private const int _boardSize = 512;
     private int _topOffset => _tileSize * 2;
 
@@ -56,7 +57,14 @@
         _context = await _canvas.CreateCanvas2DAsync();
 
         // Fetches the current gamestatus BEFORE rendering anything
-        //_gameStatus = _gameService.GetGameStatus().Result;
+        //_gameStatus = _gameService.GetGameStatus().Result; TODO FETCH FROM API
+
+        // CREATE SIMULATED GAMESTATUS FOR TESTING ONLY!!!!!!!!!!!!!!!!!!!!!
+        _gameStatus = new GameStatus();
+        _gameStatus.Players = new List<Player>()
+{
+new Player() {Color = "#800080", Tokens = new List<GameToken>() {new GameToken() {TilePos = 0}}}
+};
 
         // Draws a basic canvas background color
         await _context.SetFillStyleAsync("#808080");
@@ -106,22 +114,28 @@
             await _context.SetFillStyleAsync(color);
             await _context.FillRectAsync(GetTilePos(i, xPos: true), GetTilePos(i, xPos: false),
             _tileSize, _tileSize);
-
-            // Draws a number on each tile -- TODO REMOVE IN PRODUCTION
-            await _context.SetStrokeStyleAsync("#000000");
-            await _context.SetFontAsync("16px serif");
-            await _context.StrokeTextAsync((i + 1).ToString(), (tile.XPos * _tileSize) + _tileSize / 1.5, ((tile.YPos * _tileSize) +
-            _tileSize / 4) +
-            _topOffset);
         }
     }
 
     protected async void DrawPlayers()
     {
-        /*foreach (Player player in _gameStatus.Players)
+        if (_gameStatus.Players == null || _gameStatus.Players.Count <= 0)
         {
+            currentStatus = "No players in game!";
+            return;
+        }
 
-        }*/
+        foreach (Player player in _gameStatus.Players)
+        {
+            // Set the drawing color to match the players tokens
+            await _context.SetFillStyleAsync(player.Color);
+
+            foreach (GameToken token in player.Tokens)
+            {
+                await _context.FillRectAsync(GetTilePos(token.TilePos, xPos: true) + _tokenSize / 8, GetTilePos(token.TilePos, xPos:
+                false) + _tokenSize / 8, _tokenSize, _tokenSize);
+            }
+        }
     }
 
     private double GetTilePos(int tileIndex, bool xPos)
