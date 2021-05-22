@@ -55,10 +55,9 @@
             userName = authState.User.Identity.Name;
 
             var windowDim = await browserService.GetDimensions();
-            _canvasWidth = windowDim.Width >= _minWidthResize && windowDim.Height >= _minHeightResize ? (int)(windowDim.Height /
-            1.75) :
-            (int)(windowDim.Width * 0.8);
-            _canvasHeight = Math.Min((int)(_canvasWidth + _topOffset), (int)(windowDim.Height * 0.8));
+            _canvasWidth = windowDim.Width >= _minWidthResize && windowDim.Height >= _minHeightResize ? (int)(windowDim.Width *
+            0.3) : windowDim.Width;
+            _canvasHeight = (int)(_canvasWidth * 1.1);
 
             // Initialize a new GameService to communicate with API
             _gameService = new GameService(@Id, userName);
