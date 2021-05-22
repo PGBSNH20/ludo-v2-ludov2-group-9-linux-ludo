@@ -10,7 +10,6 @@ namespace LinuxLudo.API.Middleware
 {
     public class ExceptionHandlerMiddleware
     {
-        
         private readonly RequestDelegate _next;
         private readonly ILoggerFactory _loggerFactory;
 
@@ -25,7 +24,8 @@ namespace LinuxLudo.API.Middleware
             var logger = _loggerFactory.CreateLogger<ExceptionHandlerMiddleware>();
             try
             {
-                await _next(ctx); }
+                await _next(ctx);
+            }
             catch (Exception ex)
             {
                 logger.LogError(ex, $"Error: {ex.Message}");

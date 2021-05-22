@@ -2,7 +2,6 @@ using System.Text;
 using LinuxLudo.API.Settings;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 
@@ -38,7 +37,6 @@ namespace LinuxLudo.API.Extensions
         {
             app.UseAuthentication();
             app.UseAuthorization();
-            
             return app;
         }
     }

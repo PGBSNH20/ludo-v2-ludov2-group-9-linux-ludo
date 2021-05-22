@@ -3,19 +3,20 @@ using System;
 using LinuxLudo.API.Database.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace LinuxLudo.API.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210520212016_LudoGameDatabaseLayout")]
+    partial class LudoGameDatabaseLayout
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasPostgresEnum(null, "game_states", new[] { "waiting", "started", "ended" })
                 .HasPostgresExtension("uuid-ossp")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63)
                 .HasAnnotation("ProductVersion", "5.0.6")
@@ -120,6 +121,11 @@ namespace LinuxLudo.API.Migrations
                         .HasColumnType("uuid")
                         .HasDefaultValueSql("uuid_generate_v4()");
 
+                    b.Property<bool>("Completed")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValue(false);
+
                     b.Property<int>("MaxPlayers")
                         .HasMaxLength(1)
                         .HasColumnType("integer");
@@ -127,12 +133,6 @@ namespace LinuxLudo.API.Migrations
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("text");
-
-                    b.Property<string>("State")
-                        .IsRequired()
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("text")
-                        .HasDefaultValue("Waiting");
 
                     b.HasKey("Id");
 
@@ -154,8 +154,7 @@ namespace LinuxLudo.API.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasAlternateKey("GameId", "PlayerId")
-                        .HasName("AlternateKey_GameId_PlayerId");
+                    b.HasIndex("GameId");
 
                     b.HasIndex("PlayerId");
 
