@@ -20,7 +20,9 @@
     // Canvas
     protected BECanvasComponent _canvas;
     private Canvas2DContext _context;
-    private GameStatus _gameStatus;
+    private GameService _gameService;
+    private GameBoard _board;
+    private int _tileSize => (int)_canvas.Width / 16;
 
     // When the page has fully loaded
     protected override async Task OnInitializedAsync()
@@ -36,6 +38,10 @@
         {
             NavManager.NavigateTo("/Login");
         }
+
+        // Initialize a new GameService to communicate with API
+        _gameService = new GameService(@Id);
+        _board = new GameBoard();
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -43,8 +49,45 @@
         // Creates a canvas
         _context = await _canvas.CreateCanvas2DAsync();
 
+
         // Draws a basic canvas background color
-        await _context.SetFillStyleAsync("gray");
+        await _context.SetFillStyleAsync("#808080");
         await _context.FillRectAsync(0, 0, 512, 512);
+
+        DrawBoardLayout();
+    }
+
+    protected async void DrawBoardLayout()
+    {
+        for (int i = 0; i < _board.Tiles.Count; i++)
+        {
+            GameTile tile = _board.Tiles[i];
+
+            String color = "#FFFFFF"; // White color - tile for all tokens
+            switch (tile.TileColor)
+            {
+                case GameTile.GameColor.Red:
+                    color = "#FF0000";
+                    break;
+                case GameTile.GameColor.Green:
+                    color = "#00FF00";
+                    break;
+                case GameTile.GameColor.Blue:
+                    color = "#0000FF";
+                    break;
+                case GameTile.GameColor.Yellow:
+                    color = "#FFFF00";
+                    break;
+            }
+
+            await _context.SetFillStyleAsync(color);
+            await _context.FillRectAsync(tile.XPos * _tileSize, tile.YPos * _tileSize, _tileSize, _tileSize);
+
+            // Draws a number on each tile
+            await _context.SetFillStyleAsync("#000000");
+            await _context.SetFontAsync("16px serif");
+            await _context.StrokeTextAsync((i + 1).ToString(), (tile.XPos * _tileSize) + _tileSize / 3, (tile.YPos * _tileSize) +
+            _tileSize / 1.5, _tileSize / 2);
+        }
     }
 }
