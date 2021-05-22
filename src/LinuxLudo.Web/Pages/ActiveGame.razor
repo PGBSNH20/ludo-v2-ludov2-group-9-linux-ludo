@@ -56,8 +56,8 @@
 
             var windowDim = await browserService.GetDimensions();
             _canvasWidth = windowDim.Width >= _minWidthResize && windowDim.Height >= _minHeightResize ? (int)(windowDim.Width *
-            0.3) : windowDim.Width;
-            _canvasHeight = (int)(_canvasWidth * 1.1);
+            0.3) : (int)(windowDim.Width * 0.9);
+            _canvasHeight = (int)(_canvasWidth * 1.15);
 
             // Initialize a new GameService to communicate with API
             _gameService = new GameService(@Id, userName);
