@@ -56,7 +56,7 @@ new GameToken() {TilePos= 0},
 new GameToken() { TilePos = 0 },
 }}};
 
-            return TESTING_STATUS;
+            return await Task.FromResult(TESTING_STATUS);
 
             // Form data
             var body = new

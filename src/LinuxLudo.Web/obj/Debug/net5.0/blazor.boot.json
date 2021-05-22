@@ -205,11 +205,11 @@
       "mscorlib.dll": "sha256-jU85t8bOVm2PPQRkPJ1kS0nCJIyBjjlet2IR1d9m+RI=",
       "netstandard.dll": "sha256-B6gmXEMfYgOuaOR1g1cGHLn2kDlZYAah4K2XNUZbTs4=",
       "System.Private.CoreLib.dll": "sha256-XY0bl1U8F\/iSbQzkmIHM8UtE\/R9VntZoy\/kMbvuMjTA=",
-      "LinuxLudo.Web.dll": "sha256-Zp2RoSnKrw7R7+YVlwgcd0FSSAWSNe85B6XmYD\/VbBg="
+      "LinuxLudo.Web.dll": "sha256-q+UbiwNN9qfT6BKE+4NWKPJZpSftZOXiHIz+Mv1djng="
     },
     "lazyAssembly": null,
     "pdb": {
-      "LinuxLudo.Web.pdb": "sha256-MFUE4yYCjSDyWEyijZljKP5wCyDsKtxjPNNch\/yVquw="
+      "LinuxLudo.Web.pdb": "sha256-KhgVgHtiaxYWPhocnplRNd9wrtr8D53ScOMMalX2i\/8="
     },
     "runtime": {
       "dotnet.timezones.blat": "sha256-OEDZp6noMH3AdT8qd0zd7ZXzy2CsPQ+CZeQnYmRoVWo=",

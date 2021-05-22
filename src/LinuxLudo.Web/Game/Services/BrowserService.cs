@@ -6,7 +6,6 @@ namespace LinuxLudo.Web.Game.Services
     public class BrowserService
     {
         private readonly IJSRuntime _js;
-
         public BrowserService(IJSRuntime js)
         {
             _js = js;
@@ -16,7 +15,6 @@ namespace LinuxLudo.Web.Game.Services
         {
             return await _js.InvokeAsync<BrowserDimension>("getDimensions");
         }
-
     }
 
     public class BrowserDimension

@@ -35,13 +35,14 @@
     private int _boardSize => (int)_canvasWidth;
     private int _topOffset => _tileSize * 2;
     private const int _minWidthResize = 1600;
+    private const int _minHeightResize = 720;
     private string canvasHtmlString => isPlayerTurn ? "" : "hidden";
 
     // Game
     private string currentStatus = "Waiting for players...";
 
     // This is true if it's the client-side player's turn
-    private bool isPlayerTurn = true;// TODO SET ISPLAYERTURN FALSE -- ONLY FOR TESTING
+    private bool isPlayerTurn = true; // TODO SET ISPLAYERTURN FALSE -- ONLY FOR TESTING
 
     // When the page has fully loaded
     protected override async Task OnInitializedAsync()
@@ -54,9 +55,10 @@
             userName = authState.User.Identity.Name;
 
             var windowDim = await browserService.GetDimensions();
-
-            _canvasWidth = windowDim.Width >= _minWidthResize ? windowDim.Height / 2 : windowDim.Width;
-            _canvasHeight = (int)(_canvasWidth + _topOffset);
+            _canvasWidth = windowDim.Width >= _minWidthResize && windowDim.Height >= _minHeightResize ? (int)(windowDim.Height /
+            1.75) :
+            (int)(windowDim.Width * 0.8);
+            _canvasHeight = Math.Min((int)(_canvasWidth + _topOffset), (int)(windowDim.Height * 0.8));
 
             // Initialize a new GameService to communicate with API
             _gameService = new GameService(@Id, userName);
@@ -73,68 +75,79 @@
         // Creates a canvas
         _context = await _canvas.CreateCanvas2DAsync();
 
-        // Fetches the current gamestatus BEFORE rendering anything
-        _gameStatus = _gameService.GetGameStatus().Result;
-
         // Draws a basic canvas background color
         await _context.SetFillStyleAsync("#808080");
-        await _context.FillRectAsync(0, 0, _canvas.Width, _canvas.Height);
+        Console.WriteLine("Current color: " + _context.FillStyle.ToString());
+        await _context.FillRectAsync(0, 0, _canvasWidth, _canvasHeight);
 
-        DrawGameOverlay();
-        DrawBoardLayout();
-        DrawPlayers();
+        // Fetches the current gamestatus BEFORE rendering anything
+        _gameStatus = await _gameService.GetGameStatus();
+        Console.WriteLine("Current color 2: " + _context.FillStyle.ToString());
+
+        //await DrawGameOverlay();
+        Console.WriteLine("Current color 3: " + _context.FillStyle.ToString());
+        await DrawBoardLayout();
+        Console.WriteLine("Current color 4: " + _context.FillStyle.ToString());
+        //await DrawPlayers();
     }
 
-    protected async void DrawGameOverlay()
+    protected async Task DrawGameOverlay()
     {
-        await _context.SetStrokeStyleAsync("#000000");
+        await _context.SetStrokeStyleAsync("#FFFFFF");
         await _context.SetFontAsync((_canvasWidth / 25).ToString() + "px serif");
 
         // Draw a status text, starting at the top-left tile (with a max width of the first row as to not overlap with bases)
         await _context.StrokeTextAsync(currentStatus, (_board.Tiles[0].XPos * _tileSize) + _tileSize, _tileSize + _tileSize / 2,
-        _tileSize *
-        7);
+        _tileSize * 7);
     }
 
-    protected async void DrawBoardLayout()
+    protected async Task DrawBoardLayout()
     {
         for (int i = 0; i < _board.Tiles.Count; i++)
         {
-            GameTile tile = _board.Tiles[i]; String color = "#FFFFFF"; // White color -tile for all tokens,
+            GameTile tile = _board.Tiles[i];
+            String color = "#FFFFFF"; // White tile color for all tokens,
             switch (tile.TileColor)
             {
-                case GameTile.GameColor.Red: color = "#FF0000"; break;
+                case GameTile.GameColor.Red:
+                    color = "#FF0000";
+                    break;
                 case
             GameTile.GameColor.Green:
-                    color = "#00FF00"; break;
-                case GameTile.GameColor.Blue: color = "#0000FF"; break;
+                    color = "#00FF00";
+                    break;
+                case GameTile.GameColor.Blue:
+                    color = "#0000FF";
+                    break;
                 case
             GameTile.GameColor.Yellow:
-                    color = "#FFFF00"; break;
+                    color = "#FFFF00";
+                    break;
             }
 
             // Draws the actual tile await await
-            _context.SetFillStyleAsync(color); await _context.FillRectAsync(GetTilePos(i, xPos: true), GetTilePos(i, xPos:
-            false), _tileSize, _tileSize);
+            await _context.SetFillStyleAsync(color);
+            await _context.FillRectAsync(GetTilePos(i, xPos: true), GetTilePos(i, xPos: false), _tileSize, _tileSize);
         }
     }
-    protected async void DrawPlayers()
+    protected async Task DrawPlayers()
     {
         if (_gameStatus.Players == null || _gameStatus.Players.Count <= 0)
         {
             currentStatus = "No players in game!";
             return;
         }
+
         foreach (Player player in _gameStatus.Players)
         {
             // Set the drawing color to match the players tokens await await
-            _context.SetFillStyleAsync(player.Color); List<GameToken> playerTokens = player.Tokens;
+            await _context.SetFillStyleAsync(player.Color);
+            List<GameToken> playerTokens = player.Tokens;
 
             // Draws each token, splits up the space if more than one is on the same tile
             for (int i = 0; i < playerTokens.Count; i++)
             {
-                int tokensOnSameTile = playerTokens.Count(t => t.TilePos ==
-                playerTokens[i].TilePos);
+                int tokensOnSameTile = playerTokens.Count(t => t.TilePos == playerTokens[i].TilePos);
                 if (tokensOnSameTile > 1)
                 {
                     int index = 0;
@@ -177,11 +190,5 @@
         {
             await _gameService.RollDice();
         }
-    }
-
-    public class WindowDimension
-    {
-        public int Width { get; set; }
-        public int Height { get; set; }
     }
 }
