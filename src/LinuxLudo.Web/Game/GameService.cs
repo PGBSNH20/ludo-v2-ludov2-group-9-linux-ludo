@@ -37,7 +37,7 @@ namespace LinuxLudo.Web.Game
             var response = JsonSerializer.Deserialize<UserResponseModel>(authContent, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
             var amountOfPlayersInGame = GetGameStatus().Result.Players.Count;
 
-            return !response.InGame && amountOfPlayersInGame < 4;
+            return await Task.FromResult(!response.InGame && amountOfPlayersInGame < 4);
         }
 
         public async Task<GameStatus> GetGameStatus()

@@ -82,13 +82,19 @@
             }
 
             await _context.SetFillStyleAsync(color);
-            await _context.FillRectAsync(tile.XPos * _tileSize, tile.YPos * _tileSize, _tileSize, _tileSize);
+            await _context.FillRectAsync((tile.XPos * _tileSize) + _tileSize / 2, (tile.YPos * _tileSize) - _tileSize / 2,
+            _tileSize, _tileSize);
 
             // Draws a number on each tile
             await _context.SetFillStyleAsync("#000000");
             await _context.SetFontAsync("16px serif");
-            await _context.StrokeTextAsync((i + 1).ToString(), (tile.XPos * _tileSize) + _tileSize / 4, (tile.YPos * _tileSize) +
-            _tileSize / 1.5, _tileSize / 2);
+            // await _context.StrokeTextAsync((i + 1).ToString(), (tile.XPos * _tileSize) + _tileSize / 4, (tile.YPos * _tileSize) +
+            //_tileSize / 1.5, _tileSize / 2);
+
+            await _context.StrokeTextAsync((i + 1).ToString(), ((tile.XPos * _tileSize) + _tileSize / 2) + _tileSize / 4, (tile.YPos
+            * _tileSize) +
+            _tileSize / 4,
+            _tileSize / 2);
         }
     }
 
