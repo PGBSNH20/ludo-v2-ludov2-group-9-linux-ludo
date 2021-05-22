@@ -1,3 +1,28 @@
+.player-controls
+{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.roll-button
+{
+    width: 10em;
+    height: 5em;
+    background-color: green;
+    color:white;
+    float:left;
+}
+
+.token-button
+{
+    float:left;
+    width: 10em;
+    height: 5em;
+    background-color: brown;
+    color:white;
+}
+
 .title-text
 {
     font-size: 24px;

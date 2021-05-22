@@ -116,20 +116,27 @@ using LinuxLudo.Web.Game;
 #nullable disable
 #nullable restore
 #line 16 "C:\Users\adam-\Documents\Workspace\ludo-v2-ludov2-group-9-linux-ludo\src\LinuxLudo.Web\_Imports.razor"
-using Blazor.Extensions;
+using LinuxLudo.Web.Game.Services;
 
 #line default
 #line hidden
 #nullable disable
 #nullable restore
 #line 17 "C:\Users\adam-\Documents\Workspace\ludo-v2-ludov2-group-9-linux-ludo\src\LinuxLudo.Web\_Imports.razor"
-using Blazor.Extensions.Canvas.Canvas2D;
+using Blazor.Extensions;
 
 #line default
 #line hidden
 #nullable disable
 #nullable restore
 #line 18 "C:\Users\adam-\Documents\Workspace\ludo-v2-ludov2-group-9-linux-ludo\src\LinuxLudo.Web\_Imports.razor"
+using Blazor.Extensions.Canvas.Canvas2D;
+
+#line default
+#line hidden
+#nullable disable
+#nullable restore
+#line 19 "C:\Users\adam-\Documents\Workspace\ludo-v2-ludov2-group-9-linux-ludo\src\LinuxLudo.Web\_Imports.razor"
 using Blazor.Extensions.Canvas;
 
 #line default

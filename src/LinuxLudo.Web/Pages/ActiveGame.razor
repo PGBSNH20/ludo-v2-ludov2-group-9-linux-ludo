@@ -1,11 +1,17 @@
 @page "/Game/{Id:int}"
 @inject NavigationManager NavManager; // Used to navigate in the webbrowser to different urls
+@inject BrowserService browserService;
 
 <h1 class="title-text"><b>Game @Id</b></h1>
 
 <AuthorizeView>
     <div class="game-canvas">
-        <BECanvas Width="512" Height="576" @ref="_canvas"></BECanvas>
+        <BECanvas Width="@_canvasWidth" Height="@_canvasHeight" @ref="_canvas"></BECanvas>
+    </div>
+
+    <div class="player-controls @canvasHtmlString">
+        <button class="roll-button">Roll dice</button>
+        <button class="token-button">Bring out token</button>
     </div>
 </AuthorizeView>
 
@@ -23,13 +29,19 @@
     private GameService _gameService;
     private GameStatus _gameStatus;
     private GameBoard _board;
-    private int _tileSize => (int)_canvas.Width / 16;
-    private int _tokenSize => (int)_canvas.Width / 18;
-    private const int _boardSize = 512;
+    private int _canvasWidth, _canvasHeight;
+    private int _tileSize => (int)_canvasWidth / 16;
+    private int _tokenSize => (int)_canvasWidth / 18;
+    private int _boardSize => (int)_canvasWidth;
     private int _topOffset => _tileSize * 2;
+    private const int _minWidthResize = 1600;
+    private string canvasHtmlString => isPlayerTurn ? "" : "hidden";
 
     // Game
     private string currentStatus = "Waiting for players...";
+
+    // This is true if it's the client-side player's turn
+    private bool isPlayerTurn = true;// TODO SET ISPLAYERTURN FALSE -- ONLY FOR TESTING
 
     // When the page has fully loaded
     protected override async Task OnInitializedAsync()
@@ -40,15 +52,20 @@
         if (authState.User.Identity.IsAuthenticated)
         {
             userName = authState.User.Identity.Name;
+
+            var windowDim = await browserService.GetDimensions();
+
+            _canvasWidth = windowDim.Width >= _minWidthResize ? windowDim.Height / 2 : windowDim.Width;
+            _canvasHeight = (int)(_canvasWidth + _topOffset);
+
+            // Initialize a new GameService to communicate with API
+            _gameService = new GameService(@Id, userName);
+            _board = new GameBoard();
         }
         else
         {
             NavManager.NavigateTo("/Login");
         }
-
-        // Initialize a new GameService to communicate with API
-        _gameService = new GameService(@Id);
-        _board = new GameBoard();
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -57,18 +74,7 @@
         _context = await _canvas.CreateCanvas2DAsync();
 
         // Fetches the current gamestatus BEFORE rendering anything
-        //_gameStatus = _gameService.GetGameStatus().Result; TODO FETCH FROM API
-
-        // CREATE SIMULATED GAMESTATUS FOR TESTING ONLY!!!!!!!!!!!!!!!!!!!!!
-        _gameStatus = new GameStatus();
-        _gameStatus.Players = new List<Player>()
-{
-new Player() {Color = "#800080", Tokens = new List<GameToken>() {
-new GameToken() {TilePos= 0},
-new GameToken() {TilePos= 0},
-new GameToken() {TilePos= 0},
-new GameToken() { TilePos = 0 },
-}}};
+        _gameStatus = _gameService.GetGameStatus().Result;
 
         // Draws a basic canvas background color
         await _context.SetFillStyleAsync("#808080");
@@ -82,7 +88,7 @@ new GameToken() { TilePos = 0 },
     protected async void DrawGameOverlay()
     {
         await _context.SetStrokeStyleAsync("#000000");
-        await _context.SetFontAsync("14px serif");
+        await _context.SetFontAsync((_canvasWidth / 25).ToString() + "px serif");
 
         // Draw a status text, starting at the top-left tile (with a max width of the first row as to not overlap with bases)
         await _context.StrokeTextAsync(currentStatus, (_board.Tiles[0].XPos * _tileSize) + _tileSize, _tileSize + _tileSize / 2,
@@ -94,18 +100,22 @@ new GameToken() { TilePos = 0 },
     {
         for (int i = 0; i < _board.Tiles.Count; i++)
         {
-            GameTile tile = _board.Tiles[i]; String color = "#FFFFFF"; // White color - tile for all tokens,
+            GameTile tile = _board.Tiles[i]; String color = "#FFFFFF"; // White color -tile for all tokens,
             switch (tile.TileColor)
             {
-                case GameTile.GameColor.Red:
-                    color = "#FF0000"; break;
-                case GameTile.GameColor.Green: color = "#00FF00"; break;
-                case GameTile.GameColor.Blue:
-                    color = "#0000FF"; break;
-                case GameTile.GameColor.Yellow: color = "#FFFF00"; break;
-            } // Draws the actual tile await
-            await _context.SetFillStyleAsync(color);
-            await _context.FillRectAsync(GetTilePos(i, xPos: true), GetTilePos(i, xPos: false), _tileSize, _tileSize);
+                case GameTile.GameColor.Red: color = "#FF0000"; break;
+                case
+            GameTile.GameColor.Green:
+                    color = "#00FF00"; break;
+                case GameTile.GameColor.Blue: color = "#0000FF"; break;
+                case
+            GameTile.GameColor.Yellow:
+                    color = "#FFFF00"; break;
+            }
+
+            // Draws the actual tile await await
+            _context.SetFillStyleAsync(color); await _context.FillRectAsync(GetTilePos(i, xPos: true), GetTilePos(i, xPos:
+            false), _tileSize, _tileSize);
         }
     }
     protected async void DrawPlayers()
@@ -115,11 +125,10 @@ new GameToken() { TilePos = 0 },
             currentStatus = "No players in game!";
             return;
         }
-
         foreach (Player player in _gameStatus.Players)
         {
-            // Set the drawing color to match the players tokens await
-            await _context.SetFillStyleAsync(player.Color); List<GameToken> playerTokens = player.Tokens;
+            // Set the drawing color to match the players tokens await await
+            _context.SetFillStyleAsync(player.Color); List<GameToken> playerTokens = player.Tokens;
 
             // Draws each token, splits up the space if more than one is on the same tile
             for (int i = 0; i < playerTokens.Count; i++)
@@ -132,8 +141,8 @@ new GameToken() { TilePos = 0 },
                     foreach (GameToken token in playerTokens.Where(t => t.TilePos == playerTokens[i].TilePos))
                     {
                         await _context.FillRectAsync(
-                        GetTilePos(token.TilePos, xPos: true) + (_tokenSize / 8) + ((index == 1 || index == 3) ? _tokenSize / 2 : 0),
-                        GetTilePos(token.TilePos, xPos: false) + (_tokenSize / 8) + ((index == 1 || index == 2) ? _tokenSize / 2 : 0),
+                        GetTilePos(token.TilePos, xPos: true) + (_tokenSize / 8) + ((index == 1 || index == 3) ? (_tokenSize / 2) : 0),
+                        GetTilePos(token.TilePos, xPos: false) + (_tokenSize / 8) + ((index == 1 || index == 2) ? (_tokenSize / 2) : 0),
                         _tokenSize / tokensOnSameTile,
                         _tokenSize / tokensOnSameTile);
 
@@ -148,8 +157,6 @@ new GameToken() { TilePos = 0 },
                 }
             }
         }
-
-
     }
 
     private double GetTilePos(int tileIndex, bool xPos)
@@ -162,5 +169,19 @@ new GameToken() { TilePos = 0 },
         // Else return yPos
         return ((_board.Tiles[tileIndex].YPos * _tileSize) - _tileSize / 2) +
         _topOffset;
+    }
+
+    protected async void RollDice()
+    {
+        if (isPlayerTurn)
+        {
+            await _gameService.RollDice();
+        }
+    }
+
+    public class WindowDimension
+    {
+        public int Width { get; set; }
+        public int Height { get; set; }
     }
 }

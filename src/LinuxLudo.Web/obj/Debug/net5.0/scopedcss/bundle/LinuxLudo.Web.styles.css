@@ -1,4 +1,29 @@
 /* /Pages/ActiveGame.razor.rz.scp.css */
+.player-controls[b-i9c2lkf1j2]
+{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.roll-button[b-i9c2lkf1j2]
+{
+    width: 10em;
+    height: 5em;
+    background-color: green;
+    color:white;
+    float:left;
+}
+
+.token-button[b-i9c2lkf1j2]
+{
+    float:left;
+    width: 10em;
+    height: 5em;
+    background-color: brown;
+    color:white;
+}
+
 .title-text[b-i9c2lkf1j2]
 {
     font-size: 24px;
