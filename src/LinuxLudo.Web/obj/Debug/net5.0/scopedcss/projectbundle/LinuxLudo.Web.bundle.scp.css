@@ -41,6 +41,13 @@ h1[b-m53w0cp7ne] {
     justify-content: center;
 }
 /* /Pages/Login.razor.rz.scp.css */
+.error-msg[b-e0pvqm75em]
+{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
 .title-text[b-e0pvqm75em]
 {
     margin-top: 5%;

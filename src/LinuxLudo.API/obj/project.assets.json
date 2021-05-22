@@ -2515,24 +2515,30 @@
     ]
   },
   "packageFolders": {
-    "/home/leo/.nuget/packages/": {}
+    "C:\\Users\\adam-\\.nuget\\packages\\": {},
+    "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/home/leo/Projects/school/ludo-v2-ludov2-group-9-linux-ludo/src/LinuxLudo.API/LinuxLudo.API.csproj",
+      "projectUniqueName": "C:\\Users\\adam-\\Documents\\Workspace\\ludo-v2-ludov2-group-9-linux-ludo\\src\\LinuxLudo.Api\\LinuxLudo.API.csproj",
       "projectName": "LinuxLudo.API",
-      "projectPath": "/home/leo/Projects/school/ludo-v2-ludov2-group-9-linux-ludo/src/LinuxLudo.API/LinuxLudo.API.csproj",
-      "packagesPath": "/home/leo/.nuget/packages/",
-      "outputPath": "/home/leo/Projects/school/ludo-v2-ludov2-group-9-linux-ludo/src/LinuxLudo.API/obj/",
+      "projectPath": "C:\\Users\\adam-\\Documents\\Workspace\\ludo-v2-ludov2-group-9-linux-ludo\\src\\LinuxLudo.Api\\LinuxLudo.API.csproj",
+      "packagesPath": "C:\\Users\\adam-\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\adam-\\Documents\\Workspace\\ludo-v2-ludov2-group-9-linux-ludo\\src\\LinuxLudo.Api\\obj\\",
       "projectStyle": "PackageReference",
+      "fallbackFolders": [
+        "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
+      ],
       "configFilePaths": [
-        "/home/leo/.nuget/NuGet/NuGet.Config"
+        "C:\\Users\\adam-\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
         "net5.0"
       ],
       "sources": {
+        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
@@ -2608,12 +2614,6 @@
         ],
         "assetTargetFallback": true,
         "warn": true,
-        "downloadDependencies": [
-          {
-            "name": "Microsoft.AspNetCore.App.Ref",
-            "version": "[5.0.0, 5.0.0]"
-          }
-        ],
         "frameworkReferences": {
           "Microsoft.AspNetCore.App": {
             "privateAssets": "none"
@@ -2622,7 +2622,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/5.0.203/RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.203\\RuntimeIdentifierGraph.json"
       }
     }
   }
