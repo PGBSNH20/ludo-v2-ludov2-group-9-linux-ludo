@@ -31,7 +31,7 @@
     private GameBoard _board;
     private int _canvasWidth, _canvasHeight;
     private int _tileSize => (int)_canvasWidth / 16;
-    private int _tokenSize => (int)_canvasWidth / 18;
+    private int _tokenSize => (int)_canvasWidth / 16;
     private int _boardSize => (int)_canvasWidth;
     private int _topOffset => _tileSize * 2;
     private const int _minWidthResize = 1600;
@@ -77,18 +77,14 @@
 
         // Draws a basic canvas background color
         await _context.SetFillStyleAsync("#808080");
-        Console.WriteLine("Current color: " + _context.FillStyle.ToString());
         await _context.FillRectAsync(0, 0, _canvasWidth, _canvasHeight);
 
         // Fetches the current gamestatus BEFORE rendering anything
         _gameStatus = await _gameService.GetGameStatus();
-        Console.WriteLine("Current color 2: " + _context.FillStyle.ToString());
 
-        //await DrawGameOverlay();
-        Console.WriteLine("Current color 3: " + _context.FillStyle.ToString());
+        await DrawGameOverlay();
         await DrawBoardLayout();
-        Console.WriteLine("Current color 4: " + _context.FillStyle.ToString());
-        //await DrawPlayers();
+        await DrawPlayers();
     }
 
     protected async Task DrawGameOverlay()
@@ -154,19 +150,19 @@
                     foreach (GameToken token in playerTokens.Where(t => t.TilePos == playerTokens[i].TilePos))
                     {
                         await _context.FillRectAsync(
-                        GetTilePos(token.TilePos, xPos: true) + (_tokenSize / 8) + ((index == 1 || index == 3) ? (_tokenSize / 2) : 0),
-                        GetTilePos(token.TilePos, xPos: false) + (_tokenSize / 8) + ((index == 1 || index == 2) ? (_tokenSize / 2) : 0),
-                        _tokenSize / tokensOnSameTile,
-                        _tokenSize / tokensOnSameTile);
+                        GetTilePos(token.TilePos, xPos: true) + (_tokenSize / 24) + ((index == 1 || index == 3) ? (_tokenSize / 2) : 0),
+                        GetTilePos(token.TilePos, xPos: false) + (_tokenSize / 24) + ((index == 1 || index == 2) ? (_tokenSize / 2) : 0),
+                        (_tokenSize / tokensOnSameTile) + tokensOnSameTile,
+                        (_tokenSize / tokensOnSameTile) + tokensOnSameTile);
 
                         index++;
                     }
                 }
                 else
                 {
-                    await _context.FillRectAsync(GetTilePos(playerTokens[i].TilePos, xPos: true) + (_tokenSize / 8),
+                    await _context.FillRectAsync(GetTilePos(playerTokens[i].TilePos, xPos: true) + (_tokenSize / 24),
                     GetTilePos(playerTokens[i].TilePos, xPos:
-                    false) + (_tokenSize / 8), _tokenSize, _tokenSize);
+                    false) + (_tokenSize / 24), _tokenSize, _tokenSize);
                 }
             }
         }
