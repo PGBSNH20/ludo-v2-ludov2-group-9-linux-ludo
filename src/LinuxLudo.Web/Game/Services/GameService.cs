@@ -53,7 +53,13 @@ new Player() {Color = "#800080", Tokens = new List<GameToken>() {
 new GameToken() {TilePos= 0},
 new GameToken() {TilePos= 0},
 new GameToken() {TilePos= 0},
-new GameToken() { TilePos = 0 },
+new GameToken() { TilePos = 0 }}},
+
+new Player() {Color = "#FFFF00", Tokens = new List<GameToken>() {
+new GameToken() {TilePos= 18},
+new GameToken() {TilePos= 26},
+new GameToken() {TilePos= 45},
+new GameToken() { TilePos = 55 },
 }}};
 
             return await Task.FromResult(TESTING_STATUS);

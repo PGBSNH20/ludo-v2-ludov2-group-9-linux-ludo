@@ -76,8 +76,11 @@
         _context = await _canvas.CreateCanvas2DAsync();
 
         // Draws a basic canvas background color
-        await _context.SetFillStyleAsync("#808080");
-        await _context.FillRectAsync(0, 0, _canvasWidth, _canvasHeight);
+        if (firstRender)
+        {
+            await _context.SetFillStyleAsync("#808080");
+            await _context.FillRectAsync(0, 0, _canvasWidth, _canvasHeight);
+        }
 
         // Fetches the current gamestatus BEFORE rendering anything
         _gameStatus = await _gameService.GetGameStatus();
@@ -138,10 +141,10 @@
         {
             // Set the drawing color to match the players tokens await await
             await _context.SetFillStyleAsync(player.Color);
-            List<GameToken> playerTokens = player.Tokens;
             await _context.SetStrokeStyleAsync("#FFFFFF");
 
             // Draws each token, splits up the space if more than one is on the same tile
+            List<GameToken> playerTokens = player.Tokens;
             for (int i = 0; i < playerTokens.Count; i++)
             {
                 int tokensOnSameTile = playerTokens.Count(t => t.TilePos == playerTokens[i].TilePos);
