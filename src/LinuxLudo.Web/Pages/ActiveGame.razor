@@ -21,6 +21,7 @@
     protected BECanvasComponent _canvas;
     private Canvas2DContext _context;
     private GameService _gameService;
+    private GameStatus _gameStatus;
     private GameBoard _board;
     private int _tileSize => (int)_canvas.Width / 16;
     private const int _boardSize = 512;
@@ -54,6 +55,8 @@
         // Creates a canvas
         _context = await _canvas.CreateCanvas2DAsync();
 
+        // Fetches the current gamestatus BEFORE rendering anything
+        //_gameStatus = _gameService.GetGameStatus().Result;
 
         // Draws a basic canvas background color
         await _context.SetFillStyleAsync("#808080");
@@ -101,11 +104,10 @@
 
             // Draws the actual tile
             await _context.SetFillStyleAsync(color);
-            await _context.FillRectAsync((tile.XPos * _tileSize) + _tileSize / 2, ((tile.YPos * _tileSize) - _tileSize / 2) +
-            _topOffset,
+            await _context.FillRectAsync(GetTilePos(i, xPos: true), GetTilePos(i, xPos: false),
             _tileSize, _tileSize);
 
-            // Draws a number on each tile
+            // Draws a number on each tile -- TODO REMOVE IN PRODUCTION
             await _context.SetStrokeStyleAsync("#000000");
             await _context.SetFontAsync("16px serif");
             await _context.StrokeTextAsync((i + 1).ToString(), (tile.XPos * _tileSize) + _tileSize / 1.5, ((tile.YPos * _tileSize) +
@@ -116,5 +118,21 @@
 
     protected async void DrawPlayers()
     {
+        /*foreach (Player player in _gameStatus.Players)
+        {
+
+        }*/
+    }
+
+    private double GetTilePos(int tileIndex, bool xPos)
+    {
+        if (xPos)
+        {
+            return (_board.Tiles[tileIndex].XPos * _tileSize) + _tileSize / 2;
+        }
+
+        // Else return yPos
+        return ((_board.Tiles[tileIndex].YPos * _tileSize) - _tileSize / 2) +
+        _topOffset;
     }
 }
