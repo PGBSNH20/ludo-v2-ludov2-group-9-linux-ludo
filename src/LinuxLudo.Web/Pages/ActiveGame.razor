@@ -24,7 +24,7 @@
     private GameStatus _gameStatus;
     private GameBoard _board;
     private int _tileSize => (int)_canvas.Width / 16;
-    private int _tokenSize => (int)_canvas.Width / 48;
+    private int _tokenSize => (int)_canvas.Width / 18;
     private const int _boardSize = 512;
     private int _topOffset => _tileSize * 2;
 
@@ -63,8 +63,12 @@
         _gameStatus = new GameStatus();
         _gameStatus.Players = new List<Player>()
 {
-new Player() {Color = "#800080", Tokens = new List<GameToken>() {new GameToken() {TilePos = 0}}}
-};
+new Player() {Color = "#800080", Tokens = new List<GameToken>() {
+new GameToken() {TilePos= 0},
+new GameToken() {TilePos= 0},
+new GameToken() {TilePos= 0},
+new GameToken() { TilePos = 0 },
+}}};
 
         // Draws a basic canvas background color
         await _context.SetFillStyleAsync("#808080");
@@ -90,33 +94,20 @@ new Player() {Color = "#800080", Tokens = new List<GameToken>() {new GameToken()
     {
         for (int i = 0; i < _board.Tiles.Count; i++)
         {
-            GameTile tile = _board.Tiles[i];
-            String color = "#FFFFFF"; // White color - tile for all tokens,
-
-            // Sets the right color hex
+            GameTile tile = _board.Tiles[i]; String color = "#FFFFFF"; // White color - tile for all tokens,
             switch (tile.TileColor)
             {
                 case GameTile.GameColor.Red:
-                    color = "#FF0000";
-                    break;
-                case GameTile.GameColor.Green:
-                    color = "#00FF00";
-                    break;
+                    color = "#FF0000"; break;
+                case GameTile.GameColor.Green: color = "#00FF00"; break;
                 case GameTile.GameColor.Blue:
-                    color = "#0000FF";
-                    break;
-                case GameTile.GameColor.Yellow:
-                    color = "#FFFF00";
-                    break;
-            }
-
-            // Draws the actual tile
+                    color = "#0000FF"; break;
+                case GameTile.GameColor.Yellow: color = "#FFFF00"; break;
+            } // Draws the actual tile await
             await _context.SetFillStyleAsync(color);
-            await _context.FillRectAsync(GetTilePos(i, xPos: true), GetTilePos(i, xPos: false),
-            _tileSize, _tileSize);
+            await _context.FillRectAsync(GetTilePos(i, xPos: true), GetTilePos(i, xPos: false), _tileSize, _tileSize);
         }
     }
-
     protected async void DrawPlayers()
     {
         if (_gameStatus.Players == null || _gameStatus.Players.Count <= 0)
@@ -127,15 +118,38 @@ new Player() {Color = "#800080", Tokens = new List<GameToken>() {new GameToken()
 
         foreach (Player player in _gameStatus.Players)
         {
-            // Set the drawing color to match the players tokens
-            await _context.SetFillStyleAsync(player.Color);
+            // Set the drawing color to match the players tokens await
+            await _context.SetFillStyleAsync(player.Color); List<GameToken> playerTokens = player.Tokens;
 
-            foreach (GameToken token in player.Tokens)
+            // Draws each token, splits up the space if more than one is on the same tile
+            for (int i = 0; i < playerTokens.Count; i++)
             {
-                await _context.FillRectAsync(GetTilePos(token.TilePos, xPos: true) + _tokenSize / 8, GetTilePos(token.TilePos, xPos:
-                false) + _tokenSize / 8, _tokenSize, _tokenSize);
+                int tokensOnSameTile = playerTokens.Count(t => t.TilePos ==
+                playerTokens[i].TilePos);
+                if (tokensOnSameTile > 1)
+                {
+                    int index = 0;
+                    foreach (GameToken token in playerTokens.Where(t => t.TilePos == playerTokens[i].TilePos))
+                    {
+                        await _context.FillRectAsync(
+                        GetTilePos(token.TilePos, xPos: true) + (_tokenSize / 8) + ((index == 1 || index == 3) ? _tokenSize / 2 : 0),
+                        GetTilePos(token.TilePos, xPos: false) + (_tokenSize / 8) + ((index == 1 || index == 2) ? _tokenSize / 2 : 0),
+                        _tokenSize / tokensOnSameTile,
+                        _tokenSize / tokensOnSameTile);
+
+                        index++;
+                    }
+                }
+                else
+                {
+                    await _context.FillRectAsync(GetTilePos(playerTokens[i].TilePos, xPos: true) + (_tokenSize / 8),
+                    GetTilePos(playerTokens[i].TilePos, xPos:
+                    false) + (_tokenSize / 8), _tokenSize, _tokenSize);
+                }
             }
         }
+
+
     }
 
     private double GetTilePos(int tileIndex, bool xPos)
