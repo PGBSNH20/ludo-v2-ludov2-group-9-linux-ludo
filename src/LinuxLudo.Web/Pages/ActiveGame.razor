@@ -1,7 +1,7 @@
 @page "/Game/{Id:int}"
 @inject NavigationManager NavManager; // Used to navigate in the webbrowser to different urls
 
-<h1 class="title-text">Game (@Id) - Playing as @userName</h1>
+<h1 class="title-text"><b>Game @Id</b></h1>
 
 <AuthorizeView>
     <div class="game-canvas">
@@ -88,9 +88,6 @@
             // Draws a number on each tile
             await _context.SetFillStyleAsync("#000000");
             await _context.SetFontAsync("16px serif");
-            // await _context.StrokeTextAsync((i + 1).ToString(), (tile.XPos * _tileSize) + _tileSize / 4, (tile.YPos * _tileSize) +
-            //_tileSize / 1.5, _tileSize / 2);
-
             await _context.StrokeTextAsync((i + 1).ToString(), ((tile.XPos * _tileSize) + _tileSize / 2) + _tileSize / 4, (tile.YPos
             * _tileSize) +
             _tileSize / 4,
