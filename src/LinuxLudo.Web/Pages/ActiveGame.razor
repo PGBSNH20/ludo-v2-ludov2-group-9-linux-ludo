@@ -77,7 +77,7 @@
         // Draws a basic canvas background color
         if (firstRender)
         {
-            await _context.SetFillStyleAsync("#808080");
+            await _context.SetFillStyleAsync("#3D4849");
             await _context.FillRectAsync(0, 0, _canvasWidth, _canvasHeight);
         }
 
@@ -108,18 +108,18 @@
             switch (tile.TileColor)
             {
                 case GameTile.GameColor.Red:
-                    color = "#FF0000";
+                    color = "#DC143C";
                     break;
                 case
             GameTile.GameColor.Green:
-                    color = "#00FF00";
+                    color = "#00FF7F";
                     break;
                 case GameTile.GameColor.Blue:
-                    color = "#0000FF";
+                    color = "#1E90FF";
                     break;
                 case
             GameTile.GameColor.Yellow:
-                    color = "#FFFF00";
+                    color = "#F0E68C";
                     break;
             }
 

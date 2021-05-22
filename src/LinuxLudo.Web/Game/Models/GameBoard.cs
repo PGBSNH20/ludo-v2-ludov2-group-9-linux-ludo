@@ -14,7 +14,7 @@ namespace LinuxLudo.Web.Game
             //
 
             // YELLOW PATH
-            new GameTile(GameColor.Yellow, 7, 1),
+            new GameTile(GameColor.Yellow, 7, 1), // INDEX 3
             new GameTile(GameColor.Yellow, 7, 2),
             new GameTile(GameColor.Yellow, 7, 3),
             new GameTile(GameColor.Yellow, 7, 4),
@@ -37,7 +37,7 @@ namespace LinuxLudo.Web.Game
             new GameTile(GameColor.Any, 14, 7),
 
             // BLUE PATH
-            new GameTile(GameColor.Blue, 14, 8),
+            new GameTile(GameColor.Blue, 14, 8), // INDEX 22
             new GameTile(GameColor.Blue, 13, 8),
             new GameTile(GameColor.Blue, 12, 8),
             new GameTile(GameColor.Blue, 11, 8),
@@ -60,7 +60,7 @@ namespace LinuxLudo.Web.Game
             new GameTile(GameColor.Any, 8, 15),
 
             // GREEN PATH
-            new GameTile(GameColor.Green, 7, 15),
+            new GameTile(GameColor.Green, 7, 15), // INDEX 43
             new GameTile(GameColor.Green, 7, 14),
             new GameTile(GameColor.Green, 7, 13),
             new GameTile(GameColor.Green, 7, 12),
@@ -83,7 +83,7 @@ namespace LinuxLudo.Web.Game
             new GameTile(GameColor.Any, 0, 9),
 
             // RED PATH
-            new GameTile(GameColor.Red, 0, 8),
+            new GameTile(GameColor.Red, 0, 8), // INDEX 60
             new GameTile(GameColor.Red, 1, 8),
             new GameTile(GameColor.Red, 2, 8),
             new GameTile(GameColor.Red, 3, 8),

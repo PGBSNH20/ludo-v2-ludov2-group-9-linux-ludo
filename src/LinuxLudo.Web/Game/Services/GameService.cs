@@ -49,18 +49,34 @@ namespace LinuxLudo.Web.Game.Services
             GameStatus TESTING_STATUS = new();
             TESTING_STATUS.Players = new List<Player>()
 {
-new Player() {Color = "#800080", Tokens = new List<GameToken>() {
-new GameToken() {TilePos= 0},
-new GameToken() {TilePos= 0},
-new GameToken() {TilePos= 0},
-new GameToken() { TilePos = 0 }}},
+// RED
+new Player() {Color = "#660000", Tokens = new List<GameToken>() {
+new GameToken() {TilePos= 63},
+new GameToken() {TilePos= 62},
+new GameToken() {TilePos= 61},
+new GameToken() { TilePos = 60 }}},
 
-new Player() {Color = "#FFFF00", Tokens = new List<GameToken>() {
-new GameToken() {TilePos= 18},
-new GameToken() {TilePos= 26},
-new GameToken() {TilePos= 45},
-new GameToken() { TilePos = 55 },
-}}};
+// GREEN
+new Player() {Color = "#006400", Tokens = new List<GameToken>() {
+new GameToken() {TilePos= 44},
+new GameToken() {TilePos= 43},
+new GameToken() {TilePos= 42},
+new GameToken() { TilePos = 41 }}},
+
+// BLUE
+new Player() {Color = "#0000CD", Tokens = new List<GameToken>() {
+new GameToken() {TilePos= 25},
+new GameToken() {TilePos= 24},
+new GameToken() {TilePos= 23},
+new GameToken() { TilePos = 22 }}},
+
+// YELLOW
+new Player() {Color = "#808000", Tokens = new List<GameToken>() {
+new GameToken() {TilePos= 6},
+new GameToken() {TilePos= 5},
+new GameToken() {TilePos= 4},
+new GameToken() { TilePos = 3 }}}
+};
 
             return await Task.FromResult(TESTING_STATUS);
 
