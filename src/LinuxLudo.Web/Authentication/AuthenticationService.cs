@@ -55,7 +55,7 @@ namespace LinuxLudo.Web.Authentication
 
             // Set the header as the logged in user to mark and display to the website that the user is logged in
             _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", response.AccessToken);
-            return response;
+            return await Task.FromResult(response);
         }
 
         public async Task Logout()
@@ -86,7 +86,7 @@ namespace LinuxLudo.Web.Authentication
             if (!authResult.IsSuccessStatusCode)
                 response.Message = JObject.Parse(authContent)["error"]["message"].ToString();
 
-            return response;
+            return await Task.FromResult(response);
         }
     }
 }

@@ -101,6 +101,10 @@ namespace LinuxLudo.Web.Game
             new GameTile(GameColor.Any, 4, 4),
             new GameTile(GameColor.Any, 4, 3),
             new GameTile(GameColor.Any, 4, 2),
+
+
+            // Center tile
+            new GameTile(GameColor.Any, 7, 8)
         };
     }
 }

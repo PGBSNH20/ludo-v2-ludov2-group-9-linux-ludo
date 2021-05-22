@@ -55,6 +55,7 @@
         await _context.FillRectAsync(0, 0, 512, 512);
 
         DrawBoardLayout();
+        DrawPlayers();
     }
 
     protected async void DrawBoardLayout()
@@ -86,8 +87,12 @@
             // Draws a number on each tile
             await _context.SetFillStyleAsync("#000000");
             await _context.SetFontAsync("16px serif");
-            await _context.StrokeTextAsync((i + 1).ToString(), (tile.XPos * _tileSize) + _tileSize / 3, (tile.YPos * _tileSize) +
+            await _context.StrokeTextAsync((i + 1).ToString(), (tile.XPos * _tileSize) + _tileSize / 4, (tile.YPos * _tileSize) +
             _tileSize / 1.5, _tileSize / 2);
         }
+    }
+
+    protected async void DrawPlayers()
+    {
     }
 }
