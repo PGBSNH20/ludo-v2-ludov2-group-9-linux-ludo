@@ -5,7 +5,7 @@
 
 <AuthorizeView>
     <div class="game-canvas">
-        <BECanvas Width="512" Height="512" @ref="_canvas"></BECanvas>
+        <BECanvas Width="512" Height="576" @ref="_canvas"></BECanvas>
     </div>
 </AuthorizeView>
 
@@ -23,6 +23,11 @@
     private GameService _gameService;
     private GameBoard _board;
     private int _tileSize => (int)_canvas.Width / 16;
+    private const int _boardSize = 512;
+    private int _topOffset => _tileSize * 2;
+
+    // Game
+    private string currentStatus = "Waiting for players...";
 
     // When the page has fully loaded
     protected override async Task OnInitializedAsync()
@@ -52,10 +57,22 @@
 
         // Draws a basic canvas background color
         await _context.SetFillStyleAsync("#808080");
-        await _context.FillRectAsync(0, 0, 512, 512);
+        await _context.FillRectAsync(0, 0, _canvas.Width, _canvas.Height);
 
+        DrawGameOverlay();
         DrawBoardLayout();
         DrawPlayers();
+    }
+
+    protected async void DrawGameOverlay()
+    {
+        await _context.SetStrokeStyleAsync("#000000");
+        await _context.SetFontAsync("14px serif");
+
+        // Draw a status text, starting at the top-left tile (with a max width of the first row as to not overlap with bases)
+        await _context.StrokeTextAsync(currentStatus, (_board.Tiles[0].XPos * _tileSize) + _tileSize, _tileSize + _tileSize / 2,
+        _tileSize *
+        7);
     }
 
     protected async void DrawBoardLayout()
@@ -63,8 +80,9 @@
         for (int i = 0; i < _board.Tiles.Count; i++)
         {
             GameTile tile = _board.Tiles[i];
+            String color = "#FFFFFF"; // White color - tile for all tokens,
 
-            String color = "#FFFFFF"; // White color - tile for all tokens
+            // Sets the right color hex
             switch (tile.TileColor)
             {
                 case GameTile.GameColor.Red:
@@ -81,17 +99,18 @@
                     break;
             }
 
+            // Draws the actual tile
             await _context.SetFillStyleAsync(color);
-            await _context.FillRectAsync((tile.XPos * _tileSize) + _tileSize / 2, (tile.YPos * _tileSize) - _tileSize / 2,
+            await _context.FillRectAsync((tile.XPos * _tileSize) + _tileSize / 2, ((tile.YPos * _tileSize) - _tileSize / 2) +
+            _topOffset,
             _tileSize, _tileSize);
 
             // Draws a number on each tile
-            await _context.SetFillStyleAsync("#000000");
+            await _context.SetStrokeStyleAsync("#000000");
             await _context.SetFontAsync("16px serif");
-            await _context.StrokeTextAsync((i + 1).ToString(), ((tile.XPos * _tileSize) + _tileSize / 2) + _tileSize / 4, (tile.YPos
-            * _tileSize) +
-            _tileSize / 4,
-            _tileSize / 2);
+            await _context.StrokeTextAsync((i + 1).ToString(), (tile.XPos * _tileSize) + _tileSize / 1.5, ((tile.YPos * _tileSize) +
+            _tileSize / 4) +
+            _topOffset);
         }
     }
 
