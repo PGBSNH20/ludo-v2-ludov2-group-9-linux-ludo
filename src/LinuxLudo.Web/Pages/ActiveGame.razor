@@ -10,14 +10,12 @@
         <img @ref="greenToken" hidden id="greenToken" src="Images/greentoken.png" />
         <img @ref="blueToken" hidden id="blueToken" src="Images/bluetoken.png" />
         <img @ref="yellowToken" hidden id="yellowToken" src="Images/yellowtoken.png" />
-
         <BECanvas Width="@_canvasWidth" Height="@_canvasHeight" @ref="_canvas"></BECanvas>
     </div>
 
     <div class="player-controls @canvasHtmlString">
         <button class="roll-button" @onclick=RollDice>Roll dice</button>
         <button class="bring-token-button">Bring out token</button>
-
     </div>
 
     <div class="token-selection">
@@ -31,7 +29,6 @@
                     value="token-c" checked>
                 <input @onchange="@(() => UpdateTokenSelection('D'))" label="D" type="radio" id="token-d" name="token"
                     value="token-d" checked>
-
             </div>
         </h1>
     </div>
@@ -50,16 +47,14 @@
     private Canvas2DContext _context;
     private GameService _gameService;
     private GameStatus _gameStatus;
+    private GameRenderer _gameRenderer;
     private GameBoard _board;
+    private ElementReference redToken, greenToken, blueToken, yellowToken;
     private int _canvasWidth, _canvasHeight;
-    private int _tileSize => (int)_canvasWidth / 16;
-    private int _tokenSize => (int)_canvasWidth / 18;
-    private int _boardSize => (int)_canvasWidth;
-    private int _topOffset => _tileSize * 2;
     private const int _minWidthResize = 1600;
     private const int _minHeightResize = 720;
+    private const string backgroundHex = "#3D4849";
     private string canvasHtmlString => isPlayerTurn ? "" : "hidden";
-    private ElementReference redToken, greenToken, blueToken, yellowToken;
 
     // Game
     private string currentStatus = "Waiting for players...";
@@ -85,6 +80,7 @@
 
             // Initialize a new GameService to communicate with API
             _gameService = new GameService(@Id, userName);
+            _gameRenderer = new GameRenderer(_canvasWidth, redToken, greenToken, blueToken, yellowToken);
             _board = new GameBoard();
         }
         else
@@ -101,136 +97,14 @@
         if (firstRender)
         {
             // Draws a basic canvas background color
-            await _context.SetFillStyleAsync("#3D4849");
+            await _context.SetFillStyleAsync(backgroundHex);
             await _context.FillRectAsync(0, 0, _canvasWidth, _canvasHeight);
 
             // Fetches the current gamestatus BEFORE rendering anything
             _gameStatus = await _gameService.GetGameStatus();
         }
 
-        await DrawGameOverlay();
-        await DrawBoardLayout();
-        await DrawPlayers();
-    }
-
-    protected async Task DrawGameOverlay()
-    {
-        await _context.SetStrokeStyleAsync("#FFFFFF");
-        await _context.SetFontAsync((_canvasWidth / 25).ToString() + "px serif");
-
-        // Draw a status text, starting at the top-left tile (with a max width of the first row as to not overlap with bases)
-        await _context.StrokeTextAsync(currentStatus, (_board.Tiles[0].XPos * _tileSize) + _tileSize, _tileSize + _tileSize / 2,
-        _tileSize * 6);
-    }
-
-    protected async Task DrawBoardLayout()
-    {
-        for (int i = 0; i < _board.Tiles.Count; i++)
-        {
-            GameTile tile = _board.Tiles[i];
-            String color = "#FFFFFF"; // White tile color for all tokens,
-            switch (tile.TileColor)
-            {
-                case GameTile.GameColor.Red:
-                    color = "#DC143C";
-                    break;
-                case
-            GameTile.GameColor.Green:
-                    color = "#00FF7F";
-                    break;
-                case GameTile.GameColor.Blue:
-                    color = "#1E90FF";
-                    break;
-                case
-            GameTile.GameColor.Yellow:
-                    color = "#F0E68C";
-                    break;
-            }
-
-            // Draws the actual tile await await
-            await _context.SetFillStyleAsync(color);
-            await _context.FillRectAsync(GetTilePos(i, xPos: true), GetTilePos(i, xPos: false), _tileSize, _tileSize);
-        }
-    }
-    protected async Task DrawPlayers()
-    {
-        if (_gameStatus.Players == null || _gameStatus.Players.Count <= 0)
-        {
-            currentStatus = "No players in game!";
-            return;
-        }
-
-        foreach (Player player in _gameStatus.Players)
-        {
-            // Set the drawing color to match the players tokens await await
-            ElementReference tokenToDraw;
-            switch (player.Color)
-            {
-                case "red":
-                    tokenToDraw = redToken;
-                    break;
-                case "green":
-                    tokenToDraw = greenToken;
-                    break;
-                case "blue":
-                    tokenToDraw = blueToken;
-                    break;
-                case "yellow":
-                    tokenToDraw = yellowToken;
-                    break;
-            }
-
-            // Draws each token, splits up the space if more than one is on the same tile
-            List<GameToken> playerTokens = player.Tokens;
-            for (int i = 0; i < playerTokens.Count; i++)
-            {
-                int tokensOnSameTile = playerTokens.Count(t => t.TilePos == playerTokens[i].TilePos);
-                double xPos, yPos, width = _tokenSize, height = _tokenSize;
-
-                if (tokensOnSameTile > 1)
-                {
-                    await _context.SetFontAsync((Math.Max(8, (_canvasWidth / 25) - (tokensOnSameTile * 5))).ToString() + "px serif");
-                    int index = 0;
-                    foreach (GameToken token in playerTokens.Where(t => t.TilePos == playerTokens[i].TilePos))
-                    {
-                        xPos = GetTilePos(token.TilePos, xPos: true) + (_tokenSize / 24) + ((index == 1 || index == 3) ? (_tokenSize / 2)
-                        : 0);
-
-                        yPos = GetTilePos(token.TilePos, xPos: false) + (_tokenSize / 24) + ((index == 1 || index == 2) ? (_tokenSize /
-                        2) : 0);
-
-                        width = (_tokenSize / tokensOnSameTile) + tokensOnSameTile;
-                        height = (_tokenSize / tokensOnSameTile) + tokensOnSameTile;
-
-                        await _context.DrawImageAsync(tokenToDraw, xPos, yPos, width, height);
-                        await _context.StrokeTextAsync(token.IdentifierChar.ToString(), xPos + width / 3, yPos + (height / 1.5));
-                        index++;
-                    }
-                }
-                else
-                {
-                    await _context.SetFontAsync(((_canvasWidth / 25)).ToString() + "px serif");
-                    xPos = GetTilePos(playerTokens[i].TilePos, xPos: true) + (_tokenSize / 24);
-                    yPos = GetTilePos(playerTokens[i].TilePos, xPos:
-                    false) + (_tokenSize / 24);
-
-                    await _context.DrawImageAsync(tokenToDraw, xPos, yPos, width, height);
-                    await _context.StrokeTextAsync(playerTokens[i].IdentifierChar.ToString(), xPos + width / 3.5, yPos + height / 1.5);
-                }
-            }
-        }
-    }
-
-    private double GetTilePos(int tileIndex, bool xPos)
-    {
-        if (xPos)
-        {
-            return (_board.Tiles[tileIndex].XPos * _tileSize) + _tileSize / 2;
-        }
-
-        // Else return yPos
-        return ((_board.Tiles[tileIndex].YPos * _tileSize) - _tileSize / 2) +
-        _topOffset;
+        _gameRenderer.RenderGame(_context, _board, _gameStatus, currentStatus);
     }
 
     protected async void RollDice()
