@@ -28,7 +28,7 @@ namespace LinuxLudo.API.Database.Repositories
             await Ctx.Set<TEntity>().AddRangeAsync(entities);
         }
 
-        public async ValueTask<TEntity> GetByIdAsync(int id)
+        public async ValueTask<TEntity> GetByIdAsync(Guid id)
         {
             return await Ctx.Set<TEntity>().FindAsync(id);
         }

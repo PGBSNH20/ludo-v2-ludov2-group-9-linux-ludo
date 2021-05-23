@@ -10,7 +10,7 @@ namespace LinuxLudo.API.Domain.Repositories
     {
         Task AddAsync(TEntity entity);
         Task AddRangeAsync(IEnumerable<TEntity> entities);
-        ValueTask<TEntity> GetByIdAsync(int id);
+        ValueTask<TEntity> GetByIdAsync(Guid id);
         Task<IEnumerable<TEntity>> GetAllAsync();
         IEnumerable<TEntity> Find(Expression<Func<TEntity, bool>> expression);
         Task<TEntity> SingleOrDefaultAsync(Expression<Func<TEntity, bool>> expression);
