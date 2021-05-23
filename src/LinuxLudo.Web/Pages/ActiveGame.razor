@@ -11,7 +11,24 @@
 
     <div class="player-controls @canvasHtmlString">
         <button class="roll-button" @onclick=RollDice>Roll dice</button>
-        <button class="token-button">Bring out token</button>
+        <button class="bring-token-button">Bring out token</button>
+
+    </div>
+
+    <div class="token-selection">
+        <h1 class="select-token-text"><b>Select your token</b>
+            <div class="radio">
+                <input @onchange="@(() => UpdateTokenSelection('A'))" label="A" type="radio" id="token-a" name="token"
+                    value="token-a" checked>
+                <input @onchange="@(() => UpdateTokenSelection('B'))" label="B" type="radio" id="token-b" name="token"
+                    value="token-b" checked>
+                <input @onchange="@(() => UpdateTokenSelection('C'))" label="C" type="radio" id="token-c" name="token"
+                    value="token-c" checked>
+                <input @onchange="@(() => UpdateTokenSelection('D'))" label="D" type="radio" id="token-d" name="token"
+                    value="token-d" checked>
+
+            </div>
+        </h1>
     </div>
 </AuthorizeView>
 
@@ -40,6 +57,7 @@
 
     // Game
     private string currentStatus = "Waiting for players...";
+    private char selectedToken = 'A';
 
     // This is true if it's the client-side player's turn
     private bool isPlayerTurn = true; // TODO SET ISPLAYERTURN FALSE -- ONLY FOR TESTING
@@ -231,5 +249,11 @@
             }
             await OnAfterRenderAsync(false);
         }
+    }
+
+    private void UpdateTokenSelection(char token)
+    {
+        selectedToken = token;
+        Console.WriteLine("Selected token: " + selectedToken);
     }
 }

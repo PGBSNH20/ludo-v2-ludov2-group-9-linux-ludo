@@ -71,7 +71,7 @@ new GameToken() {TilePos= 23, IdentifierChar = 'C'},
 new GameToken() { TilePos = 22 , IdentifierChar = 'D'}}},
 
 // YELLOW
-new Player() {Color = "#808000", Tokens = new List<GameToken>() {
+new Player() {Name = "adam", Color = "#808000", Tokens = new List<GameToken>() {
 new GameToken() {TilePos= 6, IdentifierChar = 'A'},
 new GameToken() {TilePos= 5, IdentifierChar = 'B'},
 new GameToken() {TilePos= 4, IdentifierChar = 'C'},
