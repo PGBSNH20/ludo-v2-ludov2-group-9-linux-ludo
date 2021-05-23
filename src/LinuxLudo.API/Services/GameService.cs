@@ -1,3 +1,6 @@
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using LinuxLudo.API.Domain.Models;
 using LinuxLudo.API.Domain.Repositories;
@@ -14,30 +17,32 @@ namespace LinuxLudo.API.Services
         {
             _unitOfWork = unitOfWork;
         }
-        public async Task<BaseResponse> GetAllGames()
+        public async Task<IEnumerable<Game>> GetAllGamesAsync()
         {
             var games = await _unitOfWork.Games.GetAllAsync();
-            return new SuccessResponse("Success", 200).Respond(games);
+            if (!games.Any())
+                return null;
+
+            return games;
         }
 
-        public async Task<BaseResponse> GetGameById(int id)
+        public async Task<Game> GetGameByIdAsync(int id)
         {
-            var game = await _unitOfWork.Games.GetByIdAsync(id);
-            return new SuccessResponse("Success", 200).Respond(game);
+            return await _unitOfWork.Games.GetByIdAsync(id);
         }
 
-        public async Task<BaseResponse> CreateGame(Game game)
+        public async Task<Game> CreateGameAsync(Game game)
         {
             await _unitOfWork.Games.AddAsync(game);
             await _unitOfWork.CommitAsync();
-            return new SuccessResponse("Game created", 201).Respond();
+            var res = _unitOfWork.Games.Find(t => t.Name == game.Name).FirstOrDefault();
+            return res;
         }
 
-        public async Task<BaseResponse> DeleteGame(Game game)
+        public async Task DeleteGameAsync(Game game)
         {
             _unitOfWork.Games.Remove(game);
             await _unitOfWork.CommitAsync();
-            return new SuccessResponse($"Game {game.Id}, deleted.", 200).Respond();
         }
     }
 }

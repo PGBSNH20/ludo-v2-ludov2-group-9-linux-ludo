@@ -1,6 +1,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using LinuxLudo.API.Domain.Models;
 using LinuxLudo.API.Domain.Resources;
 using LinuxLudo.API.Domain.Response;
 using LinuxLudo.API.Domain.Services;
@@ -26,7 +27,9 @@ namespace LinuxLudo.API.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(new ErrorResponse(ModelState.Values.First().Errors.First().ErrorMessage, 500, null).Respond());
 
-            return Ok();
+            var game = _mapper.Map<CreateGameResource, Game>(resource);
+            var res = await _gameService.CreateGameAsync(game);
+            return Created("", new SuccessResponse("Game Created", 201).Respond(res));
         }
     }
 }
