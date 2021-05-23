@@ -21,14 +21,18 @@
     <div class="token-selection">
         <h1 class="select-token-text"><b>Select your token</b>
             <div class="radio">
-                <input @onchange="@(() => UpdateTokenSelection('A'))" label="A" type="radio" id="token-a" name="token"
-                    value="token-a" checked>
-                <input @onchange="@(() => UpdateTokenSelection('B'))" label="B" type="radio" id="token-b" name="token"
-                    value="token-b" checked>
-                <input @onchange="@(() => UpdateTokenSelection('C'))" label="C" type="radio" id="token-c" name="token"
-                    value="token-c" checked>
-                <input @onchange="@(() => UpdateTokenSelection('D'))" label="D" type="radio" id="token-d" name="token"
-                    value="token-d" checked>
+                <input @onchange="@(() => UpdateTokenSelection('A'))" hidden=@IsTokenDead('A')
+                    checked="@(selectedToken.Equals('A'))" label="A" type="radio" id="token-a" name="token"
+                    value="token-a">
+                <input @onchange="@(() => UpdateTokenSelection('B'))" hidden=@IsTokenDead('B')
+                    checked="@(selectedToken.Equals('B'))" label="B" type="radio" id="token-b" name="token"
+                    value="token-b">
+                <input @onchange="@(() => UpdateTokenSelection('C'))" hidden=@IsTokenDead('C')
+                    checked="@(selectedToken.Equals('C'))" label="C" type="radio" id="token-c" name="token"
+                    value="token-c">
+                <input @onchange="@(() => UpdateTokenSelection('D'))" hidden=@IsTokenDead('D')
+                    checked="@(selectedToken.Equals('D'))" label="D" type="radio" id="token-d" name="token"
+                    value="token-d">
             </div>
         </h1>
     </div>
@@ -95,7 +99,8 @@
         _context = await _canvas.CreateCanvas2DAsync();
 
         // Fetches the current gamestatus BEFORE rendering anything
-        _gameStatus = await _gameService.GetGameStatus();
+        if (firstRender)
+            _gameStatus = await _gameService.GetGameStatus();
 
         // Draws a basic canvas background color
         await _context.SetFillStyleAsync(backgroundHex);
@@ -109,47 +114,69 @@
 
     protected async void RollDice()
     {
-        if (isPlayerTurn)
+        Player player = GetPlayer();
+        if (isPlayerTurn && player.Tokens.Count > 0)
         {
             // TODO IMPLEMENT WEBSOCKETS FOR ROLLING -- THIS IS ONLY FOR TESTING PURPOSES!!!!!!!!
             //await _gameService.RollDice();
 
-            foreach (Player player in _gameStatus.Players)
+            Random rand = new Random();
+            int roll = rand.Next(0, 7);
+            currentStatus = $"{userName} rolled a {roll}!";
+
+            UpdateTokenSelection(selectedToken);
+            GameToken token = player.Tokens.Where(token => token.IdentifierChar ==
+            selectedToken).FirstOrDefault();
+
+            token.TilePos += roll;
+            if (token.TilePos >= _board.Tiles.Count - 1)
             {
-                for (int i = 0; i < player.Tokens.Count; i++)
-                {
-                    {
-                        Random rand = new Random();
-                        int roll = rand.Next(0, 7);
-
-                        if (player.Tokens[i].TilePos + roll < _board.Tiles.Count)
-                        {
-                            player.Tokens[i].TilePos += roll;
-                            currentStatus = player.Name + $" rolled a {roll}!";
-                        }
-                        else
-                        {
-                            player.Tokens[i].TilePos = ((player.Tokens[i].TilePos + roll) - _board.Tiles.Count);
-                        }
-
-
-                        _gameStatus.Players.ForEach(p => p.Tokens.Where(t => t.TilePos == player.Tokens[i].TilePos && p.Color !=
-                        player.Color).ToList().ForEach(removeToken =>
-                        {
-                            p.Tokens.Remove(removeToken);
-                            Console.WriteLine("Token knocked out!");
-                        }));
-
-                        await OnAfterRenderAsync(false);
-                    }
-                }
+                player.Tokens.Remove(token);
             }
+
+            await OnAfterRenderAsync(false);
         }
     }
 
     private void UpdateTokenSelection(char token)
     {
-        selectedToken = token;
+        Player player = GetPlayer();
+        if (!IsTokenDead(token))
+        {
+            selectedToken = token;
+        }
+        else if (player.Tokens.Count > 0)
+        {
+            selectedToken = player.Tokens.FirstOrDefault().IdentifierChar;
+        }
+
         Console.WriteLine("Selected token: " + selectedToken);
+    }
+
+    private bool IsTokenDead(char tokenIdentifier)
+    {
+        if (_gameStatus != null)
+        {
+            Player player = GetPlayer();
+
+            // Token is not dead if found in list
+            if (!player.Tokens.Any(token => token.IdentifierChar == tokenIdentifier))
+                return true;
+        }
+
+        // Token is alive/exists in list
+        return false;
+    }
+
+    private Player GetPlayer()
+    {
+        if (_gameStatus.Players.Any(p => p.Name == userName))
+        {
+            return _gameStatus.Players.First(p => p.Name == userName);
+        }
+        else
+        {
+            return new Player() { Name = userName + " (DEAD)" };
+        }
     }
 }
