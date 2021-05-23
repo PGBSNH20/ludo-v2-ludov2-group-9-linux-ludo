@@ -11,6 +11,15 @@ namespace LinuxLudo.API.Database.Repositories
         {
         }
 
-        private AppDbContext Ctx => Ctx;
+        public async Task<Game> FindByName(string name)
+        {
+            //return await Ctx.Games.Find();
+            throw new NotImplementedException();
+        }
+
+        private AppDbContext AppDbContext
+        {
+            get { return Ctx;  }
+        }
     }
 }

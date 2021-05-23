@@ -13,9 +13,9 @@ namespace LinuxLudo.API.Database.Repositories
     {
         protected readonly AppDbContext Ctx;
 
-        public Repository(AppDbContext ctx)
+        protected Repository(AppDbContext ctx)
         {
-            this.Ctx = ctx;
+            Ctx = ctx;
         }
 
         public async Task AddAsync(TEntity entity)
