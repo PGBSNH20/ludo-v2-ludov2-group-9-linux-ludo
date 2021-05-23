@@ -2,40 +2,52 @@
 @inject NavigationManager NavManager; // Used to navigate in the webbrowser to different urls
 @inject BrowserService browserService;
 
-<h1 class="title-text"><b>Game @Id</b></h1>
 <AuthorizeView>
-    <div class="game-canvas">
-        <img @ref="redToken" hidden id="redToken" src="Images/redtoken.png" />
-        <img @ref="greenToken" hidden id="greenToken" src="Images/greentoken.png" />
-        <img @ref="blueToken" hidden id="blueToken" src="Images/bluetoken.png" />
-        <img @ref="yellowToken" hidden id="yellowToken" src="Images/yellowtoken.png" />
-        <BECanvas Width="@_canvasWidth" Height="@_canvasHeight" @ref="_canvas"></BECanvas>
+    <div class="game-screen" hidden=@(!hasJoinedGame)>
+        <h1 class="title-text"><b>Game @Id</b></h1>
+        <div class="game-canvas">
+            <BECanvas Width="@_canvasWidth" Height="@_canvasHeight" @ref="_canvas"></BECanvas>
+            <img @ref="redToken" hidden id="redToken" src="Images/redtoken.png" />
+            <img @ref="greenToken" hidden id="greenToken" src="Images/greentoken.png" />
+            <img @ref="blueToken" hidden id="blueToken" src="Images/bluetoken.png" />
+            <img @ref="yellowToken" hidden id="yellowToken" src="Images/yellowtoken.png" />
+        </div>
+
+        <div class="player-controls @canvasHtmlString">
+            <button class="roll-button" @onclick=RollDice>Roll dice</button>
+            <button class="bring-token-button" @onclick=BringOutToken>Bring out token</button>
+        </div>
+
+        <div class="token-selection">
+            <h1 class="select-token-text" hidden=@(IsTokenDead('A') && IsTokenDead('B') && IsTokenDead('C') &&
+                IsTokenDead('D'))><b>Select your token</b>
+                <div class="radio" hidden=@(IsTokenDead('A') && IsTokenDead('B') && IsTokenDead('C') &&
+                    IsTokenDead('D'))>
+                    <input @onchange="@(() => UpdateTokenSelection('A'))" hidden=@IsTokenDead('A')
+                        checked="@(selectedToken.Equals('A'))" label="A" type="radio" id="token-a" name="token"
+                        value="token-a">
+                    <input @onchange="@(() => UpdateTokenSelection('B'))" hidden=@IsTokenDead('B')
+                        checked="@(selectedToken.Equals('B'))" label="B" type="radio" id="token-b" name="token"
+                        value="token-b">
+                    <input @onchange="@(() => UpdateTokenSelection('C'))" hidden=@IsTokenDead('C')
+                        checked="@(selectedToken.Equals('C'))" label="C" type="radio" id="token-c" name="token"
+                        value="token-c">
+                    <input @onchange="@(() => UpdateTokenSelection('D'))" hidden=@IsTokenDead('D')
+                        checked="@(selectedToken.Equals('D'))" label="D" type="radio" id="token-d" name="token"
+                        value="token-d">
+                </div>
+            </h1>
+        </div>
     </div>
 
-    <div class="player-controls @canvasHtmlString">
-        <button class="roll-button" @onclick=RollDice>Roll dice</button>
-        <button class="bring-token-button" @onclick=BringOutToken>Bring out token</button>
-    </div>
-
-    <div class="token-selection">
-        <h1 class="select-token-text" hidden=@(IsTokenDead('A') && IsTokenDead('B') && IsTokenDead('C') &&
-            IsTokenDead('D'))><b>Select your token</b>
-            <div class="radio" hidden=@(IsTokenDead('A') && IsTokenDead('B') && IsTokenDead('C') && IsTokenDead('D'))>
-                <input @onchange="@(() => UpdateTokenSelection('A'))" hidden=@IsTokenDead('A')
-                    checked="@(selectedToken.Equals('A'))" label="A" type="radio" id="token-a" name="token"
-                    value="token-a">
-                <input @onchange="@(() => UpdateTokenSelection('B'))" hidden=@IsTokenDead('B')
-                    checked="@(selectedToken.Equals('B'))" label="B" type="radio" id="token-b" name="token"
-                    value="token-b">
-                <input @onchange="@(() => UpdateTokenSelection('C'))" hidden=@IsTokenDead('C')
-                    checked="@(selectedToken.Equals('C'))" label="C" type="radio" id="token-c" name="token"
-                    value="token-c">
-                <input @onchange="@(() => UpdateTokenSelection('D'))" hidden=@IsTokenDead('D')
-                    checked="@(selectedToken.Equals('D'))" label="D" type="radio" id="token-d" name="token"
-                    value="token-d">
-            </div>
-        </h1>
-    </div>
+    @if (!hasJoinedGame)
+    {
+        <div class="join-screen" hidden=@(!hasJoinedGame)>
+            <h1 class="join-text">Game @Id
+            </h1>
+            <button class="join-button" @onclick=JoinGame>Join game</button>
+        </div>
+    }
 </AuthorizeView>
 
 @code
@@ -60,6 +72,7 @@
     private string canvasHtmlString => isPlayerTurn ? "" : "hidden";
 
     // Game
+    private bool hasJoinedGame = false;
     private string currentStatus = "Waiting for players...";
     private char selectedToken = 'A';
 
@@ -83,7 +96,6 @@
 
             // Initialize a new GameService to communicate with API
             _gameService = new GameService(@Id, userName);
-            _gameRenderer = new GameRenderer(userName, _canvasWidth, _canvasHeight);
             _board = new GameBoard();
         }
         else
@@ -104,48 +116,64 @@
             _gameStatus.Players = new List<Player>()
 {
 // RED
-new Player() {Name="adam", Color = "red", Tokens = new List<GameToken>() {
+new Player()
+{
+Name = "adam",
+Color = "red",
+Tokens = new List<GameToken>() {
 new GameToken() {TilePos= 0, IdentifierChar = 'A', InBase = true},
 new GameToken() {TilePos= 0, IdentifierChar = 'B', InBase = true},
 new GameToken() {TilePos= 0, IdentifierChar = 'C', InBase = true},
-new GameToken() { TilePos = 0, IdentifierChar = 'D' , InBase = true}}},
+new GameToken() { TilePos = 0, IdentifierChar = 'D' , InBase = true}}
+},
 
 // GREEN
-new Player() {Name = "Jakob", Color = "green", Tokens = new List<GameToken>() {
+new Player()
+{
+Name = "Jakob",
+Color = "green",
+Tokens = new List<GameToken>() {
 new GameToken() {TilePos= 0, IdentifierChar = 'A', InBase = true},
 new GameToken() {TilePos= 0, IdentifierChar = 'B', InBase = true},
 new GameToken() {TilePos= 0, IdentifierChar = 'C', InBase = true},
-new GameToken() { TilePos = 0, IdentifierChar = 'D', InBase = true }}},
+new GameToken() { TilePos = 0, IdentifierChar = 'D', InBase = true }}
+},
 
 // BLUE
-new Player() {Name = "Stephan", Color = "blue", Tokens = new List<GameToken>() {
+new Player()
+{
+Name = "Stephan",
+Color = "blue",
+Tokens = new List<GameToken>() {
 new GameToken() {TilePos= 0, IdentifierChar = 'A', InBase = true},
 new GameToken() {TilePos= 0, IdentifierChar = 'B', InBase = true},
 new GameToken() {TilePos= 0, IdentifierChar = 'C', InBase = true},
-new GameToken() { TilePos = 0 , IdentifierChar = 'D', InBase = true}}},
+new GameToken() { TilePos = 0 , IdentifierChar = 'D', InBase = true}}
+},
 
 // YELLOW
-new Player() {Name = "Leo", Color = "yellow", Tokens = new List<GameToken>() {
+new Player()
+{
+Name = "Leo",
+Color = "yellow",
+Tokens = new List<GameToken>() {
 new GameToken() {TilePos= 0, IdentifierChar = 'A', InBase = true},
 new GameToken() {TilePos= 0, IdentifierChar = 'B', InBase = true},
 new GameToken() {TilePos= 0, IdentifierChar = 'C', InBase = true},
-new GameToken() { TilePos = 0 , IdentifierChar = 'D', InBase = true}}}
+new GameToken() { TilePos = 0 , IdentifierChar = 'D', InBase = true}}
+}
 };
 
-            // Reload UI components on page load
+            // Reload UI components on page load (to hide e.g radiobtns)
             StateHasChanged();
+            _gameRenderer = new GameRenderer(userName, _canvasWidth, _canvasHeight, redToken, greenToken, blueToken, yellowToken);
         }
 
-        _gameRenderer.redToken = redToken;
-        _gameRenderer.greenToken = greenToken;
-        _gameRenderer.blueToken = blueToken;
-        _gameRenderer.yellowToken = yellowToken;
         // Fetch latest data from backend
         // _gameStatus = await _ gameService.GetGameStatus();
 
         await _gameRenderer.RenderGame(_context, _board, _gameStatus, currentStatus);
     }
-
     protected async void RollDice()
     {
         Player player = GetPlayer();
@@ -260,5 +288,12 @@ new GameToken() { TilePos = 0 , IdentifierChar = 'D', InBase = true}}}
         {
             return new Player() { Name = userName + " (DEAD)" };
         }
+    }
+
+    private void JoinGame()
+    {
+        hasJoinedGame = true;
+        StateHasChanged();
+        Console.WriteLine("CLICKED - hasJoinedGame: " + hasJoinedGame);
     }
 }

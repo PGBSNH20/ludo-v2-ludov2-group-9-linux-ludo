@@ -8,7 +8,7 @@ namespace LinuxLudo.Web.Game
 {
     public class GameRenderer
     {
-        public ElementReference redToken, greenToken, blueToken, yellowToken;
+        private readonly ElementReference redToken, greenToken, blueToken, yellowToken;
         private Canvas2DContext context;
         private readonly int canvasWidth, canvasHeight;
         private readonly string userName;
@@ -22,20 +22,19 @@ namespace LinuxLudo.Web.Game
         private GameBoard board;
         private GameStatus gameStatus;
 
-        public GameRenderer(string userName, int canvasWidth, int canvasHeight)
+        public GameRenderer(string userName, int canvasWidth, int canvasHeight, ElementReference redToken, ElementReference greenToken, ElementReference blueToken, ElementReference yellowToken)
         {
             this.userName = userName;
             this.canvasWidth = canvasWidth;
             this.canvasHeight = canvasHeight;
+            this.redToken = redToken;
+            this.greenToken = greenToken;
+            this.blueToken = blueToken;
+            this.yellowToken = yellowToken;
         }
 
         public async Task RenderGame(Canvas2DContext context, GameBoard board, GameStatus gameStatus, string currentStatus)
         {
-            if (redToken.Context == null)
-            {
-                return;
-            }
-
             this.context = context;
             this.board = board;
             this.gameStatus = gameStatus;
@@ -229,6 +228,7 @@ namespace LinuxLudo.Web.Game
                     yPos,
                     TileSize,
                     TileSize);
+
 
                     await context.StrokeTextAsync(player.Tokens[i].IdentifierChar.ToString(), xPos + TileSize / 3, yPos + TileSize / 1.5, TileSize);
                 }

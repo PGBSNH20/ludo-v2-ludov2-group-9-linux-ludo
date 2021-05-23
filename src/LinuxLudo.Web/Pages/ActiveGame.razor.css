@@ -1,3 +1,27 @@
+.join-screen
+{
+	margin-top: 15em;
+	display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.join-text
+{
+	font-size: 48px;
+	font-weight: bold;
+}
+
+.join-button
+{
+	font-size: 48px;
+	color: white;
+	background-color: green;
+	margin-left: 10em;
+	width: 25em;
+	height: 10em;
+}
+
 .player-controls
 {
     display: flex;
