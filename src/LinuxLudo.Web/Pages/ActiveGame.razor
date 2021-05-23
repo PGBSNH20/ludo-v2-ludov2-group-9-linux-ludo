@@ -131,12 +131,17 @@ new GameToken() {TilePos= 0, IdentifierChar = 'B', InBase = true},
 new GameToken() {TilePos= 0, IdentifierChar = 'C', InBase = true},
 new GameToken() { TilePos = 0 , IdentifierChar = 'D', InBase = true}}}
 };
+
         }
 
         // Fetch latest data from backend
         // _gameStatus = await _ gameService.GetGameStatus();
 
-        _gameRenderer.RenderGame(_context, _board, _gameStatus, currentStatus);
+        await _gameRenderer.RenderGame(_context, _board, _gameStatus, currentStatus);
+        if (firstRender)
+        {
+            StateHasChanged();
+        }
     }
 
     protected async void RollDice()

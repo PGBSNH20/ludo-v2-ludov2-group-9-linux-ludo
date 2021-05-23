@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Blazor.Extensions.Canvas.Canvas2D;
@@ -34,7 +33,7 @@ namespace LinuxLudo.Web.Game
             this.yellowToken = yellowToken;
         }
 
-        public async void RenderGame(Canvas2DContext context, GameBoard board, GameStatus gameStatus, string currentStatus)
+        public async Task RenderGame(Canvas2DContext context, GameBoard board, GameStatus gameStatus, string currentStatus)
         {
             this.context = context;
             this.board = board;
@@ -192,8 +191,6 @@ namespace LinuxLudo.Web.Game
                         break;
                 }
 
-                // Draws each token, splits up the space if more than one is on the same tile
-
                 // Draws the tokens in base first
                 for (int i = 0; i < player.Tokens.Where(token => token.InBase).ToList().Count; i++)
                 {
@@ -231,12 +228,11 @@ namespace LinuxLudo.Web.Game
                     await context.StrokeTextAsync(player.Tokens[i].IdentifierChar.ToString(), xPos + TileSize / 3, yPos + TileSize / 1.5, TileSize);
                 }
 
+                // Draws each token, splits up the space if more than one is on the same tile
                 for (int i = 0; i < player.Tokens.Count; i++)
                 {
                     if (player.Tokens[i].InBase)
                         continue;
-
-                    Console.WriteLine("RENDERING PLAYER TOKEN OUTSIDE BASE: " + player.Tokens[i].IdentifierChar.ToString());
 
                     int tokensOnSameTile = player.Tokens.Count(t => t.TilePos == player.Tokens[i].TilePos && !t.InBase);
                     double xPos, yPos, width = TokenSize, height = TokenSize;
@@ -272,6 +268,7 @@ namespace LinuxLudo.Web.Game
                         await context.StrokeTextAsync(player.Tokens[i].IdentifierChar.ToString(), xPos + width / 3.5, yPos + height / 1.5);
                     }
                 }
+
             }
         }
 
