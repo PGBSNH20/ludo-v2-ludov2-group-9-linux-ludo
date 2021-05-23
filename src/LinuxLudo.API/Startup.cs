@@ -2,7 +2,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json.Serialization;
 using LinuxLudo.API.Database.Context;
+using LinuxLudo.API.Database.Repositories;
 using LinuxLudo.API.Domain.Models.Auth;
+using LinuxLudo.API.Domain.Repositories;
 using LinuxLudo.API.Domain.Response;
 using LinuxLudo.API.Domain.Services;
 using LinuxLudo.API.Extensions;
@@ -91,8 +93,10 @@ namespace LinuxLudo.API
                 c.AddSecurityRequirement(security);
             });
 
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddTransient<IJwtService, JwtService>();
             services.AddTransient<IAuthService, AuthService>();
+            services.AddTransient<IGameService, GameService>();
 
             services.AddAuth(jwtSettings);
 
