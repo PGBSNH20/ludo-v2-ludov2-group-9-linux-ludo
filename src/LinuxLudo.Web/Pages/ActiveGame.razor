@@ -3,13 +3,13 @@
 @inject BrowserService browserService;
 
 <h1 class="title-text"><b>Game @Id</b></h1>
+<img @ref="redToken" hidden id="redToken" src="Images/redtoken.png" />
+<img @ref="greenToken" hidden id="greenToken" src="Images/greentoken.png" />
+<img @ref="blueToken" hidden id="blueToken" src="Images/bluetoken.png" />
+<img @ref="yellowToken" hidden id="yellowToken" src="Images/yellowtoken.png" />
 
 <AuthorizeView>
     <div class="game-canvas">
-        <img @ref="redToken" hidden id="redToken" src="Images/redtoken.png" />
-        <img @ref="greenToken" hidden id="greenToken" src="Images/greentoken.png" />
-        <img @ref="blueToken" hidden id="blueToken" src="Images/bluetoken.png" />
-        <img @ref="yellowToken" hidden id="yellowToken" src="Images/yellowtoken.png" />
         <BECanvas Width="@_canvasWidth" Height="@_canvasHeight" @ref="_canvas"></BECanvas>
     </div>
 
@@ -19,8 +19,9 @@
     </div>
 
     <div class="token-selection">
-        <h1 class="select-token-text"><b>Select your token</b>
-            <div class="radio">
+        <h1 class="select-token-text" hidden=@(IsTokenDead('A') && IsTokenDead('B') && IsTokenDead('C') &&
+            IsTokenDead('D'))><b>Select your token</b>
+            <div class="radio" hidden=@(IsTokenDead('A') && IsTokenDead('B') && IsTokenDead('C') && IsTokenDead('D'))>
                 <input @onchange="@(() => UpdateTokenSelection('A'))" hidden=@IsTokenDead('A')
                     checked="@(selectedToken.Equals('A'))" label="A" type="radio" id="token-a" name="token"
                     value="token-a">
