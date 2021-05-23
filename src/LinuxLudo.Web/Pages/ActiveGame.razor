@@ -15,7 +15,7 @@
 
     <div class="player-controls @canvasHtmlString">
         <button class="roll-button" @onclick=RollDice>Roll dice</button>
-        <button class="bring-token-button">Bring out token</button>
+        <button class="bring-token-button" @onclick=BringOutToken>Bring out token</button>
     </div>
 
     <div class="token-selection">
@@ -83,7 +83,7 @@
 
             // Initialize a new GameService to communicate with API
             _gameService = new GameService(@Id, userName);
-            _gameRenderer = new GameRenderer(_canvasWidth, _canvasHeight, redToken, greenToken, blueToken, yellowToken);
+            _gameRenderer = new GameRenderer(userName, _canvasWidth, _canvasHeight, redToken, greenToken, blueToken, yellowToken);
             _board = new GameBoard();
         }
         else
@@ -104,32 +104,32 @@
             _gameStatus.Players = new List<Player>()
 {
 // RED
-new Player() {Name="Leo", Color = "red", Tokens = new List<GameToken>() {
-new GameToken() {TilePos= 63, IdentifierChar = 'A', InBase = true},
-new GameToken() {TilePos= 62, IdentifierChar = 'B', InBase = true},
-new GameToken() {TilePos= 61, IdentifierChar = 'C', InBase = true},
-new GameToken() { TilePos = 60, IdentifierChar = 'D' , InBase = true}}},
+new Player() {Name="adam", Color = "red", Tokens = new List<GameToken>() {
+new GameToken() {TilePos= 0, IdentifierChar = 'A', InBase = true},
+new GameToken() {TilePos= 0, IdentifierChar = 'B', InBase = true},
+new GameToken() {TilePos= 0, IdentifierChar = 'C', InBase = true},
+new GameToken() { TilePos = 0, IdentifierChar = 'D' , InBase = true}}},
 
 // GREEN
 new Player() {Name = "Jakob", Color = "green", Tokens = new List<GameToken>() {
-new GameToken() {TilePos= 44, IdentifierChar = 'A', InBase = true},
-new GameToken() {TilePos= 43, IdentifierChar = 'B', InBase = true},
-new GameToken() {TilePos= 42, IdentifierChar = 'C', InBase = true},
-new GameToken() { TilePos = 41, IdentifierChar = 'D', InBase = true }}},
+new GameToken() {TilePos= 0, IdentifierChar = 'A', InBase = true},
+new GameToken() {TilePos= 0, IdentifierChar = 'B', InBase = true},
+new GameToken() {TilePos= 0, IdentifierChar = 'C', InBase = true},
+new GameToken() { TilePos = 0, IdentifierChar = 'D', InBase = true }}},
 
 // BLUE
 new Player() {Name = "Stephan", Color = "blue", Tokens = new List<GameToken>() {
-new GameToken() {TilePos= 25, IdentifierChar = 'A', InBase = true},
-new GameToken() {TilePos= 24, IdentifierChar = 'B', InBase = true},
-new GameToken() {TilePos= 23, IdentifierChar = 'C', InBase = true},
-new GameToken() { TilePos = 22 , IdentifierChar = 'D', InBase = true}}},
+new GameToken() {TilePos= 0, IdentifierChar = 'A', InBase = true},
+new GameToken() {TilePos= 0, IdentifierChar = 'B', InBase = true},
+new GameToken() {TilePos= 0, IdentifierChar = 'C', InBase = true},
+new GameToken() { TilePos = 0 , IdentifierChar = 'D', InBase = true}}},
 
 // YELLOW
-new Player() {Name = "adam", Color = "yellow", Tokens = new List<GameToken>() {
-new GameToken() {TilePos= 6, IdentifierChar = 'A', InBase = true},
-new GameToken() {TilePos= 5, IdentifierChar = 'B', InBase = true},
-new GameToken() {TilePos= 4, IdentifierChar = 'C', InBase = true},
-new GameToken() { TilePos = 3 , IdentifierChar = 'D', InBase = true}}}
+new Player() {Name = "Leo", Color = "yellow", Tokens = new List<GameToken>() {
+new GameToken() {TilePos= 0, IdentifierChar = 'A', InBase = true},
+new GameToken() {TilePos= 0, IdentifierChar = 'B', InBase = true},
+new GameToken() {TilePos= 0, IdentifierChar = 'C', InBase = true},
+new GameToken() { TilePos = 0 , IdentifierChar = 'D', InBase = true}}}
 };
         }
 
@@ -158,17 +158,59 @@ new GameToken() { TilePos = 3 , IdentifierChar = 'D', InBase = true}}}
             token.TilePos += roll;
             if (token.TilePos >= _board.Tiles.Count - 1)
             {
-                player.Tokens.Remove(token);
+                token.TilePos = 0;
             }
-
-            Console.WriteLine("NEW POS: " + token.TilePos);
 
             await OnAfterRenderAsync(false);
         }
     }
 
+    protected async void BringOutToken()
+    {
+        Player player = GetPlayer();
+        if (isPlayerTurn && player.Tokens.Any(token => token.InBase))
+        {
+            int xPos = 0, yPos = 0;
+            switch (player.Color)
+            {
+                case "red":
+                    xPos = _board.redSpawnPosX;
+                    yPos = _board.redSpawnPosY;
+                    break;
+            }
+
+            char token = player.Tokens.First(token => token.InBase).IdentifierChar;
+
+            // Move out a token to the spawn position
+            int spawnIndex = _board.Tiles.FindIndex(tile => tile.XPos == xPos &&
+            tile.YPos
+            == yPos);
+
+            player.Tokens.First(t => t.IdentifierChar == token).TilePos = spawnIndex;
+            player.Tokens.First(t => t.IdentifierChar == token).InBase = false;
+
+            Console.WriteLine("Brought out token: " + token);
+
+            if (!player.Tokens.Any(t => !t.InBase && t.IdentifierChar != player.Tokens.First(t => t.IdentifierChar ==
+            token).IdentifierChar))
+                UpdateTokenSelection(player.Tokens.First(t => t.IdentifierChar == token).IdentifierChar);
+
+            Console.WriteLine($"AMOUNT OF TOKENS OUTSIDE BASE (PLAYER) {player.Name}: {player.Tokens.Count(t => !t.InBase)}");
+
+            // Render the changes
+            await OnAfterRenderAsync(false);
+        }
+        else
+        {
+            currentStatus = "No tokens in base!";
+        }
+
+    }
+
     private void UpdateTokenSelection(char token)
     {
+        Console.WriteLine($"Clicked token: {token}");
+
         Player player = GetPlayer();
         if (!IsTokenDead(token))
         {
@@ -176,7 +218,14 @@ new GameToken() { TilePos = 3 , IdentifierChar = 'D', InBase = true}}}
         }
         else if (player.Tokens.Count > 0)
         {
-            selectedToken = player.Tokens.FirstOrDefault().IdentifierChar;
+            if (player.Tokens.Any(t => !t.InBase))
+            {
+                selectedToken = player.Tokens.FirstOrDefault(token => !token.InBase).IdentifierChar;
+            }
+            else
+            {
+                selectedToken = player.Tokens.First().IdentifierChar;
+            }
         }
 
         Console.WriteLine("Selected token: " + selectedToken);
@@ -189,8 +238,12 @@ new GameToken() { TilePos = 3 , IdentifierChar = 'D', InBase = true}}}
             Player player = GetPlayer();
 
             // Token is not dead if found in list
-            if (!player.Tokens.Any(token => token.IdentifierChar == tokenIdentifier))
+            if (!player.Tokens.Any(token => token.IdentifierChar == tokenIdentifier)
+            || player.Tokens.Any(token => token.IdentifierChar == tokenIdentifier &&
+            token.InBase))
+            {
                 return true;
+            }
         }
 
         // Token is alive/exists in list

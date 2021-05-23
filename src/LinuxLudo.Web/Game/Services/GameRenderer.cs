@@ -12,6 +12,7 @@ namespace LinuxLudo.Web.Game
         private readonly ElementReference redToken, greenToken, blueToken, yellowToken;
         private Canvas2DContext context;
         private readonly int canvasWidth, canvasHeight;
+        private readonly string userName;
         private const string canvasBgHex = "#3D4849";
         private const string baseBgHex = "#493E3D";
         private const string fontFace = "Courier New";
@@ -22,8 +23,9 @@ namespace LinuxLudo.Web.Game
         private GameBoard board;
         private GameStatus gameStatus;
 
-        public GameRenderer(int canvasWidth, int canvasHeight, ElementReference redToken, ElementReference greenToken, ElementReference blueToken, ElementReference yellowToken)
+        public GameRenderer(string userName, int canvasWidth, int canvasHeight, ElementReference redToken, ElementReference greenToken, ElementReference blueToken, ElementReference yellowToken)
         {
+            this.userName = userName;
             this.canvasWidth = canvasWidth;
             this.canvasHeight = canvasHeight;
             this.redToken = redToken;
@@ -64,12 +66,13 @@ namespace LinuxLudo.Web.Game
 
             if (gameStatus.Players.Count > 0)
             {
-                await context.SetStrokeStyleAsync("#000000");
                 await context.SetFontAsync($"{canvasWidth / 25}px {fontFace}");
 
                 // Draw each players name on top of the base border
                 foreach (Player player in gameStatus.Players)
                 {
+                    await context.SetStrokeStyleAsync(player.Name == userName ? "#FFFFFF" : "#000000");
+
                     int xPos = 0, yPos = 0;
                     switch (player.Color)
                     {
@@ -91,7 +94,7 @@ namespace LinuxLudo.Web.Game
                             break;
                     }
 
-                    await context.StrokeTextAsync(player.Name, (xPos * TileSize) + TileSize / 2, (yPos * TileSize) + TileSize * 1.1, 2 * TileSize);
+                    await context.StrokeTextAsync(player.Name == userName ? "You" : player.Name, (xPos * TileSize) + TileSize / 2, (yPos * TileSize) + TileSize * 1.1, 2 * TileSize);
                 }
             }
         }
@@ -168,6 +171,7 @@ namespace LinuxLudo.Web.Game
                 return;
             }
 
+            await context.SetStrokeStyleAsync("#FFFFFF");
             foreach (Player player in gameStatus.Players)
             {
                 // Set the drawing color to match the players tokens await await
@@ -189,11 +193,9 @@ namespace LinuxLudo.Web.Game
                 }
 
                 // Draws each token, splits up the space if more than one is on the same tile
-                List<GameToken> playerTokens = player.Tokens;
-                List<int> asd = new();
 
                 // Draws the tokens in base first
-                for (int i = 0; i < playerTokens.Where(token => token.InBase).ToList().Count; i++)
+                for (int i = 0; i < player.Tokens.Where(token => token.InBase).ToList().Count; i++)
                 {
                     double xPos = 0, yPos = 0;
                     switch (player.Color)
@@ -216,6 +218,7 @@ namespace LinuxLudo.Web.Game
                             break;
                     }
 
+
                     xPos = xPos * TileSize + (TileSize / 2) + (i == 1 || i == 3 ? 1 * TileSize : 0);
                     yPos = (yPos * TileSize) + (TileSize * 1.5) + (i == 1 || i == 2 ? 1 * TileSize : 0);
 
@@ -225,25 +228,24 @@ namespace LinuxLudo.Web.Game
                     TileSize,
                     TileSize);
 
-                    await context.StrokeTextAsync(playerTokens[i].IdentifierChar.ToString(), xPos + TileSize / 3, yPos + TileSize / 1.5, TileSize);
-
-                    asd.Add(i);
+                    await context.StrokeTextAsync(player.Tokens[i].IdentifierChar.ToString(), xPos + TileSize / 3, yPos + TileSize / 1.5, TileSize);
                 }
 
-                for (int i = 0; i < playerTokens.Count; i++)
+                for (int i = 0; i < player.Tokens.Count; i++)
                 {
-
-                    if (asd.Contains(i))
+                    if (player.Tokens[i].InBase)
                         continue;
 
-                    int tokensOnSameTile = playerTokens.Count(t => t.TilePos == playerTokens[i].TilePos);
+                    Console.WriteLine("RENDERING PLAYER TOKEN OUTSIDE BASE: " + player.Tokens[i].IdentifierChar.ToString());
+
+                    int tokensOnSameTile = player.Tokens.Count(t => t.TilePos == player.Tokens[i].TilePos && !t.InBase);
                     double xPos, yPos, width = TokenSize, height = TokenSize;
 
                     if (tokensOnSameTile > 1)
                     {
                         await context.SetFontAsync($"{Math.Max(8, (canvasWidth / 25) - (tokensOnSameTile * 5))}px {fontFace}");
                         int index = 0;
-                        foreach (GameToken token in playerTokens.Where(t => t.TilePos == playerTokens[i].TilePos))
+                        foreach (GameToken token in player.Tokens.Where(t => t.TilePos == player.Tokens[i].TilePos && !t.InBase))
                         {
                             xPos = GetTilePos(token.TilePos, xPos: true) + (TokenSize / 24) + ((index == 1 || index == 3) ? (TokenSize / 2)
                             : 0);
@@ -262,12 +264,12 @@ namespace LinuxLudo.Web.Game
                     else
                     {
                         await context.SetFontAsync($"{canvasWidth / 25}px {fontFace}");
-                        xPos = GetTilePos(playerTokens[i].TilePos, xPos: true) + (TokenSize / 24);
-                        yPos = GetTilePos(playerTokens[i].TilePos, xPos:
+                        xPos = GetTilePos(player.Tokens[i].TilePos, xPos: true) + (TokenSize / 24);
+                        yPos = GetTilePos(player.Tokens[i].TilePos, xPos:
                         false) + (TokenSize / 24);
 
                         await context.DrawImageAsync(tokenToDraw, xPos, yPos, width, height);
-                        await context.StrokeTextAsync(playerTokens[i].IdentifierChar.ToString(), xPos + width / 3.5, yPos + height / 1.5);
+                        await context.StrokeTextAsync(player.Tokens[i].IdentifierChar.ToString(), xPos + width / 3.5, yPos + height / 1.5);
                     }
                 }
             }
