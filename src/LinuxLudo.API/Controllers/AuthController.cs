@@ -28,7 +28,7 @@ namespace LinuxLudo.API.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return Ok(new ErrorResponse(ModelState.Values.First().Errors.First().ErrorMessage, 500, null));
+                return Ok(new ErrorResponse(ModelState.Values.First().Errors.First().ErrorMessage, 500, null).Respond());
             }
 
             var user = _mapper.Map<SignUpResource, User>(resource);
