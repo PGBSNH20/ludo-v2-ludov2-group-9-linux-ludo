@@ -9,7 +9,7 @@ namespace LinuxLudo.API.Domain.Services
     public interface IGameService
     {
         Task<IEnumerable<Game>> GetAllGamesAsync();
-        Task<Game> GetGameByIdAsync(int id);
+        Task<Game> GetGameByIdAsync(string id);
         Task<Game> CreateGameAsync(Game game);
         Task DeleteGameAsync(Game game);
     }

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,9 +27,13 @@ namespace LinuxLudo.API.Services
             return games;
         }
 
-        public async Task<Game> GetGameByIdAsync(int id)
+        public async Task<Game> GetGameByIdAsync(string id)
         {
-            return await _unitOfWork.Games.GetByIdAsync(id);
+            var isValid = Guid.TryParse(id, out var guid);
+            if (!isValid)
+                return null;
+            
+            return await _unitOfWork.Games.GetByIdAsync(guid);
         }
 
         public async Task<Game> CreateGameAsync(Game game)
