@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "exyCcz8sq7vkrfXWxOml1pvC458dAS5/eiWDMnIYFDkBM/VNnVnajlncxlo0qin87OnTW3EhLmYm+DPs3/BCVA==",
+  "dgSpecHash": "lKGeSHhitiOCbsjiHVzZLjCXGiSm2sxh2+pPuVLEKfVL1eNrbXCcQ+RLpyV0TG2QtL7jGuv98Pd4HJCkGkS15A==",
   "success": true,
-  "projectFilePath": "C:\\Users\\adam-\\Documents\\Workspace\\ludo-v2-ludov2-group-9-linux-ludo\\src\\LinuxLudo.Api\\LinuxLudo.API.csproj",
+  "projectFilePath": "C:\\Users\\adam-\\Documents\\Workspace\\ludo-v2-ludov2-group-9-linux-ludo\\src\\linuxludo.api\\LinuxLudo.API.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\adam-\\.nuget\\packages\\automapper\\10.1.1\\automapper.10.1.1.nupkg.sha512",
     "C:\\Users\\adam-\\.nuget\\packages\\automapper.extensions.microsoft.dependencyinjection\\8.1.1\\automapper.extensions.microsoft.dependencyinjection.8.1.1.nupkg.sha512",

@@ -6,6 +6,11 @@
 
 <AuthorizeView>
     <div class="game-canvas">
+        <img @ref="redToken" hidden id="redToken" src="Images/redtoken.png" />
+        <img @ref="greenToken" hidden id="greenToken" src="Images/greentoken.png" />
+        <img @ref="blueToken" hidden id="blueToken" src="Images/bluetoken.png" />
+        <img @ref="yellowToken" hidden id="yellowToken" src="Images/yellowtoken.png" />
+
         <BECanvas Width="@_canvasWidth" Height="@_canvasHeight" @ref="_canvas"></BECanvas>
     </div>
 
@@ -54,6 +59,7 @@
     private const int _minWidthResize = 1600;
     private const int _minHeightResize = 720;
     private string canvasHtmlString => isPlayerTurn ? "" : "hidden";
+    private ElementReference redToken, greenToken, blueToken, yellowToken;
 
     // Game
     private string currentStatus = "Waiting for players...";
@@ -157,8 +163,22 @@
         foreach (Player player in _gameStatus.Players)
         {
             // Set the drawing color to match the players tokens await await
-            await _context.SetFillStyleAsync(player.Color);
-            await _context.SetStrokeStyleAsync("#FFFFFF");
+            ElementReference tokenToDraw;
+            switch (player.Color)
+            {
+                case "red":
+                    tokenToDraw = redToken;
+                    break;
+                case "green":
+                    tokenToDraw = greenToken;
+                    break;
+                case "blue":
+                    tokenToDraw = blueToken;
+                    break;
+                case "yellow":
+                    tokenToDraw = yellowToken;
+                    break;
+            }
 
             // Draws each token, splits up the space if more than one is on the same tile
             List<GameToken> playerTokens = player.Tokens;
@@ -182,7 +202,7 @@
                         width = (_tokenSize / tokensOnSameTile) + tokensOnSameTile;
                         height = (_tokenSize / tokensOnSameTile) + tokensOnSameTile;
 
-                        await _context.FillRectAsync(xPos, yPos, width, height);
+                        await _context.DrawImageAsync(tokenToDraw, xPos, yPos, width, height);
                         await _context.StrokeTextAsync(token.IdentifierChar.ToString(), xPos + width / 3, yPos + (height / 1.5));
                         index++;
                     }
@@ -194,7 +214,7 @@
                     yPos = GetTilePos(playerTokens[i].TilePos, xPos:
                     false) + (_tokenSize / 24);
 
-                    await _context.FillRectAsync(xPos, yPos, _tokenSize, _tokenSize);
+                    await _context.DrawImageAsync(tokenToDraw, xPos, yPos, width, height);
                     await _context.StrokeTextAsync(playerTokens[i].IdentifierChar.ToString(), xPos + width / 3.5, yPos + height / 1.5);
                 }
             }

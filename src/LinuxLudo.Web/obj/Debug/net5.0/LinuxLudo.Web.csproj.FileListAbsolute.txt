@@ -645,7 +645,6 @@ C:\Users\adam-\Documents\Workspace\ludo-v2-ludov2-group-9-linux-ludo\src\LinuxLu
 C:\Users\adam-\Documents\Workspace\ludo-v2-ludov2-group-9-linux-ludo\src\linuxludo.web\bin\Debug\net5.0\wwwroot\_framework\Newtonsoft.Json.dll.gz
 C:\Users\adam-\Documents\Workspace\ludo-v2-ludov2-group-9-linux-ludo\src\linuxludo.web\bin\Debug\net5.0\wwwroot\_framework\Newtonsoft.Json.dll
 C:\Users\adam-\Documents\Workspace\ludo-v2-ludov2-group-9-linux-ludo\src\linuxludo.web\obj\Debug\net5.0\build-gz\WS+bdc6D.gz
-C:\Users\adam-\Documents\Workspace\ludo-v2-ludov2-group-9-linux-ludo\src\LinuxLudo.Web\obj\Debug\net5.0\build-gz\QEH2hXOX.gz
 C:\Users\adam-\Documents\Workspace\ludo-v2-ludov2-group-9-linux-ludo\src\LinuxLudo.Web\obj\Debug\net5.0\scopedcss\Pages\Game.razor.rz.scp.css
 C:\Users\adam-\Documents\Workspace\ludo-v2-ludov2-group-9-linux-ludo\src\LinuxLudo.Web\obj\Debug\net5.0\scopedcss\Shared\NavMenu.razor.rz.scp.css
 C:\Users\adam-\Documents\Workspace\ludo-v2-ludov2-group-9-linux-ludo\src\LinuxLudo.Web\obj\Debug\net5.0\RazorDeclaration\Pages\Logout.razor.g.cs
@@ -662,3 +661,4 @@ C:\Users\adam-\Documents\Workspace\ludo-v2-ludov2-group-9-linux-ludo\src\LinuxLu
 C:\Users\adam-\Documents\Workspace\ludo-v2-ludov2-group-9-linux-ludo\src\LinuxLudo.Web\obj\Debug\net5.0\RazorDeclaration\Pages\Register.razor.g.cs
 C:\Users\adam-\Documents\Workspace\ludo-v2-ludov2-group-9-linux-ludo\src\LinuxLudo.Web\obj\Debug\net5.0\Razor\Pages\Register.razor.g.cs
 C:\Users\adam-\Documents\Workspace\ludo-v2-ludov2-group-9-linux-ludo\src\LinuxLudo.Web\obj\Debug\net5.0\scopedcss\Pages\Register.razor.rz.scp.css
+C:\Users\adam-\Documents\Workspace\ludo-v2-ludov2-group-9-linux-ludo\src\linuxludo.web\obj\Debug\net5.0\build-gz\TyADChh0.gz
