@@ -5,7 +5,7 @@ namespace LinuxLudo.Web.Game
 {
     public class GameBoard
     {
-        public List<GameTile> Tiles = new()
+        public readonly List<GameTile> Tiles = new()
         {
             // TOP MOST ROW
             new GameTile(GameColor.Any, 4, 1),
@@ -106,7 +106,10 @@ namespace LinuxLudo.Web.Game
             // Center tile
             new GameTile(GameColor.Any, 7, 8)
         };
-    
-        
+
+        public int redBaseX1 = 1, redBaseY1 = 2, redBaseY2 = 6;
+        public int yellowBaseX1 = 12, yellowBaseY1 = 2, yellowBaseY2 = 6;
+        public int greenBaseX1 = 1, greenBaseY1 = 13, greenBaseY2 = 17;
+        public int blueBaseX1 = 12, blueBaseY1 = 13, blueBaseY2 = 17;
     }
 }

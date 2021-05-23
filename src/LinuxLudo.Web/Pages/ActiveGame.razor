@@ -57,7 +57,6 @@
     private int _canvasWidth, _canvasHeight;
     private const int _minWidthResize = 1600;
     private const int _minHeightResize = 720;
-    private const string backgroundHex = "#3D4849";
     private string canvasHtmlString => isPlayerTurn ? "" : "hidden";
 
     // Game
@@ -65,7 +64,7 @@
     private char selectedToken = 'A';
 
     // This is true if it's the client-side player's turn
-    private bool isPlayerTurn = true; // TODO SET ISPLAYERTURN FALSE -- ONLY FOR TESTING
+    private bool isPlayerTurn = true; // TODO SET FROM API
 
     // When the page has fully loaded
     protected override async Task OnInitializedAsync()
@@ -84,7 +83,7 @@
 
             // Initialize a new GameService to communicate with API
             _gameService = new GameService(@Id, userName);
-            _gameRenderer = new GameRenderer(_canvasWidth, redToken, greenToken, blueToken, yellowToken);
+            _gameRenderer = new GameRenderer(_canvasWidth, _canvasHeight, redToken, greenToken, blueToken, yellowToken);
             _board = new GameBoard();
         }
         else
@@ -100,14 +99,42 @@
 
         // Fetches the current gamestatus BEFORE rendering anything
         if (firstRender)
-            _gameStatus = await _gameService.GetGameStatus();
-
-        // Draws a basic canvas background color
-        await _context.SetFillStyleAsync(backgroundHex);
-        if (_context.FillStyle.Equals(backgroundHex))
         {
-            await _context.FillRectAsync(0, 0, _canvasWidth, _canvasHeight);
+            _gameStatus = new();
+            _gameStatus.Players = new List<Player>()
+{
+// RED
+new Player() {Color = "red", Tokens = new List<GameToken>() {
+new GameToken() {TilePos= 63, IdentifierChar = 'A', InBase = true},
+new GameToken() {TilePos= 62, IdentifierChar = 'B'},
+new GameToken() {TilePos= 61, IdentifierChar = 'C'},
+new GameToken() { TilePos = 60, IdentifierChar = 'D' }}},
+
+// GREEN
+new Player() {Color = "green", Tokens = new List<GameToken>() {
+new GameToken() {TilePos= 44, IdentifierChar = 'A'},
+new GameToken() {TilePos= 43, IdentifierChar = 'B', InBase = true},
+new GameToken() {TilePos= 42, IdentifierChar = 'C', InBase = true},
+new GameToken() { TilePos = 41, IdentifierChar = 'D', InBase = true }}},
+
+// BLUE
+new Player() {Color = "blue", Tokens = new List<GameToken>() {
+new GameToken() {TilePos= 25, IdentifierChar = 'A'},
+new GameToken() {TilePos= 24, IdentifierChar = 'B'},
+new GameToken() {TilePos= 23, IdentifierChar = 'C', InBase = true},
+new GameToken() { TilePos = 22 , IdentifierChar = 'D', InBase = true}}},
+
+// YELLOW
+new Player() {Name = "adam", Color = "yellow", Tokens = new List<GameToken>() {
+new GameToken() {TilePos= 6, IdentifierChar = 'A', InBase = true},
+new GameToken() {TilePos= 5, IdentifierChar = 'B', InBase = true},
+new GameToken() {TilePos= 4, IdentifierChar = 'C', InBase = true},
+new GameToken() { TilePos = 3 , IdentifierChar = 'D', InBase = true}}}
+};
         }
+
+        // Fetch latest data from backend
+        // _gameStatus = await _ gameService.GetGameStatus();
 
         _gameRenderer.RenderGame(_context, _board, _gameStatus, currentStatus);
     }
@@ -170,7 +197,7 @@
 
     private Player GetPlayer()
     {
-        if (_gameStatus.Players.Any(p => p.Name == userName))
+        if (_gameStatus != null && _gameStatus.Players.Any(p => p.Name == userName))
         {
             return _gameStatus.Players.First(p => p.Name == userName);
         }

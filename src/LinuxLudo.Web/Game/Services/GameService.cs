@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Text.Json;
@@ -45,41 +44,6 @@ namespace LinuxLudo.Web.Game.Services
 
         public async Task<GameStatus> GetGameStatus()
         {
-            // TODO REMOVE || ONLY FOR TESTING PURPOSES
-            GameStatus TESTING_STATUS = new();
-            TESTING_STATUS.Players = new List<Player>()
-{
-// RED
-new Player() {Color = "red", Tokens = new List<GameToken>() {
-new GameToken() {TilePos= 63, IdentifierChar = 'A'},
-new GameToken() {TilePos= 62, IdentifierChar = 'B'},
-new GameToken() {TilePos= 61, IdentifierChar = 'C'},
-new GameToken() { TilePos = 60, IdentifierChar = 'D' }}},
-
-// GREEN
-new Player() {Color = "green", Tokens = new List<GameToken>() {
-new GameToken() {TilePos= 44, IdentifierChar = 'A'},
-new GameToken() {TilePos= 43, IdentifierChar = 'B'},
-new GameToken() {TilePos= 42, IdentifierChar = 'C'},
-new GameToken() { TilePos = 41, IdentifierChar = 'D' }}},
-
-// BLUE
-new Player() {Color = "blue", Tokens = new List<GameToken>() {
-new GameToken() {TilePos= 25, IdentifierChar = 'A'},
-new GameToken() {TilePos= 24, IdentifierChar = 'B'},
-new GameToken() {TilePos= 23, IdentifierChar = 'C'},
-new GameToken() { TilePos = 22 , IdentifierChar = 'D'}}},
-
-// YELLOW
-new Player() {Name = "adam", Color = "yellow", Tokens = new List<GameToken>() {
-new GameToken() {TilePos= 6, IdentifierChar = 'A'},
-new GameToken() {TilePos= 5, IdentifierChar = 'B'},
-new GameToken() {TilePos= 4, IdentifierChar = 'C'},
-new GameToken() { TilePos = 3 , IdentifierChar = 'D'}}}
-};
-
-            return await Task.FromResult(TESTING_STATUS);
-
             // Form data
             var body = new
             {

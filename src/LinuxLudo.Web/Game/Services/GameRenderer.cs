@@ -11,7 +11,10 @@ namespace LinuxLudo.Web.Game
     {
         private readonly ElementReference redToken, greenToken, blueToken, yellowToken;
         private Canvas2DContext context;
-        private readonly int canvasWidth;
+        private readonly int canvasWidth, canvasHeight;
+        private const string canvasBgHex = "#3D4849";
+        private const string baseBgHex = "#493E3D";
+        private const string fontFace = "Courier New";
         private int TileSize => canvasWidth / 16;
         private int TokenSize => canvasWidth / 18;
         private int TopOffset => TileSize * 2;
@@ -19,10 +22,10 @@ namespace LinuxLudo.Web.Game
         private GameBoard board;
         private GameStatus gameStatus;
 
-        public GameRenderer(int canvasWidth, ElementReference redToken, ElementReference greenToken, ElementReference blueToken, ElementReference yellowToken)
+        public GameRenderer(int canvasWidth, int canvasHeight, ElementReference redToken, ElementReference greenToken, ElementReference blueToken, ElementReference yellowToken)
         {
             this.canvasWidth = canvasWidth;
-
+            this.canvasHeight = canvasHeight;
             this.redToken = redToken;
             this.greenToken = greenToken;
             this.blueToken = blueToken;
@@ -36,19 +39,62 @@ namespace LinuxLudo.Web.Game
             this.gameStatus = gameStatus;
             this.currentStatus = currentStatus;
 
+
+            // Draws a basic canvas background color
+            await context.SetFillStyleAsync(canvasBgHex);
+            if (context.FillStyle.Equals(canvasBgHex))
+            {
+                await context.FillRectAsync(0, 0, canvasWidth, canvasHeight);
+            }
+
             await DrawGameOverlay();
             await DrawBoardLayout();
+            await DrawBases();
             await DrawPlayers();
         }
 
         protected async Task DrawGameOverlay()
         {
             await context.SetStrokeStyleAsync("#FFFFFF");
-            await context.SetFontAsync((canvasWidth / 25).ToString() + "px serif");
+            await context.SetFontAsync($"{canvasWidth / 25}px {fontFace}");
 
             // Draw a status text, starting at the top-left tile (with a max width of the first row as to not overlap with bases)
             await context.StrokeTextAsync(currentStatus, (board.Tiles[0].XPos * TileSize) + TileSize, TileSize + TileSize / 2,
             TileSize * 6);
+        }
+
+        protected async Task DrawBases()
+        {
+            // Draw all the bases
+            await context.SetFillStyleAsync("#DC143C");
+            await DrawTokenBase(board.redBaseX1, board.redBaseY1, board.redBaseY2);
+            await context.SetFillStyleAsync("#00FF7F");
+            await DrawTokenBase(board.greenBaseX1, board.greenBaseY1, board.greenBaseY2);
+            await context.SetFillStyleAsync("#1E90FF");
+            await DrawTokenBase(board.blueBaseX1, board.blueBaseY1, board.blueBaseY2);
+            await context.SetFillStyleAsync("#F0E68C");
+            await DrawTokenBase(board.yellowBaseX1, board.yellowBaseY1, board.yellowBaseY2);
+        }
+
+        protected async Task DrawTokenBase(int x1, int y1, int y2)
+        {
+            // Draws the top and bottom parts
+            for (int x = x1; x < x1 + 4; x++)
+            {
+                await context.FillRectAsync(x * TileSize - TileSize / 2, y1 * TileSize + TileSize / 2, TileSize, TileSize);
+                await context.FillRectAsync(x * TileSize - TileSize / 2, (y2 - 1) * TileSize + TileSize / 2, TileSize, TileSize);
+            }
+
+            // Draws the sides
+            for (int y = y1 + 1; y < y2; y++)
+            {
+                await context.FillRectAsync(x1 * TileSize - TileSize / 2, y * TileSize + TileSize / 2, TileSize, TileSize);
+                await context.FillRectAsync((x1 + 3) * TileSize - TileSize / 2, y * TileSize + TileSize / 2, TileSize, TileSize);
+            }
+
+            // Fills the center with a background color
+            await context.SetFillStyleAsync(baseBgHex);
+            await context.FillRectAsync((x1 + 1) * TileSize - TileSize / 2, (y1 + 2) * TileSize - TileSize / 2, 2 * TileSize, 2 * TileSize);
         }
 
         protected async Task DrawBoardLayout()
@@ -80,6 +126,7 @@ namespace LinuxLudo.Web.Game
                 await context.FillRectAsync(GetTilePos(i, xPos: true), GetTilePos(i, xPos: false), TileSize, TileSize);
             }
         }
+
         protected async Task DrawPlayers()
         {
             if (gameStatus.Players == null || gameStatus.Players.Count <= 0)
@@ -110,14 +157,58 @@ namespace LinuxLudo.Web.Game
 
                 // Draws each token, splits up the space if more than one is on the same tile
                 List<GameToken> playerTokens = player.Tokens;
+                List<int> asd = new();
+
+                // Draws the tokens in base first
+                for (int i = 0; i < playerTokens.Where(token => token.InBase).ToList().Count; i++)
+                {
+                    double xPos = 0, yPos = 0;
+                    switch (player.Color)
+                    {
+                        case "red":
+                            xPos = board.redBaseX1;
+                            yPos = board.redBaseY1;
+                            break;
+                        case "green":
+                            xPos = board.greenBaseX1;
+                            yPos = board.greenBaseY1;
+                            break;
+                        case "blue":
+                            xPos = board.blueBaseX1;
+                            yPos = board.blueBaseY1;
+                            break;
+                        case "yellow":
+                            xPos = board.yellowBaseX1;
+                            yPos = board.yellowBaseY1;
+                            break;
+                    }
+
+                    xPos = xPos * TileSize + (TileSize / 2) + (i == 1 || i == 3 ? 1 * TileSize : 0);
+                    yPos = (yPos * TileSize) + (TileSize * 1.5) + (i == 1 || i == 2 ? 1 * TileSize : 0);
+
+                    await context.DrawImageAsync(tokenToDraw,
+                    xPos,
+                    yPos,
+                    TileSize,
+                    TileSize);
+
+                    await context.StrokeTextAsync(playerTokens[i].IdentifierChar.ToString(), xPos + TileSize / 3, yPos + TileSize / 1.5, TileSize);
+
+                    asd.Add(i);
+                }
+
                 for (int i = 0; i < playerTokens.Count; i++)
                 {
+
+                    if (asd.Contains(i))
+                        continue;
+
                     int tokensOnSameTile = playerTokens.Count(t => t.TilePos == playerTokens[i].TilePos);
                     double xPos, yPos, width = TokenSize, height = TokenSize;
 
                     if (tokensOnSameTile > 1)
                     {
-                        await context.SetFontAsync(Math.Max(8, (canvasWidth / 25) - (tokensOnSameTile * 5)).ToString() + "px serif");
+                        await context.SetFontAsync($"{Math.Max(8, (canvasWidth / 25) - (tokensOnSameTile * 5))}px {fontFace}");
                         int index = 0;
                         foreach (GameToken token in playerTokens.Where(t => t.TilePos == playerTokens[i].TilePos))
                         {
@@ -137,7 +228,7 @@ namespace LinuxLudo.Web.Game
                     }
                     else
                     {
-                        await context.SetFontAsync((canvasWidth / 25).ToString() + "px serif");
+                        await context.SetFontAsync($"{canvasWidth / 25}px {fontFace}");
                         xPos = GetTilePos(playerTokens[i].TilePos, xPos: true) + (TokenSize / 24);
                         yPos = GetTilePos(playerTokens[i].TilePos, xPos:
                         false) + (TokenSize / 24);
@@ -160,6 +251,7 @@ namespace LinuxLudo.Web.Game
             return (board.Tiles[tileIndex].YPos * TileSize) - TileSize / 2 +
             TopOffset;
         }
+
 
     }
 }
