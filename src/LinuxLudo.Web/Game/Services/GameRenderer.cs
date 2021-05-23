@@ -39,7 +39,6 @@ namespace LinuxLudo.Web.Game
             this.gameStatus = gameStatus;
             this.currentStatus = currentStatus;
 
-
             // Draws a basic canvas background color
             await context.SetFillStyleAsync(canvasBgHex);
             if (context.FillStyle.Equals(canvasBgHex))
@@ -47,10 +46,10 @@ namespace LinuxLudo.Web.Game
                 await context.FillRectAsync(0, 0, canvasWidth, canvasHeight);
             }
 
-            await DrawGameOverlay();
             await DrawBoardLayout();
             await DrawBases();
             await DrawPlayers();
+            await DrawGameOverlay();
         }
 
         protected async Task DrawGameOverlay()
@@ -61,6 +60,40 @@ namespace LinuxLudo.Web.Game
             // Draw a status text, starting at the top-left tile (with a max width of the first row as to not overlap with bases)
             await context.StrokeTextAsync(currentStatus, (board.Tiles[0].XPos * TileSize) + TileSize, TileSize + TileSize / 2,
             TileSize * 6);
+
+
+            if (gameStatus.Players.Count > 0)
+            {
+                await context.SetStrokeStyleAsync("#000000");
+                await context.SetFontAsync($"{canvasWidth / 25}px {fontFace}");
+
+                // Draw each players name on top of the base border
+                foreach (Player player in gameStatus.Players)
+                {
+                    int xPos = 0, yPos = 0;
+                    switch (player.Color)
+                    {
+                        case "red":
+                            xPos = board.redBaseX1;
+                            yPos = board.redBaseY1;
+                            break;
+                        case "green":
+                            xPos = board.greenBaseX1;
+                            yPos = board.greenBaseY1;
+                            break;
+                        case "blue":
+                            xPos = board.blueBaseX1;
+                            yPos = board.blueBaseY1;
+                            break;
+                        case "yellow":
+                            xPos = board.yellowBaseX1;
+                            yPos = board.yellowBaseY1;
+                            break;
+                    }
+
+                    await context.StrokeTextAsync(player.Name, (xPos * TileSize) + TileSize / 2, (yPos * TileSize) + TileSize * 1.1, 2 * TileSize);
+                }
+            }
         }
 
         protected async Task DrawBases()

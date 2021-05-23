@@ -104,23 +104,23 @@
             _gameStatus.Players = new List<Player>()
 {
 // RED
-new Player() {Color = "red", Tokens = new List<GameToken>() {
+new Player() {Name="Leo", Color = "red", Tokens = new List<GameToken>() {
 new GameToken() {TilePos= 63, IdentifierChar = 'A', InBase = true},
-new GameToken() {TilePos= 62, IdentifierChar = 'B'},
-new GameToken() {TilePos= 61, IdentifierChar = 'C'},
-new GameToken() { TilePos = 60, IdentifierChar = 'D' }}},
+new GameToken() {TilePos= 62, IdentifierChar = 'B', InBase = true},
+new GameToken() {TilePos= 61, IdentifierChar = 'C', InBase = true},
+new GameToken() { TilePos = 60, IdentifierChar = 'D' , InBase = true}}},
 
 // GREEN
-new Player() {Color = "green", Tokens = new List<GameToken>() {
-new GameToken() {TilePos= 44, IdentifierChar = 'A'},
+new Player() {Name = "Jakob", Color = "green", Tokens = new List<GameToken>() {
+new GameToken() {TilePos= 44, IdentifierChar = 'A', InBase = true},
 new GameToken() {TilePos= 43, IdentifierChar = 'B', InBase = true},
 new GameToken() {TilePos= 42, IdentifierChar = 'C', InBase = true},
 new GameToken() { TilePos = 41, IdentifierChar = 'D', InBase = true }}},
 
 // BLUE
-new Player() {Color = "blue", Tokens = new List<GameToken>() {
-new GameToken() {TilePos= 25, IdentifierChar = 'A'},
-new GameToken() {TilePos= 24, IdentifierChar = 'B'},
+new Player() {Name = "Stephan", Color = "blue", Tokens = new List<GameToken>() {
+new GameToken() {TilePos= 25, IdentifierChar = 'A', InBase = true},
+new GameToken() {TilePos= 24, IdentifierChar = 'B', InBase = true},
 new GameToken() {TilePos= 23, IdentifierChar = 'C', InBase = true},
 new GameToken() { TilePos = 22 , IdentifierChar = 'D', InBase = true}}},
 
@@ -144,8 +144,8 @@ new GameToken() { TilePos = 3 , IdentifierChar = 'D', InBase = true}}}
         Player player = GetPlayer();
         if (isPlayerTurn && player.Tokens.Count > 0)
         {
-            // TODO IMPLEMENT WEBSOCKETS FOR ROLLING -- THIS IS ONLY FOR TESTING PURPOSES!!!!!!!!
             //await _gameService.RollDice();
+            // TODO IMPLEMENT WEBSOCKETS FOR ROLLING -- THIS IS ONLY FOR TESTING PURPOSES!!!!!!!!
 
             Random rand = new Random();
             int roll = rand.Next(0, 7);
@@ -160,6 +160,8 @@ new GameToken() { TilePos = 3 , IdentifierChar = 'D', InBase = true}}}
             {
                 player.Tokens.Remove(token);
             }
+
+            Console.WriteLine("NEW POS: " + token.TilePos);
 
             await OnAfterRenderAsync(false);
         }
