@@ -94,14 +94,14 @@
         // Creates a canvas
         _context = await _canvas.CreateCanvas2DAsync();
 
-        if (firstRender)
-        {
-            // Draws a basic canvas background color
-            await _context.SetFillStyleAsync(backgroundHex);
-            await _context.FillRectAsync(0, 0, _canvasWidth, _canvasHeight);
+        // Fetches the current gamestatus BEFORE rendering anything
+        _gameStatus = await _gameService.GetGameStatus();
 
-            // Fetches the current gamestatus BEFORE rendering anything
-            _gameStatus = await _gameService.GetGameStatus();
+        // Draws a basic canvas background color
+        await _context.SetFillStyleAsync(backgroundHex);
+        if (_context.FillStyle.Equals(backgroundHex))
+        {
+            await _context.FillRectAsync(0, 0, _canvasWidth, _canvasHeight);
         }
 
         _gameRenderer.RenderGame(_context, _board, _gameStatus, currentStatus);
@@ -125,6 +125,7 @@
                         if (player.Tokens[i].TilePos + roll < _board.Tiles.Count)
                         {
                             player.Tokens[i].TilePos += roll;
+                            currentStatus = player.Name + $" rolled a {roll}!";
                         }
                         else
                         {
@@ -138,10 +139,11 @@
                             p.Tokens.Remove(removeToken);
                             Console.WriteLine("Token knocked out!");
                         }));
+
+                        await OnAfterRenderAsync(false);
                     }
                 }
             }
-            await OnAfterRenderAsync(false);
         }
     }
 
