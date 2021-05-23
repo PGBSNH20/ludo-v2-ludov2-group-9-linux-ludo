@@ -15,14 +15,14 @@ namespace LinuxLudo.API.Database.Repositories
             _ctx = ctx;
         }
 
-        public IGameRepository Games => _gameRepository = _gameRepository ?? new (_ctx);
-        public IPlayerStatsRepository PlayerStats => _playerStatsRepository = _playerStatsRepository ?? new (_ctx);
-        
+        public IGameRepository Games => _gameRepository = _gameRepository ?? new(_ctx);
+        public IPlayerStatsRepository PlayerStats => _playerStatsRepository = _playerStatsRepository ?? new(_ctx);
+
         public void Dispose()
         {
             _ctx.Dispose();
         }
-        
+
         public async Task<int> CommitAsync()
         {
             return await _ctx.SaveChangesAsync();

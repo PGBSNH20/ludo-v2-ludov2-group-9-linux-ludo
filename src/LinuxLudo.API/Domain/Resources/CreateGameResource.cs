@@ -9,7 +9,7 @@ namespace LinuxLudo.API.Domain.Resources
         [MaxLength(40)]
         public string Name { get; set; }
         [Required]
-        [Range(2,4)]
+        [Range(2, 4)]
         public int MaxPlayers { get; set; }
     }
 }

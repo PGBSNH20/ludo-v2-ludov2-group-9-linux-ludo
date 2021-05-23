@@ -20,7 +20,7 @@ namespace LinuxLudo.API.Database.Repositories
 
         private AppDbContext AppDbContext
         {
-            get { return Ctx;  }
+            get { return Ctx; }
         }
     }
 }
