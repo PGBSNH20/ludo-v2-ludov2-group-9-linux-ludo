@@ -10,7 +10,7 @@
     </div>
 
     <div class="player-controls @canvasHtmlString">
-        <button class="roll-button">Roll dice</button>
+        <button class="roll-button" @onclick=RollDice>Roll dice</button>
         <button class="token-button">Bring out token</button>
     </div>
 </AuthorizeView>
@@ -74,15 +74,15 @@
         // Creates a canvas
         _context = await _canvas.CreateCanvas2DAsync();
 
-        // Draws a basic canvas background color
         if (firstRender)
         {
+            // Draws a basic canvas background color
             await _context.SetFillStyleAsync("#3D4849");
             await _context.FillRectAsync(0, 0, _canvasWidth, _canvasHeight);
-        }
 
-        // Fetches the current gamestatus BEFORE rendering anything
-        _gameStatus = await _gameService.GetGameStatus();
+            // Fetches the current gamestatus BEFORE rendering anything
+            _gameStatus = await _gameService.GetGameStatus();
+        }
 
         await DrawGameOverlay();
         await DrawBoardLayout();
@@ -165,7 +165,7 @@
                         height = (_tokenSize / tokensOnSameTile) + tokensOnSameTile;
 
                         await _context.FillRectAsync(xPos, yPos, width, height);
-                        await _context.StrokeTextAsync((index + 1).ToString(), xPos + width / 3, yPos + (height / 1.5));
+                        await _context.StrokeTextAsync(token.IdentifierChar.ToString(), xPos + width / 3, yPos + (height / 1.5));
                         index++;
                     }
                 }
@@ -177,7 +177,7 @@
                     false) + (_tokenSize / 24);
 
                     await _context.FillRectAsync(xPos, yPos, _tokenSize, _tokenSize);
-                    await _context.StrokeTextAsync((i + 1).ToString(), xPos + width / 3.5, yPos + height / 1.5);
+                    await _context.StrokeTextAsync(playerTokens[i].IdentifierChar.ToString(), xPos + width / 3.5, yPos + height / 1.5);
                 }
             }
         }
@@ -199,7 +199,37 @@
     {
         if (isPlayerTurn)
         {
-            await _gameService.RollDice();
+            // TODO IMPLEMENT WEBSOCKETS FOR ROLLING -- THIS IS ONLY FOR TESTING PURPOSES!!!!!!!!
+            //await _gameService.RollDice();
+
+            foreach (Player player in _gameStatus.Players)
+            {
+                for (int i = 0; i < player.Tokens.Count; i++)
+                {
+                    {
+                        Random rand = new Random();
+                        int roll = rand.Next(0, 7);
+
+                        if (player.Tokens[i].TilePos + roll < _board.Tiles.Count)
+                        {
+                            player.Tokens[i].TilePos += roll;
+                        }
+                        else
+                        {
+                            player.Tokens[i].TilePos = ((player.Tokens[i].TilePos + roll) - _board.Tiles.Count);
+                        }
+
+
+                        _gameStatus.Players.ForEach(p => p.Tokens.Where(t => t.TilePos == player.Tokens[i].TilePos && p.Color !=
+                        player.Color).ToList().ForEach(removeToken =>
+                        {
+                            p.Tokens.Remove(removeToken);
+                            Console.WriteLine("Token knocked out!");
+                        }));
+                    }
+                }
+            }
+            await OnAfterRenderAsync(false);
         }
     }
 }

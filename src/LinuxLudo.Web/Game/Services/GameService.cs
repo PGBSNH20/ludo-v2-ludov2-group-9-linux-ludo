@@ -51,31 +51,31 @@ namespace LinuxLudo.Web.Game.Services
 {
 // RED
 new Player() {Color = "#660000", Tokens = new List<GameToken>() {
-new GameToken() {TilePos= 63},
-new GameToken() {TilePos= 62},
-new GameToken() {TilePos= 61},
-new GameToken() { TilePos = 60 }}},
+new GameToken() {TilePos= 63, IdentifierChar = 'A'},
+new GameToken() {TilePos= 62, IdentifierChar = 'B'},
+new GameToken() {TilePos= 61, IdentifierChar = 'C'},
+new GameToken() { TilePos = 60, IdentifierChar = 'D' }}},
 
 // GREEN
 new Player() {Color = "#006400", Tokens = new List<GameToken>() {
-new GameToken() {TilePos= 44},
-new GameToken() {TilePos= 43},
-new GameToken() {TilePos= 42},
-new GameToken() { TilePos = 41 }}},
+new GameToken() {TilePos= 44, IdentifierChar = 'A'},
+new GameToken() {TilePos= 43, IdentifierChar = 'B'},
+new GameToken() {TilePos= 42, IdentifierChar = 'C'},
+new GameToken() { TilePos = 41, IdentifierChar = 'D' }}},
 
 // BLUE
 new Player() {Color = "#0000CD", Tokens = new List<GameToken>() {
-new GameToken() {TilePos= 25},
-new GameToken() {TilePos= 24},
-new GameToken() {TilePos= 23},
-new GameToken() { TilePos = 22 }}},
+new GameToken() {TilePos= 25, IdentifierChar = 'A'},
+new GameToken() {TilePos= 24, IdentifierChar = 'B'},
+new GameToken() {TilePos= 23, IdentifierChar = 'C'},
+new GameToken() { TilePos = 22 , IdentifierChar = 'D'}}},
 
 // YELLOW
 new Player() {Color = "#808000", Tokens = new List<GameToken>() {
-new GameToken() {TilePos= 6},
-new GameToken() {TilePos= 5},
-new GameToken() {TilePos= 4},
-new GameToken() { TilePos = 3 }}}
+new GameToken() {TilePos= 6, IdentifierChar = 'A'},
+new GameToken() {TilePos= 5, IdentifierChar = 'B'},
+new GameToken() {TilePos= 4, IdentifierChar = 'C'},
+new GameToken() { TilePos = 3 , IdentifierChar = 'D'}}}
 };
 
             return await Task.FromResult(TESTING_STATUS);
