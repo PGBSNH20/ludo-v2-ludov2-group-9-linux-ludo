@@ -3,13 +3,12 @@
 @inject BrowserService browserService;
 
 <h1 class="title-text"><b>Game @Id</b></h1>
-<img @ref="redToken" hidden id="redToken" src="Images/redtoken.png" />
-<img @ref="greenToken" hidden id="greenToken" src="Images/greentoken.png" />
-<img @ref="blueToken" hidden id="blueToken" src="Images/bluetoken.png" />
-<img @ref="yellowToken" hidden id="yellowToken" src="Images/yellowtoken.png" />
-
 <AuthorizeView>
     <div class="game-canvas">
+        <img @ref="redToken" hidden id="redToken" src="Images/redtoken.png" />
+        <img @ref="greenToken" hidden id="greenToken" src="Images/greentoken.png" />
+        <img @ref="blueToken" hidden id="blueToken" src="Images/bluetoken.png" />
+        <img @ref="yellowToken" hidden id="yellowToken" src="Images/yellowtoken.png" />
         <BECanvas Width="@_canvasWidth" Height="@_canvasHeight" @ref="_canvas"></BECanvas>
     </div>
 
@@ -84,7 +83,7 @@
 
             // Initialize a new GameService to communicate with API
             _gameService = new GameService(@Id, userName);
-            _gameRenderer = new GameRenderer(userName, _canvasWidth, _canvasHeight, redToken, greenToken, blueToken, yellowToken);
+            _gameRenderer = new GameRenderer(userName, _canvasWidth, _canvasHeight);
             _board = new GameBoard();
         }
         else
@@ -133,16 +132,18 @@ new GameToken() {TilePos= 0, IdentifierChar = 'C', InBase = true},
 new GameToken() { TilePos = 0 , IdentifierChar = 'D', InBase = true}}}
 };
 
+            // Reload UI components on page load
+            StateHasChanged();
         }
 
+        _gameRenderer.redToken = redToken;
+        _gameRenderer.greenToken = greenToken;
+        _gameRenderer.blueToken = blueToken;
+        _gameRenderer.yellowToken = yellowToken;
         // Fetch latest data from backend
         // _gameStatus = await _ gameService.GetGameStatus();
 
         await _gameRenderer.RenderGame(_context, _board, _gameStatus, currentStatus);
-        if (firstRender)
-        {
-            StateHasChanged();
-        }
     }
 
     protected async void RollDice()
@@ -195,13 +196,10 @@ new GameToken() { TilePos = 0 , IdentifierChar = 'D', InBase = true}}}
             player.Tokens.First(t => t.IdentifierChar == token).TilePos = spawnIndex;
             player.Tokens.First(t => t.IdentifierChar == token).InBase = false;
 
-            Console.WriteLine("Brought out token: " + token);
-
             if (!player.Tokens.Any(t => !t.InBase && t.IdentifierChar != player.Tokens.First(t => t.IdentifierChar ==
             token).IdentifierChar))
                 UpdateTokenSelection(player.Tokens.First(t => t.IdentifierChar == token).IdentifierChar);
 
-            Console.WriteLine($"AMOUNT OF TOKENS OUTSIDE BASE (PLAYER) {player.Name}: {player.Tokens.Count(t => !t.InBase)}");
 
             // Render the changes
             await OnAfterRenderAsync(false);
@@ -215,8 +213,6 @@ new GameToken() { TilePos = 0 , IdentifierChar = 'D', InBase = true}}}
 
     private void UpdateTokenSelection(char token)
     {
-        Console.WriteLine($"Clicked token: {token}");
-
         Player player = GetPlayer();
         if (!IsTokenDead(token))
         {
@@ -233,8 +229,6 @@ new GameToken() { TilePos = 0 , IdentifierChar = 'D', InBase = true}}}
                 selectedToken = player.Tokens.First().IdentifierChar;
             }
         }
-
-        Console.WriteLine("Selected token: " + selectedToken);
     }
 
     private bool IsTokenDead(char tokenIdentifier)

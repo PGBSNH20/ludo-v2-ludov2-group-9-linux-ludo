@@ -8,7 +8,7 @@ namespace LinuxLudo.Web.Game
 {
     public class GameRenderer
     {
-        private readonly ElementReference redToken, greenToken, blueToken, yellowToken;
+        public ElementReference redToken, greenToken, blueToken, yellowToken;
         private Canvas2DContext context;
         private readonly int canvasWidth, canvasHeight;
         private readonly string userName;
@@ -22,19 +22,20 @@ namespace LinuxLudo.Web.Game
         private GameBoard board;
         private GameStatus gameStatus;
 
-        public GameRenderer(string userName, int canvasWidth, int canvasHeight, ElementReference redToken, ElementReference greenToken, ElementReference blueToken, ElementReference yellowToken)
+        public GameRenderer(string userName, int canvasWidth, int canvasHeight)
         {
             this.userName = userName;
             this.canvasWidth = canvasWidth;
             this.canvasHeight = canvasHeight;
-            this.redToken = redToken;
-            this.greenToken = greenToken;
-            this.blueToken = blueToken;
-            this.yellowToken = yellowToken;
         }
 
         public async Task RenderGame(Canvas2DContext context, GameBoard board, GameStatus gameStatus, string currentStatus)
         {
+            if (redToken.Context == null)
+            {
+                return;
+            }
+
             this.context = context;
             this.board = board;
             this.gameStatus = gameStatus;
@@ -45,6 +46,10 @@ namespace LinuxLudo.Web.Game
             if (context.FillStyle.Equals(canvasBgHex))
             {
                 await context.FillRectAsync(0, 0, canvasWidth, canvasHeight);
+
+                // Fill the middle part (between the paths and tiles)
+                await context.SetFillStyleAsync("#000000");
+                await context.FillRectAsync((TileSize / 2) + TileSize, TileSize * 3, canvasWidth - (TileSize * 2.5), canvasHeight - (TileSize * 5));
             }
 
             await DrawBoardLayout();
