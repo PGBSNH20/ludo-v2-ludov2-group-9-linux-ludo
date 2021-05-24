@@ -1,6 +1,10 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 .navbar-title
 {
-    background-color: #9932CC;
+    background-color: #9ca6d9;
     margin-left: 15px;
     color: white;
     font-size: 28px;
@@ -8,7 +12,7 @@
 
 #heading
 {
-    background-color: #9932CC;
+    background-color: #9ca6d9;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -17,10 +21,18 @@
 .nav-menu
 {
     color: white;
-    background-color: #9932CC;
+    background-color: #9ca6d9;
     display: flex;
     align-items: center;
     justify-content: center;
+    text-align: center;
+}
+
+.nav-btn
+{
+    font-size: 48px;
+    width: 10px;
+    background-color: cyan;
 }
 
 #heading img{
@@ -34,8 +46,10 @@
 
 .navbar-name-text
 {
+    margin-top: 5px;
     font-size: 12px;
-    color: yellowgreen;
+    background-color: rgba(0, 0, 0, 0.5);
+    color: #a6d99c;
     display: flex;
     align-items: center;
     justify-content: center;

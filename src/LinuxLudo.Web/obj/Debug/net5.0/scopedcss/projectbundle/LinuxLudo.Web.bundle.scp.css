@@ -14,6 +14,7 @@
 	display: flex;
 	align-items: center;
 	flex-direction: column;
+    text-align: center;
 }
 
 .game-name[b-i9c2lkf1j2]
@@ -272,8 +273,8 @@
 .game-btn[b-0legnhbyhg]
 {
     font-size: 24px;
-    background-color: green;
-    color: white;
+    background-color: #a6d99c;
+    color: black;
 
     width: 20em;
     height: 5em;
@@ -287,21 +288,55 @@
     background-color: darkgreen;
     transform: scale(1.5);
 }
+
+.game-container[b-0legnhbyhg]
+{
+    text-align: center;
+}
 /* /Pages/Index.razor.rz.scp.css */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-h1[b-m53w0cp7ne] {
+.title-text[b-m53w0cp7ne] {
     font-weight: bold;
     font-size: 48px;
 }
 
 .index-body[b-m53w0cp7ne] {
+    text-align: center;
     padding: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+	display: flex;
+	align-items: center;
+	flex-direction: column;
+}
+
+.about-page[b-m53w0cp7ne]
+{
+    font-size: 16px;
+    margin-top: 25px;
+}
+
+.repository-link[b-m53w0cp7ne]
+{
+    font-size: 20px;
+    color: blue;
+}
+
+.navigation[b-m53w0cp7ne]
+{
+    margin-top: 5%;
+}
+
+.play-btn[b-m53w0cp7ne]
+{
+    width: 10em;
+    height: 5em;
+    background-color: #9cc5d9;
+    border: 3px solid #000000;
+    color: white;
+    font-size: 48px;
+    font-weight: bold;
 }
 /* /Pages/Login.razor.rz.scp.css */
 .error-msg[b-e0pvqm75em]
@@ -490,9 +525,13 @@ h1[b-m53w0cp7ne] {
     }
 }
 /* /Shared/NavMenu.razor.rz.scp.css */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 .navbar-title[b-2zu9a2f2m5]
 {
-    background-color: #9932CC;
+    background-color: #9ca6d9;
     margin-left: 15px;
     color: white;
     font-size: 28px;
@@ -500,7 +539,7 @@ h1[b-m53w0cp7ne] {
 
 #heading[b-2zu9a2f2m5]
 {
-    background-color: #9932CC;
+    background-color: #9ca6d9;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -509,10 +548,18 @@ h1[b-m53w0cp7ne] {
 .nav-menu[b-2zu9a2f2m5]
 {
     color: white;
-    background-color: #9932CC;
+    background-color: #9ca6d9;
     display: flex;
     align-items: center;
     justify-content: center;
+    text-align: center;
+}
+
+.nav-btn[b-2zu9a2f2m5]
+{
+    font-size: 48px;
+    width: 10px;
+    background-color: cyan;
 }
 
 #heading img[b-2zu9a2f2m5]{
@@ -526,8 +573,10 @@ h1[b-m53w0cp7ne] {
 
 .navbar-name-text[b-2zu9a2f2m5]
 {
+    margin-top: 5px;
     font-size: 12px;
-    color: yellowgreen;
+    background-color: rgba(0, 0, 0, 0.5);
+    color: #a6d99c;
     display: flex;
     align-items: center;
     justify-content: center;

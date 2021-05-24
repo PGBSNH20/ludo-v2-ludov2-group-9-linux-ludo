@@ -17,11 +17,10 @@ html {
    ========================================================================== */
 
 /**
- * Remove the margin in all browserD0D0D0s.
+ * Remove the margin in all browsers.
  */
 
 body {
-  background-color: #D0D0D0;
   margin: 0;
 }
 
@@ -21636,15 +21635,6 @@ video {
 .animate-bounce {
   -webkit-animation: bounce 1s infinite;
           animation: bounce 1s infinite;
-}
-
-#loading-text
-{
-  font-size: 48px;
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
 }
 
 #blazor-error-ui {

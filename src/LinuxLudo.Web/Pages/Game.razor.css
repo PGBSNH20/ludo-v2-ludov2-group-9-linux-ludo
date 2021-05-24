@@ -17,8 +17,8 @@
 .game-btn
 {
     font-size: 24px;
-    background-color: green;
-    color: white;
+    background-color: #a6d99c;
+    color: black;
 
     width: 20em;
     height: 5em;
@@ -31,4 +31,9 @@
 {
     background-color: darkgreen;
     transform: scale(1.5);
+}
+
+.game-container
+{
+    text-align: center;
 }
