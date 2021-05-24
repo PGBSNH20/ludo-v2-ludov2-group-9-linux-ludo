@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Blazor.Extensions.Canvas.Canvas2D;
 using Microsoft.AspNetCore.Components;
@@ -288,7 +289,5 @@ namespace LinuxLudo.Web.Game
             return (board.Tiles[tileIndex].YPos * TileSize) - TileSize / 2 +
             TopOffset;
         }
-
-
     }
 }

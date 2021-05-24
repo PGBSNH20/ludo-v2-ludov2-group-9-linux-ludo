@@ -174,10 +174,11 @@ new GameToken() { TilePos = 0 , IdentifierChar = 'D', InBase = true}}
 
         await _gameRenderer.RenderGame(_context, _board, _gameStatus, currentStatus);
     }
+
     protected async void RollDice()
     {
         Player player = GetPlayer();
-        if (isPlayerTurn && player.Tokens.Count > 0)
+        if (isPlayerTurn && player.Tokens.Count(token => !token.InBase) > 0)
         {
             //await _gameService.RollDice();
             // TODO IMPLEMENT WEBSOCKETS FOR ROLLING -- THIS IS ONLY FOR TESTING PURPOSES!!!!!!!!
@@ -190,13 +191,22 @@ new GameToken() { TilePos = 0 , IdentifierChar = 'D', InBase = true}}
             GameToken token = player.Tokens.Where(token => token.IdentifierChar ==
             selectedToken).FirstOrDefault();
 
-            token.TilePos += roll;
-            if (token.TilePos >= _board.Tiles.Count - 1)
+            if (roll > 0)
             {
-                token.TilePos = 0;
+                token.TilePos += roll;
+                if (token.TilePos >= _board.Tiles.Count - 2)
+                {
+                    player.Tokens.Remove(token);
+                    token.TilePos = (token.TilePos - _board.Tiles.Count);
+                    UpdateTokenSelection(selectedToken);
+                }
             }
 
             await OnAfterRenderAsync(false);
+        }
+        else
+        {
+            currentStatus = "No tokens to bring out!";
         }
     }
 
@@ -293,7 +303,5 @@ new GameToken() { TilePos = 0 , IdentifierChar = 'D', InBase = true}}
     private void JoinGame()
     {
         hasJoinedGame = true;
-        StateHasChanged();
-        Console.WriteLine("CLICKED - hasJoinedGame: " + hasJoinedGame);
     }
 }
