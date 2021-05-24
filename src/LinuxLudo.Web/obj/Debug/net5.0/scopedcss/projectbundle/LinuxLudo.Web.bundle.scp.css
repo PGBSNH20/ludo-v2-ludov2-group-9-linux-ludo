@@ -18,8 +18,7 @@
 
 .game-name[b-i9c2lkf1j2]
 {
-    color: white;
-    background-color: black;
+    color: black;
     width: 25%;
     text-align: center;
 	font-size: 48px;
@@ -71,6 +70,13 @@
 	animation: swing-b-i9c2lkf1j2 2s ease;
 	-webkit-animation-iteration-count: 1;
 	animation-iteration-count: 1;
+}
+
+#play-btn:disabled[b-i9c2lkf1j2]
+{
+    border: 5px solid #999999;
+    background-color: #cccccc;
+    color: #666666;
 }
 
 .player-controls[b-i9c2lkf1j2]
