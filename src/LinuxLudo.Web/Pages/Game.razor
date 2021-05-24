@@ -1,5 +1,4 @@
 @page "/Play"
-
 @inject NavigationManager NavManager; // Used to navigate in the webbrowser to different urls
 
 <!-- This page displays the actual Ludo game and can only be accessed when logged in/authenticated -->
@@ -11,6 +10,19 @@
             <div class="game-board">
                 <h1 class="username-text">Playing as @userName</h1>
             </div>
+
+            <div class="available-games">
+                <div class="btn-group">
+                    <ul>
+                        @foreach (var game in availableGames)
+                {
+                        <li><button class="game-btn" @onclick=@(() =>
+                                NavManager.NavigateTo($"/Game/{game.gameId}"))>Game
+                                (@game.gameId) - @game.amountOfPlayers/4 players</button></li>
+                        }
+                    </ul>
+                </div>
+            </div>
         </div>
     </Authorized>
 </AuthorizeView>
@@ -21,6 +33,7 @@
     [CascadingParameter]
     public Task<AuthenticationState> AuthState { get; set; }
     private string userName;
+    private List<GameObject> availableGames;
 
     // When the page is fully loaded/on startup
     protected override async Task OnInitializedAsync()
@@ -36,5 +49,19 @@
         {
             NavManager.NavigateTo("/Login");
         }
+
+        availableGames = new List<GameObject>();
+        GetAvailableGames();
+    }
+
+    private List<GameObject> GetAvailableGames()
+    {
+        // TODO FETCH FROM API!!!!!
+
+        availableGames.Add(new GameObject(1, "1"));
+        availableGames.Add(new GameObject(2, "1337"));
+        availableGames.Add(new GameObject(3, "420"));
+        availableGames.Add(new GameObject(4, "8888"));
+        return availableGames;
     }
 }

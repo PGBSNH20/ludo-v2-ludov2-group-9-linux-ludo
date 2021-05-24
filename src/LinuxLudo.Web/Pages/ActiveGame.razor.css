@@ -1,6 +1,5 @@
 .join-screen
 {
-	margin-top: 15em;
 	display: flex;
     align-items: center;
     justify-content: center;
@@ -17,9 +16,11 @@
 	font-size: 48px;
 	color: white;
 	background-color: green;
-	margin-left: 10em;
-	width: 25em;
-	height: 10em;
+	margin-left: 16em;
+	margin-top: 1em;
+	margin-bottom: 1em;
+	width: 20em;
+	height: 5em;
 }
 
 .player-controls

@@ -45,8 +45,12 @@
         <div class="join-screen" hidden=@(!hasJoinedGame)>
             <h1 class="join-text">Game @Id
             </h1>
-            <button class="join-button" @onclick=JoinGame>Join game</button>
         </div>
+
+        <button class="join-button" @onclick=JoinGame>Join game</button>
+        <button class="join-button" style="background-color: #6699CC;" @onclick=@(() =>
+        NavManager.NavigateTo("/Play"))>Browse
+            available games</button>
     }
 </AuthorizeView>
 
@@ -206,7 +210,7 @@ new GameToken() { TilePos = 0 , IdentifierChar = 'D', InBase = true}}
         }
         else
         {
-            currentStatus = "No tokens to bring out!";
+            currentStatus = "Bring out a token before rolling!";
         }
     }
 

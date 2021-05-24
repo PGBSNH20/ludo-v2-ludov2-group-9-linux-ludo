@@ -5,3 +5,22 @@
     align-items: center;
     justify-content: center;
 }
+
+.available-games
+{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+.game-btn
+{
+    font-size: 24px;
+    background-color: green;
+    color: white;
+
+    width: 20em;
+    height: 5em;
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+}
