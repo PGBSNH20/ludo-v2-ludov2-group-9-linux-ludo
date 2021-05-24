@@ -1,7 +1,8 @@
-@page "/Game/{Id:int}"
+@page "/Game/{Id:guid}"
 @inject NavigationManager NavManager; // Used to navigate in the webbrowser to different urls
 @inject BrowserService browserService;
 @inject IJSRuntime JsRuntime;
+@inject Blazored.LocalStorage.ILocalStorageService localStorage
 
 <AuthorizeView>
     <img @ref="redToken" hidden id="redToken" src="Images/redtoken.png" />
@@ -10,7 +11,7 @@
     <img @ref="yellowToken" hidden id="yellowToken" src="Images/yellowtoken.png" />
 
     <div class="game-screen" hidden=@(!hasJoinedGame)>
-        <h1 class="title-text"><b>Game @Id</b></h1>
+        <h1 class="title-text"><b>@_game.Name</b></h1>
         <div class="game-canvas">
             <BECanvas Width="@_canvasWidth" Height="@_canvasHeight" @ref="_canvas"></BECanvas>
         </div>
@@ -49,24 +50,26 @@
 
     @if (!hasJoinedGame)
     {
-        <h1 class="join-text">Game @Id
-        </h1>
+        <div class="game-info">
+            <h1 class="game-name">@_game.Name</h1>
+            <h2 class="game-details-text">Slots taken: <b>@_game.AmountPlaying</b>/<b>@_game.MaxPlayers</b></h2>
+        </div>
         <div class="join-screen" hidden=@(!hasJoinedGame)>
             <button class="game-option-button" id="play-btn" @onclick=JoinGame>Join game</button>
             <button class="game-option-button" id="browse-btn" @onclick=@(() => NavManager.NavigateTo("/Play"))>Browse
                 available games</button>
         </div>
-
     }
 </AuthorizeView>
 
 @code
 {
     [Parameter]
-    public int Id { get; set; }
+    public Guid Id { get; set; }
     [CascadingParameter]
     private Task<AuthenticationState> AuthState { get; set; }
     private string userName;
+    private AvailableGame _game = new();
 
     // Canvas
     protected BECanvasComponent _canvas;
@@ -103,10 +106,13 @@
             _canvasWidth = windowDim.Width >= _minWidthResize && windowDim.Height >= _minHeightResize ? (int)(windowDim.Width *
             0.3) : (int)(windowDim.Width * 0.9);
             _canvasHeight = (int)(_canvasWidth * 1.15);
+            _board = new GameBoard();
 
             // Initialize a new GameService to communicate with API
             _gameService = new GameService(@Id, userName);
-            _board = new GameBoard();
+            var authToken = await localStorage.GetItemAsync<string>("authToken");
+            var allGames = await _gameService.FetchAllGames(authToken);
+            _game = allGames.First(game => game.Id == Id.ToString());
         }
         else
         {

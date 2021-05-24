@@ -12,12 +12,12 @@ namespace LinuxLudo.Web.Game.Services
     public class GameService
     {
         private readonly ILocalStorageService _localStorage;
-        private readonly int _gameId;
+        private readonly Guid _gameId;
         private readonly string _userName;
         private readonly HttpClient _client;
         private const string API_URL = "https://localhost:5001/api";
 
-        public GameService(int gameId, string userName)
+        public GameService(Guid gameId, string userName)
         {
             _gameId = gameId;
             _userName = userName;

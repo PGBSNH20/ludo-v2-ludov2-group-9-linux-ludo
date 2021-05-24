@@ -8,6 +8,8 @@ namespace LinuxLudo.Web.Game
         public string Name { get; set; }
         public int MaxPlayers { get; set; }
         public int State { get; set; }
+
+        public int AmountPlaying { get; set; }
     }
 
     public class GamesResponseModel
