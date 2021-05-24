@@ -41,4 +41,10 @@
     color: white;
     font-size: 48px;
     font-weight: bold;
+    transition: all .15s ease-in-out;
+}
+
+.play-btn:hover{
+    transform: scale(1.25);
+    border: 6px solid #a6d99c;
 }

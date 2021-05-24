@@ -55,7 +55,6 @@
 
 #browse-btn:hover[b-i9c2lkf1j2]
 {
-	background-color: #808080;
 	transform: scale(1.25);
 }
 
@@ -256,7 +255,7 @@
 /* /Pages/Game.razor.rz.scp.css */
 .title-text[b-0legnhbyhg]
 {
-    font-size: 20px;
+    font-size: 24px;
     font-weight: bold;
     display: flex;
     align-items: center;
@@ -270,23 +269,30 @@
     justify-content: center;
 }
 
+.game-board[b-0legnhbyhg]
+{
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
 .game-btn[b-0legnhbyhg]
 {
     font-size: 24px;
     background-color: #a6d99c;
     color: black;
-
     width: 20em;
     height: 5em;
     margin-top: 0.5em;
     margin-bottom: 0.5em;
-    transition: transform .25s;
+    transition: all .15s ease-in-out;
 }
 
 .game-btn:hover[b-0legnhbyhg]
 {
     background-color: darkgreen;
     transform: scale(1.5);
+    margin-top: 1em;
+    margin-bottom: 1em;
 }
 
 .game-container[b-0legnhbyhg]
@@ -337,6 +343,12 @@
     color: white;
     font-size: 48px;
     font-weight: bold;
+    transition: all .15s ease-in-out;
+}
+
+.play-btn:hover[b-m53w0cp7ne]{
+    transform: scale(1.25);
+    border: 6px solid #a6d99c;
 }
 /* /Pages/Login.razor.rz.scp.css */
 .error-msg[b-e0pvqm75em]
@@ -553,13 +565,6 @@
     align-items: center;
     justify-content: center;
     text-align: center;
-}
-
-.nav-btn[b-2zu9a2f2m5]
-{
-    font-size: 48px;
-    width: 10px;
-    background-color: cyan;
 }
 
 #heading img[b-2zu9a2f2m5]{

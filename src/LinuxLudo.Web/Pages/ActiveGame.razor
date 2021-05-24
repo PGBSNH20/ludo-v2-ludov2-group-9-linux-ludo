@@ -52,13 +52,13 @@
     {
         <div class="game-info">
             <h1 class="game-name">@_game.Name</h1>
-            <h2 class="game-details-text" style=@(_game.AmountPlaying >= _game.MaxPlayers ? "color: red;" : "")>Slots taken:
+            <h2 class="game-details-text" style=@(_game.AmountPlaying >= _game.MaxPlayers && _game.MaxPlayers != 0 ? "color: red;" : "")>Slots taken:
                 <b>@_game.AmountPlaying</b>/<b>@_game.MaxPlayers</b>
             </h2>
         </div>
         <div class="join-screen" hidden=@(!hasJoinedGame)>
-            <button class="game-option-button" disabled=@(_game.AmountPlaying >= _game.MaxPlayers) id="play-btn"
-            @onclick=JoinGame>@(_game.AmountPlaying >= _game.MaxPlayers ? "Game is full" : "Join game")</button>
+            <button class="game-option-button" disabled=@(_game.AmountPlaying >= _game.MaxPlayers && _game.MaxPlayers != 0) id="play-btn"
+            @onclick=JoinGame>@(_game.AmountPlaying >= _game.MaxPlayers && _game.MaxPlayers != 0 ? "Game is full" : "Join game")</button>
             <button class="game-option-button" id="browse-btn" @onclick=@(() => NavManager.NavigateTo("/Play"))>Browse
                 available games</button>
         </div>
@@ -72,7 +72,7 @@
     [CascadingParameter]
     private Task<AuthenticationState> AuthState { get; set; }
     private string userName;
-    private AvailableGame _game = new();
+    private AvailableGame _game = new(){Name = "Initializing.."};
 
     // Canvas
     protected BECanvasComponent _canvas;
