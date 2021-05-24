@@ -41,20 +41,22 @@
 
 #browse-btn:hover[b-i9c2lkf1j2]
 {
-	background-color: blue;
+	background-color: #808080;
 	transform: scale(1.25);
 }
 
 #play-btn[b-i9c2lkf1j2]
 {
 	background-color: green;
-	transition: transform .2s;
 }
 
 #play-btn:hover[b-i9c2lkf1j2]
 {
-	background-color: gold;
-	transform: scale(1.25);
+	background-color: #FFA500;
+	-webkit-animation: swing 2s ease;
+	animation: swing-b-i9c2lkf1j2 2s ease;
+	-webkit-animation-iteration-count: 1;
+	animation-iteration-count: 1;
 }
 
 .player-controls[b-i9c2lkf1j2]
@@ -71,15 +73,14 @@
     background-color: green;
     color:white;
     float:left;
-	transition: transform 0.9s;
+	transition: transform 0.75s;
 }
 
 .roll-button:hover[b-i9c2lkf1j2]
 {
-	background-color: black;
 	color: white;
 	transform: scale(1.2);
-    box-shadow: inset 0 0 0 5px #9932CC;
+    box-shadow: inset 0 0 0 7px #FFFFFF;
 }
 
 .bring-token-button[b-i9c2lkf1j2]
@@ -89,15 +90,14 @@
     height: 5em;
     background-color: brown;
     color:white;
-	transition: transform 0.9s;
+	transition: transform 0.75s;
 }
 
 .bring-token-button:hover[b-i9c2lkf1j2]
 {
-	background-color: black;
 	color: white;
 	transform: scale(1.2);
-    box-shadow: inset 0 0 0 5px #9932CC;
+    box-shadow: inset 0 0 0 7px #FFFFFF;
 }
 
 .title-text[b-i9c2lkf1j2]
@@ -167,10 +167,79 @@
 	text-align: center;
 	width: 100%;
 }
+
+/* play btn hover swing animation below */
+@-webkit-keyframes swing
+{
+    15%
+    {
+        -webkit-transform: translateX(5px);
+        transform: translateX(5px);
+    }
+    30%
+    {
+        -webkit-transform: translateX(-5px);
+       transform: translateX(-5px);
+    } 
+    50%
+    {
+        -webkit-transform: translateX(3px);
+        transform: translateX(3px);
+    }
+    65%
+    {
+        -webkit-transform: translateX(-3px);
+        transform: translateX(-3px);
+    }
+    80%
+    {
+        -webkit-transform: translateX(2px);
+        transform: translateX(2px);
+    }
+    100%
+    {
+        -webkit-transform: translateX(0);
+        transform: translateX(0);
+    }
+}
+@keyframes swing-b-i9c2lkf1j2
+{
+    15%
+    {
+        -webkit-transform: translateX(5px);
+        transform: translateX(5px);
+    }
+    30%
+    {
+        -webkit-transform: translateX(-5px);
+        transform: translateX(-5px);
+    }
+    50%
+    {
+        -webkit-transform: translateX(3px);
+        transform: translateX(3px);
+    }
+    65%
+    {
+        -webkit-transform: translateX(-3px);
+        transform: translateX(-3px);
+    }
+    80%
+    {
+        -webkit-transform: translateX(2px);
+        transform: translateX(2px);
+    }
+    100%
+    {
+        -webkit-transform: translateX(0);
+        transform: translateX(0);
+    }
+}
 /* /Pages/Game.razor.rz.scp.css */
-.username-text[b-0legnhbyhg]
+.title-text[b-0legnhbyhg]
 {
     font-size: 20px;
+    font-weight: bold;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -193,7 +262,7 @@
     height: 5em;
     margin-top: 0.5em;
     margin-bottom: 0.5em;
-    transition: transform .4s;
+    transition: transform .25s;
 }
 
 .game-btn:hover[b-0legnhbyhg]
@@ -406,8 +475,8 @@ h1[b-m53w0cp7ne] {
 /* /Shared/NavMenu.razor.rz.scp.css */
 .navbar-title[b-2zu9a2f2m5]
 {
+    background-color: #9932CC;
     margin-left: 15px;
-    margin-top: 5px;
     color: white;
     font-size: 28px;
 }
@@ -438,16 +507,10 @@ h1[b-m53w0cp7ne] {
     position: relative;
 }
 
-.navbar-name-section[b-2zu9a2f2m5]
-{
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
 .navbar-name-text[b-2zu9a2f2m5]
 {
-    color: black;
+    font-size: 12px;
+    color: yellowgreen;
     display: flex;
     align-items: center;
     justify-content: center;

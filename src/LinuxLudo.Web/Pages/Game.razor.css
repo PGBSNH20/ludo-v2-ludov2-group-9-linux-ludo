@@ -1,6 +1,7 @@
-.username-text
+.title-text
 {
     font-size: 20px;
+    font-weight: bold;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -23,7 +24,7 @@
     height: 5em;
     margin-top: 0.5em;
     margin-bottom: 0.5em;
-    transition: transform .4s;
+    transition: transform .25s;
 }
 
 .game-btn:hover
