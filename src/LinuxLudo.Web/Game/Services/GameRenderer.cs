@@ -240,7 +240,7 @@ namespace LinuxLudo.Web.Game
                     TileSize,
                     TileSize);
 
-
+                    await context.SetFontAsync($"{canvasWidth / 25}px {fontFace}");
                     await context.StrokeTextAsync(player.Tokens[i].IdentifierChar.ToString(), xPos + TileSize / 3, yPos + TileSize / 1.5, TileSize);
                 }
 
