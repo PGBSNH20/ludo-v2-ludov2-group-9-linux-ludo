@@ -1,26 +1,53 @@
 .join-screen
 {
 	display: flex;
-    align-items: center;
-    justify-content: center;
+	align-items: center;
+	flex-direction: column;
+	padding-top: 50px;
 }
 
 .join-text
 {
 	font-size: 48px;
 	font-weight: bold;
+	display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-.join-button
+.game-option-button
 {
-	font-size: 48px;
-	color: white;
+	font-size: 36px;
+	color       : #FFFFFF;
+	height      : 21px;
+	line-height : 21px;
+	text-align  : center;
+	width       : auto;
+	border      : 0px;
+	padding-left:10px;
+	padding-right:10px;
+	min-width:600px;
+	min-height: 250px;
+}
+
+#browse-btn
+{
+	background-color: #6699CC
+}
+
+#browse-btn:hover
+{
+	background-color: blue;
+}
+
+#play-btn
+{
 	background-color: green;
-	margin-left: 16em;
-	margin-top: 1em;
-	margin-bottom: 1em;
-	width: 20em;
-	height: 5em;
+}
+
+#play-btn:hover
+{
+	background-color: gold;
 }
 
 .player-controls
@@ -39,16 +66,10 @@
     float:left;
 }
 
-.select-token-text
+.roll-button:hover
 {
-    margin-right: 2em;
-}
-
-.token-selection
-{
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
+	background-color: black;
+	color: white;
 }
 
 .bring-token-button
@@ -60,11 +81,29 @@
     color:white;
 }
 
+.bring-token-button:hover
+{
+	background-color: purple;
+	color: gold;
+}
+
 .title-text
 {
     font-size: 24px;
     display: flex;
     align-items: center;
+    justify-content: center;
+}
+
+.select-token-text
+{
+    margin-right: 2em;
+}
+
+.token-selection
+{
+    display: flex;
+    flex-direction: row;
     justify-content: center;
 }
 

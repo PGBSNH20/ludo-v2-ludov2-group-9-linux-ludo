@@ -4,26 +4,53 @@
 .join-screen[b-i9c2lkf1j2]
 {
 	display: flex;
-    align-items: center;
-    justify-content: center;
+	align-items: center;
+	flex-direction: column;
+	padding-top: 50px;
 }
 
 .join-text[b-i9c2lkf1j2]
 {
 	font-size: 48px;
 	font-weight: bold;
+	display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-.join-button[b-i9c2lkf1j2]
+.game-option-button[b-i9c2lkf1j2]
 {
-	font-size: 48px;
-	color: white;
+	font-size: 36px;
+	color       : #FFFFFF;
+	height      : 21px;
+	line-height : 21px;
+	text-align  : center;
+	width       : auto;
+	border      : 0px;
+	padding-left:10px;
+	padding-right:10px;
+	min-width:600px;
+	min-height: 250px;
+}
+
+#browse-btn[b-i9c2lkf1j2]
+{
+	background-color: #6699CC
+}
+
+#browse-btn:hover[b-i9c2lkf1j2]
+{
+	background-color: blue;
+}
+
+#play-btn[b-i9c2lkf1j2]
+{
 	background-color: green;
-	margin-left: 16em;
-	margin-top: 1em;
-	margin-bottom: 1em;
-	width: 20em;
-	height: 5em;
+}
+
+#play-btn:hover[b-i9c2lkf1j2]
+{
+	background-color: gold;
 }
 
 .player-controls[b-i9c2lkf1j2]
@@ -42,16 +69,10 @@
     float:left;
 }
 
-.select-token-text[b-i9c2lkf1j2]
+.roll-button:hover[b-i9c2lkf1j2]
 {
-    margin-right: 2em;
-}
-
-.token-selection[b-i9c2lkf1j2]
-{
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
+	background-color: black;
+	color: white;
 }
 
 .bring-token-button[b-i9c2lkf1j2]
@@ -63,11 +84,29 @@
     color:white;
 }
 
+.bring-token-button:hover[b-i9c2lkf1j2]
+{
+	background-color: purple;
+	color: gold;
+}
+
 .title-text[b-i9c2lkf1j2]
 {
     font-size: 24px;
     display: flex;
     align-items: center;
+    justify-content: center;
+}
+
+.select-token-text[b-i9c2lkf1j2]
+{
+    margin-right: 2em;
+}
+
+.token-selection[b-i9c2lkf1j2]
+{
+    display: flex;
+    flex-direction: row;
     justify-content: center;
 }
 
@@ -144,6 +183,13 @@
     height: 5em;
     margin-top: 0.5em;
     margin-bottom: 0.5em;
+    transition: transform .4s;
+}
+
+.game-btn:hover[b-0legnhbyhg]
+{
+    background-color: darkgreen;
+    transform: scale(1.5);
 }
 /* /Pages/Index.razor.rz.scp.css */
 @tailwind base;

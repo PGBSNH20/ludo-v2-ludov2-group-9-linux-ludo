@@ -23,4 +23,11 @@
     height: 5em;
     margin-top: 0.5em;
     margin-bottom: 0.5em;
+    transition: transform .4s;
+}
+
+.game-btn:hover
+{
+    background-color: darkgreen;
+    transform: scale(1.5);
 }

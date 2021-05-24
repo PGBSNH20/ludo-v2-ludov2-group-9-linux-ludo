@@ -1,16 +1,18 @@
 @page "/Game/{Id:int}"
 @inject NavigationManager NavManager; // Used to navigate in the webbrowser to different urls
 @inject BrowserService browserService;
+@inject IJSRuntime JsRuntime;
 
 <AuthorizeView>
+    <img @ref="redToken" hidden id="redToken" src="Images/redtoken.png" />
+    <img @ref="greenToken" hidden id="greenToken" src="Images/greentoken.png" />
+    <img @ref="blueToken" hidden id="blueToken" src="Images/bluetoken.png" />
+    <img @ref="yellowToken" hidden id="yellowToken" src="Images/yellowtoken.png" />
+
     <div class="game-screen" hidden=@(!hasJoinedGame)>
         <h1 class="title-text"><b>Game @Id</b></h1>
         <div class="game-canvas">
             <BECanvas Width="@_canvasWidth" Height="@_canvasHeight" @ref="_canvas"></BECanvas>
-            <img @ref="redToken" hidden id="redToken" src="Images/redtoken.png" />
-            <img @ref="greenToken" hidden id="greenToken" src="Images/greentoken.png" />
-            <img @ref="blueToken" hidden id="blueToken" src="Images/bluetoken.png" />
-            <img @ref="yellowToken" hidden id="yellowToken" src="Images/yellowtoken.png" />
         </div>
 
         <div class="player-controls @canvasHtmlString">
@@ -42,15 +44,14 @@
 
     @if (!hasJoinedGame)
     {
+        <h1 class="join-text">Game @Id
+        </h1>
         <div class="join-screen" hidden=@(!hasJoinedGame)>
-            <h1 class="join-text">Game @Id
-            </h1>
+            <button class="game-option-button" id="play-btn" @onclick=JoinGame>Join game</button>
+            <button class="game-option-button" id="browse-btn" @onclick=@(() => NavManager.NavigateTo("/Play"))>Browse
+                available games</button>
         </div>
 
-        <button class="join-button" @onclick=JoinGame>Join game</button>
-        <button class="join-button" style="background-color: #6699CC;" @onclick=@(() =>
-        NavManager.NavigateTo("/Play"))>Browse
-            available games</button>
     }
 </AuthorizeView>
 
