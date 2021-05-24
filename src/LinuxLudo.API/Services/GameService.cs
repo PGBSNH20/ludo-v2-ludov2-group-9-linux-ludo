@@ -38,6 +38,10 @@ namespace LinuxLudo.API.Services
 
         public async Task<Game> CreateGameAsync(Game game)
         {
+            var exists = _unitOfWork.Games.Find(t => t.Name == game.Name).FirstOrDefault();
+            if (exists != null)
+                return new Game();
+            
             await _unitOfWork.Games.AddAsync(game);
             await _unitOfWork.CommitAsync();
             var res = _unitOfWork.Games.Find(t => t.Name == game.Name).FirstOrDefault();
