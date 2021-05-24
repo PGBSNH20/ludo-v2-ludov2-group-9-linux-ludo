@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\adam-\\Documents\\Workspace\\ludo-v2-ludov2-group-9-linux-ludo\\src\\linuxludo.web\\LinuxLudo.Web.csproj": {}
+    "C:\\Users\\adam-\\Documents\\Workspace\\ludo-v2-ludov2-group-9-linux-ludo\\src\\Linuxludo.Web\\LinuxLudo.Web.csproj": {}
   },
   "projects": {
-    "C:\\Users\\adam-\\Documents\\Workspace\\ludo-v2-ludov2-group-9-linux-ludo\\src\\linuxludo.web\\LinuxLudo.Web.csproj": {
+    "C:\\Users\\adam-\\Documents\\Workspace\\ludo-v2-ludov2-group-9-linux-ludo\\src\\Linuxludo.Web\\LinuxLudo.Web.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\adam-\\Documents\\Workspace\\ludo-v2-ludov2-group-9-linux-ludo\\src\\linuxludo.web\\LinuxLudo.Web.csproj",
+        "projectUniqueName": "C:\\Users\\adam-\\Documents\\Workspace\\ludo-v2-ludov2-group-9-linux-ludo\\src\\Linuxludo.Web\\LinuxLudo.Web.csproj",
         "projectName": "LinuxLudo.Web",
-        "projectPath": "C:\\Users\\adam-\\Documents\\Workspace\\ludo-v2-ludov2-group-9-linux-ludo\\src\\linuxludo.web\\LinuxLudo.Web.csproj",
+        "projectPath": "C:\\Users\\adam-\\Documents\\Workspace\\ludo-v2-ludov2-group-9-linux-ludo\\src\\Linuxludo.Web\\LinuxLudo.Web.csproj",
         "packagesPath": "C:\\Users\\adam-\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\adam-\\Documents\\Workspace\\ludo-v2-ludov2-group-9-linux-ludo\\src\\linuxludo.web\\obj\\",
+        "outputPath": "C:\\Users\\adam-\\Documents\\Workspace\\ludo-v2-ludov2-group-9-linux-ludo\\src\\Linuxludo.Web\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
