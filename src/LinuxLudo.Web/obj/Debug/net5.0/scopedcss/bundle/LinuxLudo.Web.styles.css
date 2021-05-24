@@ -33,22 +33,26 @@
 
 #browse-btn[b-i9c2lkf1j2]
 {
-	background-color: #6699CC
+	background-color: #6699CC;
+	transition: transform .5s;
 }
 
 #browse-btn:hover[b-i9c2lkf1j2]
 {
 	background-color: blue;
+	transform: scale(1.25);
 }
 
 #play-btn[b-i9c2lkf1j2]
 {
 	background-color: green;
+	transition: transform .2s;
 }
 
 #play-btn:hover[b-i9c2lkf1j2]
 {
 	background-color: gold;
+	transform: scale(1.25);
 }
 
 .player-controls[b-i9c2lkf1j2]
@@ -65,12 +69,15 @@
     background-color: green;
     color:white;
     float:left;
+	transition: transform 0.9s;
 }
 
 .roll-button:hover[b-i9c2lkf1j2]
 {
 	background-color: black;
 	color: white;
+	transform: scale(1.2);
+    box-shadow: inset 0 0 0 5px #9932CC;
 }
 
 .bring-token-button[b-i9c2lkf1j2]
@@ -80,12 +87,15 @@
     height: 5em;
     background-color: brown;
     color:white;
+	transition: transform 0.9s;
 }
 
 .bring-token-button:hover[b-i9c2lkf1j2]
 {
-	background-color: purple;
-	color: gold;
+	background-color: black;
+	color: white;
+	transform: scale(1.2);
+    box-shadow: inset 0 0 0 5px #9932CC;
 }
 
 .title-text[b-i9c2lkf1j2]

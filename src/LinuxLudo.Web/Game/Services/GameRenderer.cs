@@ -1,6 +1,5 @@
 using System;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using Blazor.Extensions.Canvas.Canvas2D;
 using Microsoft.AspNetCore.Components;
@@ -14,7 +13,7 @@ namespace LinuxLudo.Web.Game
         private readonly int canvasWidth, canvasHeight;
         private readonly string userName;
         private const string canvasBgHex = "#3D4849";
-        private const string baseBgHex = "#493E3D";
+        private const string baseBgHex = "#000000";
         private const string fontFace = "Courier New";
         private int TileSize => canvasWidth / 16;
         private int TokenSize => canvasWidth / 18;
@@ -48,8 +47,8 @@ namespace LinuxLudo.Web.Game
                 await context.FillRectAsync(0, 0, canvasWidth, canvasHeight);
 
                 // Fill the middle part (between the paths and tiles)
-                await context.SetFillStyleAsync("#000000");
-                await context.FillRectAsync((TileSize / 2) + TileSize, TileSize * 3, canvasWidth - (TileSize * 2.5), canvasHeight - (TileSize * 5));
+                //await context.SetFillStyleAsync("#000000");
+                //await context.FillRectAsync((TileSize / 2) + TileSize, TileSize * 3, canvasWidth - (TileSize * 2.5), canvasHeight - (TileSize * 5));
             }
 
             await DrawBoardLayout();
@@ -62,6 +61,7 @@ namespace LinuxLudo.Web.Game
         {
             await context.SetStrokeStyleAsync("#FFFFFF");
             await context.SetFontAsync($"{canvasWidth / 25}px {fontFace}");
+            await context.SetLineWidthAsync(1);
 
             // Draw a status text, starting at the top-left tile (with a max width of the first row as to not overlap with bases)
             await context.StrokeTextAsync(currentStatus, (board.Tiles[0].XPos * TileSize) + TileSize, TileSize + TileSize / 2,
@@ -162,8 +162,16 @@ namespace LinuxLudo.Web.Game
                 }
 
                 // Draws the actual tile await await
-                await context.SetFillStyleAsync(color);
-                await context.FillRectAsync(GetTilePos(i, xPos: true), GetTilePos(i, xPos: false), TileSize, TileSize);
+                await context.SetStrokeStyleAsync(color);
+                await context.SetLineWidthAsync(3);
+                await context.StrokeRectAsync(GetTilePos(i, xPos: true), GetTilePos(i, xPos: false), TileSize, TileSize);
+
+                await context.SetFillStyleAsync("#000000");
+                await context.FillRectAsync(
+                    GetTilePos(i, xPos: true) + TileSize / 8,
+                GetTilePos(i, xPos: false) + TileSize / 8,
+                TileSize - (TileSize / 4),
+                TileSize - (TileSize / 4));
             }
         }
 
@@ -178,6 +186,8 @@ namespace LinuxLudo.Web.Game
             await context.SetStrokeStyleAsync("#FFFFFF");
             foreach (Player player in gameStatus.Players)
             {
+                await context.SetLineWidthAsync(0.5f);
+
                 // Set the drawing color to match the players tokens await await
                 ElementReference tokenToDraw;
                 switch (player.Color)
