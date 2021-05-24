@@ -58,12 +58,12 @@
 
 #play-btn[b-i9c2lkf1j2]
 {
-	background-color: green;
+	background-color: #FFA500;
 }
 
 #play-btn:hover[b-i9c2lkf1j2]
 {
-	background-color: #FFA500;
+	background-color: green;
 	-webkit-animation: swing 2s ease;
 	animation: swing-b-i9c2lkf1j2 2s ease;
 	-webkit-animation-iteration-count: 1;

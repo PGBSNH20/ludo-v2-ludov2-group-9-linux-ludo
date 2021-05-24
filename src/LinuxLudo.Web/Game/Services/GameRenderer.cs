@@ -128,15 +128,15 @@ namespace LinuxLudo.Web.Game
 
             // Draws the whole base
             await context.FillRectAsync(
-                (x1 * TileSize - TileSize / multiplier) - tileOutlineWidth / 2,
-                 (y1 * TileSize + TileSize / multiplier) - tileOutlineWidth / 2,
+                x1 * TileSize - TileSize / multiplier - tileOutlineWidth / 2,
+                 y1 * TileSize + TileSize / multiplier - tileOutlineWidth / 2,
                  TileSize * 4,
                  TileSize * 4);
 
 
             // Fills the center with a background color
             await context.SetFillStyleAsync(baseBgHex);
-            await context.FillRectAsync(((x1 + 1) * TileSize - TileSize / multiplier) - tileOutlineWidth, ((y1 + 2) * TileSize - TileSize / multiplier) - tileOutlineWidth / 2, multiplier * TileSize, multiplier * TileSize);
+            await context.FillRectAsync((x1 + 1) * TileSize - TileSize / multiplier - tileOutlineWidth, (y1 + 2) * TileSize - TileSize / multiplier - tileOutlineWidth / 2, multiplier * TileSize, multiplier * TileSize);
         }
 
         protected async Task DrawBoardLayout()
