@@ -116,9 +116,9 @@
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        // Fetches the current gamestatus BEFORE rendering anything
         if (firstRender)
         {
+            _context = await _canvas.CreateCanvas2DAsync();
             _gameStatus = new();
             _gameStatus.Players = new List<Player>()
 {

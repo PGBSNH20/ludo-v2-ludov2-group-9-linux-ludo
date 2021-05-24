@@ -1,0 +1,80 @@
+[1mdiff --git a/src/LinuxLudo.Web/Pages/ActiveGame.razor b/src/LinuxLudo.Web/Pages/ActiveGame.razor[m
+[1mindex 6d5a0c7..5e80096 100644[m
+[1m--- a/src/LinuxLudo.Web/Pages/ActiveGame.razor[m
+[1m+++ b/src/LinuxLudo.Web/Pages/ActiveGame.razor[m
+[36m@@ -176,7 +176,14 @@[m [mnew GameToken() { TilePos = 0 , IdentifierChar = 'D', InBase = true}}[m
+             _gameRenderer = new GameRenderer(userName, _canvasWidth, _canvasHeight, redToken, greenToken, blueToken, yellowToken);[m
+         }[m
+ [m
+[31m-        await RenderGame();[m
+[32m+[m[32m        // await RenderGame();[m
+[32m+[m
+[32m+[m[32m        _context = await _canvas.CreateCanvas2DAsync();[m
+[32m+[m
+[32m+[m[32m        // Fetch latest data to render[m
+[32m+[m[32m        // _gameStatus = await _ gameService.GetGameStatus();[m
+[32m+[m
+[32m+[m[32m        await _gameRenderer.RenderGame(_context, _board, _gameStatus, currentStatus);[m
+     }[m
+ [m
+     protected async Task RenderGame()[m
+[1mdiff --git a/src/LinuxLudo.Web/bin/Debug/net5.0/LinuxLudo.Web.dll b/src/LinuxLudo.Web/bin/Debug/net5.0/LinuxLudo.Web.dll[m
+[1mindex 05e4abc..4585c88 100644[m
+Binary files a/src/LinuxLudo.Web/bin/Debug/net5.0/LinuxLudo.Web.dll and b/src/LinuxLudo.Web/bin/Debug/net5.0/LinuxLudo.Web.dll differ
+[1mdiff --git a/src/LinuxLudo.Web/bin/Debug/net5.0/LinuxLudo.Web.pdb b/src/LinuxLudo.Web/bin/Debug/net5.0/LinuxLudo.Web.pdb[m
+[1mindex 25743d9..ef921d1 100644[m
+Binary files a/src/LinuxLudo.Web/bin/Debug/net5.0/LinuxLudo.Web.pdb and b/src/LinuxLudo.Web/bin/Debug/net5.0/LinuxLudo.Web.pdb differ
+[1mdiff --git a/src/LinuxLudo.Web/bin/Debug/net5.0/wwwroot/_framework/LinuxLudo.Web.dll b/src/LinuxLudo.Web/bin/Debug/net5.0/wwwroot/_framework/LinuxLudo.Web.dll[m
+[1mindex 05e4abc..4585c88 100644[m
+Binary files a/src/LinuxLudo.Web/bin/Debug/net5.0/wwwroot/_framework/LinuxLudo.Web.dll and b/src/LinuxLudo.Web/bin/Debug/net5.0/wwwroot/_framework/LinuxLudo.Web.dll differ
+[1mdiff --git a/src/LinuxLudo.Web/bin/Debug/net5.0/wwwroot/_framework/LinuxLudo.Web.pdb b/src/LinuxLudo.Web/bin/Debug/net5.0/wwwroot/_framework/LinuxLudo.Web.pdb[m
+[1mindex 25743d9..ef921d1 100644[m
+Binary files a/src/LinuxLudo.Web/bin/Debug/net5.0/wwwroot/_framework/LinuxLudo.Web.pdb and b/src/LinuxLudo.Web/bin/Debug/net5.0/wwwroot/_framework/LinuxLudo.Web.pdb differ
+[1mdiff --git a/src/LinuxLudo.Web/bin/Debug/net5.0/wwwroot/_framework/blazor.boot.json b/src/LinuxLudo.Web/bin/Debug/net5.0/wwwroot/_framework/blazor.boot.json[m
+[1mindex 8018a58..e4936a6 100644[m
+[1m--- a/src/LinuxLudo.Web/bin/Debug/net5.0/wwwroot/_framework/blazor.boot.json[m
+[1m+++ b/src/LinuxLudo.Web/bin/Debug/net5.0/wwwroot/_framework/blazor.boot.json[m
+[36m@@ -205,11 +205,11 @@[m
+       "mscorlib.dll": "sha256-jU85t8bOVm2PPQRkPJ1kS0nCJIyBjjlet2IR1d9m+RI=",[m
+       "netstandard.dll": "sha256-B6gmXEMfYgOuaOR1g1cGHLn2kDlZYAah4K2XNUZbTs4=",[m
+       "System.Private.CoreLib.dll": "sha256-XY0bl1U8F\/iSbQzkmIHM8UtE\/R9VntZoy\/kMbvuMjTA=",[m
+[31m-      "LinuxLudo.Web.dll": "sha256-uFXN99+K0OURIv0iPUKkbHJEOqPRyLhbw1q4Dam4\/5Q="[m
+[32m+[m[32m      "LinuxLudo.Web.dll": "sha256-vrfH8czHJWgPc6FKIlFWplM5exWyfEfLCEVkeCaqZnk="[m
+     },[m
+     "lazyAssembly": null,[m
+     "pdb": {[m
+[31m-      "LinuxLudo.Web.pdb": "sha256-YqXQg9DIuJQ8+t4EaPMNJc4wd+vhKjdb4tFqY\/\/B1m8="[m
+[32m+[m[32m      "LinuxLudo.Web.pdb": "sha256-L1jvXZ1+k\/mQSq+C6zrsfVuJLM6Go30i3IvqED2Jvj8="[m
+     },[m
+     "runtime": {[m
+       "dotnet.timezones.blat": "sha256-OEDZp6noMH3AdT8qd0zd7ZXzy2CsPQ+CZeQnYmRoVWo=",[m
+[1mdiff --git a/src/LinuxLudo.Web/obj/Debug/net5.0/LinuxLudo.Web.dll b/src/LinuxLudo.Web/obj/Debug/net5.0/LinuxLudo.Web.dll[m
+[1mindex 05e4abc..4585c88 100644[m
+Binary files a/src/LinuxLudo.Web/obj/Debug/net5.0/LinuxLudo.Web.dll and b/src/LinuxLudo.Web/obj/Debug/net5.0/LinuxLudo.Web.dll differ
+[1mdiff --git a/src/LinuxLudo.Web/obj/Debug/net5.0/LinuxLudo.Web.pdb b/src/LinuxLudo.Web/obj/Debug/net5.0/LinuxLudo.Web.pdb[m
+[1mindex 25743d9..ef921d1 100644[m
+Binary files a/src/LinuxLudo.Web/obj/Debug/net5.0/LinuxLudo.Web.pdb and b/src/LinuxLudo.Web/obj/Debug/net5.0/LinuxLudo.Web.pdb differ
+[1mdiff --git a/src/LinuxLudo.Web/obj/Debug/net5.0/RazorDeclaration/LinuxLudo.Web.dll b/src/LinuxLudo.Web/obj/Debug/net5.0/RazorDeclaration/LinuxLudo.Web.dll[m
+[1mindex cc9bc95..3a8d6a5 100644[m
+Binary files a/src/LinuxLudo.Web/obj/Debug/net5.0/RazorDeclaration/LinuxLudo.Web.dll and b/src/LinuxLudo.Web/obj/Debug/net5.0/RazorDeclaration/LinuxLudo.Web.dll differ
+[1mdiff --git a/src/LinuxLudo.Web/obj/Debug/net5.0/RazorDeclaration/LinuxLudo.Web.pdb b/src/LinuxLudo.Web/obj/Debug/net5.0/RazorDeclaration/LinuxLudo.Web.pdb[m
+[1mindex 3713e12..a073b85 100644[m
+Binary files a/src/LinuxLudo.Web/obj/Debug/net5.0/RazorDeclaration/LinuxLudo.Web.pdb and b/src/LinuxLudo.Web/obj/Debug/net5.0/RazorDeclaration/LinuxLudo.Web.pdb differ
+[1mdiff --git a/src/LinuxLudo.Web/obj/Debug/net5.0/blazor.boot.json b/src/LinuxLudo.Web/obj/Debug/net5.0/blazor.boot.json[m
+[1mindex 8018a58..e4936a6 100644[m
+[1m--- a/src/LinuxLudo.Web/obj/Debug/net5.0/blazor.boot.json[m
+[1m+++ b/src/LinuxLudo.Web/obj/Debug/net5.0/blazor.boot.json[m
+[36m@@ -205,11 +205,11 @@[m
+       "mscorlib.dll": "sha256-jU85t8bOVm2PPQRkPJ1kS0nCJIyBjjlet2IR1d9m+RI=",[m
+       "netstandard.dll": "sha256-B6gmXEMfYgOuaOR1g1cGHLn2kDlZYAah4K2XNUZbTs4=",[m
+       "System.Private.CoreLib.dll": "sha256-XY0bl1U8F\/iSbQzkmIHM8UtE\/R9VntZoy\/kMbvuMjTA=",[m
+[31m-      "LinuxLudo.Web.dll": "sha256-uFXN99+K0OURIv0iPUKkbHJEOqPRyLhbw1q4Dam4\/5Q="[m
+[32m+[m[32m      "LinuxLudo.Web.dll": "sha256-vrfH8czHJWgPc6FKIlFWplM5exWyfEfLCEVkeCaqZnk="[m
+     },[m
+     "lazyAssembly": null,[m
+     "pdb": {[m
+[31m-      "LinuxLudo.Web.pdb": "sha256-YqXQg9DIuJQ8+t4EaPMNJc4wd+vhKjdb4tFqY\/\/B1m8="[m
+[32m+[m[32m      "LinuxLudo.Web.pdb": "sha256-L1jvXZ1+k\/mQSq+C6zrsfVuJLM6Go30i3IvqED2Jvj8="[m
+     },[m
+     "runtime": {[m
+       "dotnet.timezones.blat": "sha256-OEDZp6noMH3AdT8qd0zd7ZXzy2CsPQ+CZeQnYmRoVWo=",[m
