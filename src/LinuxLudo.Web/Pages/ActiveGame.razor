@@ -16,8 +16,13 @@
         </div>
 
         <div class="player-controls @canvasHtmlString">
-            <button class="roll-button" @onclick=RollDice>Roll dice</button>
-            <button class="bring-token-button" @onclick=BringOutToken>Bring out token</button>
+            <button class="roll-button" @onclick=RollDiceClick>Roll dice</button>
+            <button class="bring-token-button" @onclick=BringOutTokenClick>Bring out token</button>
+
+            @functions {
+                async Task RollDiceClick() => await RollDice();
+                async Task BringOutTokenClick() => await BringOutToken();
+            }
         </div>
 
         <div class="token-selection">
@@ -111,9 +116,6 @@
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        // Creates a canvas
-        _context = await _canvas.CreateCanvas2DAsync();
-
         // Fetches the current gamestatus BEFORE rendering anything
         if (firstRender)
         {
@@ -174,13 +176,21 @@ new GameToken() { TilePos = 0 , IdentifierChar = 'D', InBase = true}}
             _gameRenderer = new GameRenderer(userName, _canvasWidth, _canvasHeight, redToken, greenToken, blueToken, yellowToken);
         }
 
-        // Fetch latest data from backend
+        await RenderGame();
+    }
+
+    protected async Task RenderGame()
+    {
+        // Creates a canvas
+        _context = await _canvas.CreateCanvas2DAsync();
+
+        // Fetch latest data to render
         // _gameStatus = await _ gameService.GetGameStatus();
 
         await _gameRenderer.RenderGame(_context, _board, _gameStatus, currentStatus);
     }
 
-    protected async void RollDice()
+    protected async Task RollDice()
     {
         Player player = GetPlayer();
         if (isPlayerTurn && player.Tokens.Count(token => !token.InBase) > 0)
@@ -215,7 +225,7 @@ new GameToken() { TilePos = 0 , IdentifierChar = 'D', InBase = true}}
         }
     }
 
-    protected async void BringOutToken()
+    protected async Task BringOutToken()
     {
         Player player = GetPlayer();
         if (isPlayerTurn && player.Tokens.Any(token => token.InBase))
