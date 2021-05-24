@@ -48,7 +48,7 @@
         </div>
     </div>
 
-    @if (!hasJoinedGame)
+    @if (!hasJoinedGame && _game.MaxPlayers > 0)
     {
         @functions {
             bool GameIsFull => _game.AmountPlaying >= _game.MaxPlayers && _game.MaxPlayers != 0; 
@@ -66,6 +66,11 @@
             <button class="game-option-button" id="browse-btn" @onclick=@(() => NavManager.NavigateTo("/Play"))>Browse
                 available games</button>
         </div>
+    }else
+    {
+        <div class="loading-section">
+        <h1 class="loading-message">Loading... please wait</h1>
+        </div>
     }
 </AuthorizeView>
 
@@ -76,7 +81,7 @@
     [CascadingParameter]
     private Task<AuthenticationState> AuthState { get; set; }
     private string userName;
-    private AvailableGame _game = new(){Name = "Initializing.."};
+    private AvailableGame _game;
 
     // Canvas
     protected BECanvasComponent _canvas;
@@ -102,6 +107,7 @@
     // When the page has fully loaded
     protected override async Task OnInitializedAsync()
     {
+        _game = new();
         var authState = await AuthState;
 
         // If the user is logged in
@@ -119,7 +125,16 @@
             _gameService = new GameService(@Id, userName);
             var authToken = await localStorage.GetItemAsync<string>("authToken");
             var allGames = await _gameService.FetchAllGames(authToken);
+
+            if(!allGames.Any(game => game.Id == Id.ToString()))
+            {
+                // Game not found (wrong url entered?)
+                Console.WriteLine($"No such game with id: {Id}");
+                NavManager.NavigateTo("/Play");
+            }else
+            {
             _game = allGames.First(game => game.Id == Id.ToString());
+            }
         }
         else
         {
@@ -138,7 +153,7 @@
 // RED
 new Player()
 {
-Name = "adam",
+Name = "adambrodin",
 Color = "red",
 Tokens = new List<GameToken>() {
 new GameToken() {TilePos= 0, IdentifierChar = 'A', InBase = true},
@@ -324,7 +339,7 @@ new GameToken() { TilePos = 0 , IdentifierChar = 'D', InBase = true}}
         }
         else
         {
-            return new Player() { Name = userName + " (DEAD)" };
+            return new Player() { Name = userName + " (SPECTATING)" };
         }
     }
 
@@ -333,6 +348,7 @@ new GameToken() { TilePos = 0 , IdentifierChar = 'D', InBase = true}}
         if (_game.AmountPlaying < _game.MaxPlayers)
         {
             hasJoinedGame = true;
+            Console.WriteLine("has joined game");
         }
     }
 }

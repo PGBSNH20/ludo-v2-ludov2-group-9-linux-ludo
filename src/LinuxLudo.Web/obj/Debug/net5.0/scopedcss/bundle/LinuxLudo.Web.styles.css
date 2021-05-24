@@ -61,6 +61,22 @@
 	background-color: #FFA500;
 }
 
+.loading-section[b-i9c2lkf1j2]
+{
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.loading-message[b-i9c2lkf1j2]
+{
+    position: absolute;
+    font-size: 48px;
+    margin-top: 25%;
+    transition: all 2s ease-in-out;
+}
+
 #play-btn:hover[b-i9c2lkf1j2]
 {
 	background-color: green;
