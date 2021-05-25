@@ -211,7 +211,7 @@ new GameToken() { TilePos = 0 , IdentifierChar = 'D', InBase = true}}
         _context = await _canvas.CreateCanvas2DAsync();
 
         // Fetch latest data to render
-        // _gameStatus = await _ gameService.GetGameStatus();
+        // _gameStatus = await _gameService.GetGameStatus();
 
         await _gameRenderer.RenderGame(_context, _board, _gameStatus, currentStatus, selectedToken);
     }

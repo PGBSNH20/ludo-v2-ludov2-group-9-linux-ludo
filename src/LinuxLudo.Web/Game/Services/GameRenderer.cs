@@ -114,16 +114,16 @@ namespace LinuxLudo.Web.Game
         {
             // Draw all the bases
             await context.SetFillStyleAsync("#DC143C");
-            await DrawTokenBase(board.redBaseX1, board.redBaseY1, board.redBaseY2);
+            await DrawTokenBase(board.redBaseX1, board.redBaseY1);
             await context.SetFillStyleAsync("#00FF7F");
-            await DrawTokenBase(board.greenBaseX1, board.greenBaseY1, board.greenBaseY2);
+            await DrawTokenBase(board.greenBaseX1, board.greenBaseY1);
             await context.SetFillStyleAsync("#1E90FF");
-            await DrawTokenBase(board.blueBaseX1, board.blueBaseY1, board.blueBaseY2);
+            await DrawTokenBase(board.blueBaseX1, board.blueBaseY1);
             await context.SetFillStyleAsync("#F0E68C");
-            await DrawTokenBase(board.yellowBaseX1, board.yellowBaseY1, board.yellowBaseY2);
+            await DrawTokenBase(board.yellowBaseX1, board.yellowBaseY1);
         }
 
-        protected async Task DrawTokenBase(int x1, int y1, int y2)
+        protected async Task DrawTokenBase(int x1, int y1)
         {
             const double multiplier = 2;
 
@@ -173,23 +173,24 @@ namespace LinuxLudo.Web.Game
                 }
 
 
-                // Draws the actual tile await await
+                // Draws the actual tile
                 await context.SetStrokeStyleAsync(strokeColor);
                 await context.SetLineWidthAsync(tileOutlineWidth);
                 await context.StrokeRectAsync(GetTilePos(i, xPos: true), GetTilePos(i, xPos: false), TileSize - tileOutlineWidth, TileSize - tileOutlineWidth);
-
                 await context.SetFillStyleAsync(fillColor);
-                await context.FillRectAsync(
-                    GetTilePos(i, xPos: true) + TileSize / 8 - tileOutlineWidth,
-                GetTilePos(i, xPos: false) + TileSize / 8 - tileOutlineWidth,
-                TileSize - (TileSize / 4) + tileOutlineWidth,
-                TileSize - (TileSize / 4) + tileOutlineWidth);
+                await context.FillRectAsync(GetTilePos(i, xPos: true) + TileSize / 8 - tileOutlineWidth, GetTilePos(i, xPos: false) + TileSize / 8 - tileOutlineWidth, TileSize - (TileSize / 4) + tileOutlineWidth, TileSize - (TileSize / 4) + tileOutlineWidth);
             }
+
+            // Fill in the center most tile (goal tile)
+            await context.SetFillStyleAsync("#FFFF00");
+            await context.FillRectAsync(
+                GetTilePos(board.Tiles.FindLastIndex(tile => tile.TileColor == GameTile.GameColor.Red), true) + TileSize - tileOutlineWidth / 2,
+                 GetTilePos(board.Tiles.FindLastIndex(tile => tile.TileColor == GameTile.GameColor.Red), false) - tileOutlineWidth / 2, TileSize - tileOutlineWidth / 2, TileSize - tileOutlineWidth / 2);
         }
 
         protected async Task DrawPlayers(char selectedToken)
         {
-            if (gameStatus.Players == null || gameStatus.Players.Count <= 0)
+            if (gameStatus.Players == null || gameStatus.Players.Count == 0)
             {
                 currentStatus = "No players in game!";
                 return;
@@ -258,15 +259,7 @@ namespace LinuxLudo.Web.Game
                 // Draws each token, splits up the space if more than one is on the same tile
                 foreach (GameToken token in player.Tokens.Where(token => !token.InBase).ToList())
                 {
-                    // Highlight the selected token text
-                    if (player.Name == userName && token.IdentifierChar == selectedToken)
-                    {
-                        await context.SetStrokeStyleAsync(tokenHighlightTextColor);
-                    }
-                    else
-                    {
-                        await context.SetStrokeStyleAsync(tokenTextColor);
-                    }
+                    await context.SetStrokeStyleAsync(player.Name == userName && token.IdentifierChar == selectedToken ? tokenHighlightTextColor : tokenTextColor);
 
                     int tokensOnSameTile = player.Tokens.Count(t => t.TilePos == token.TilePos && !t.InBase);
                     double xPos, yPos, width = TokenSize, height = TokenSize;
@@ -277,15 +270,6 @@ namespace LinuxLudo.Web.Game
                         int index = 0;
                         foreach (GameToken dupToken in player.Tokens.Where(t => t.TilePos == token.TilePos && !t.InBase))
                         {
-                            // Highlight the selected token text
-                            if (player.Name == userName && dupToken.IdentifierChar == selectedToken)
-                            {
-                                await context.SetStrokeStyleAsync(tokenHighlightTextColor);
-                            }
-                            else
-                            {
-                                await context.SetStrokeStyleAsync(tokenTextColor);
-                            }
 
                             xPos = GetTilePos(dupToken.TilePos, xPos: true) + (index % 2 != 0 ? (TokenSize / tokensOnSameTile) : 0);
                             yPos = GetTilePos(dupToken.TilePos, xPos: false) + (index == 1 || index == 2 ? (TokenSize / tokensOnSameTile) : 0);
@@ -293,6 +277,7 @@ namespace LinuxLudo.Web.Game
                             width = (TokenSize / tokensOnSameTile) + (TileSize / tokensOnSameTile / 2);
                             height = width;
 
+                            await context.SetStrokeStyleAsync(player.Name == userName && dupToken.IdentifierChar == selectedToken ? tokenHighlightTextColor : tokenTextColor);
                             await context.DrawImageAsync(tokenToDraw, xPos, yPos, width, height);
                             await context.StrokeTextAsync(dupToken.IdentifierChar.ToString(), xPos + width / 3, yPos + (height / 1.5));
                             index++;
@@ -300,10 +285,10 @@ namespace LinuxLudo.Web.Game
                     }
                     else
                     {
-                        await context.SetFontAsync($"{canvasWidth / 25}px {fontFace}");
                         xPos = GetTilePos(token.TilePos, xPos: true);
                         yPos = GetTilePos(token.TilePos, xPos: false);
 
+                        await context.SetFontAsync($"{canvasWidth / 25}px {fontFace}");
                         await context.DrawImageAsync(tokenToDraw, xPos, yPos, width, height);
                         await context.StrokeTextAsync(token.IdentifierChar.ToString(), xPos + width / 3.5, yPos + height / 1.5);
                     }
