@@ -79,7 +79,6 @@
     private Task<AuthenticationState> AuthState { get; set; }
     private string userName;
     private AvailableGame _game;
-    private List<char> tokenSelections => new() {'A','B','C','D'};
 
     // Canvas
     protected BECanvasComponent _canvas;
@@ -99,6 +98,7 @@
     private bool hasJoinedGame = false;
     private string currentStatus = "Waiting for players...";
     private char selectedToken;
+    private List<char> tokenSelections => new() {'A','B','C','D'};
 
     // This is true if it's the client-side player's turn
     private bool isPlayerTurn = true; // TODO SET FROM API
@@ -123,13 +123,13 @@
             }    
             else if(windowDim.Width >= _minWidthResize && windowDim.Height >= _minHeightResize)
             {
-                _canvasWidth = (int)(windowDim.Width  * 0.3);
+                _canvasWidth = (int)(windowDim.Width  * 0.35);
             }else
             {
                 _canvasWidth = (int)(windowDim.Width * 0.7);
             }
-            _canvasHeight = (int)(_canvasWidth * 1.15);
 
+            _canvasHeight = (int)(_canvasWidth * 1.15);
             _board = new GameBoard();
 
             // Initialize a new GameService to communicate with API
@@ -231,7 +231,7 @@ new GameToken() { TilePos = 0 , IdentifierChar = 'D', InBase = true}}
 
     protected async Task RollDice()
     {
-        Player player = GetPlayer();
+        /*Player player = GetPlayer();
         if (isPlayerTurn && player.Tokens.Count(token => !token.InBase) > 0)
         {
             //await _gameService.RollDice();
@@ -261,12 +261,12 @@ new GameToken() { TilePos = 0 , IdentifierChar = 'D', InBase = true}}
         else
         {
             currentStatus = "Bring out a token before rolling!";
-        }
+        }*/
     }
 
     protected async Task BringOutToken()
     {
-        Player player = GetPlayer();
+        /*Player player = GetPlayer();
         if (isPlayerTurn && player.Tokens.Any(token => token.InBase))
         {
             int xPos = 0, yPos = 0;
@@ -299,7 +299,7 @@ new GameToken() { TilePos = 0 , IdentifierChar = 'D', InBase = true}}
         else
         {
             currentStatus = "No tokens in base!";
-        }
+        }*/
 
     }
 

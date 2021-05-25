@@ -54,8 +54,8 @@ namespace LinuxLudo.Web.Game
                 await context.FillRectAsync(0, 0, canvasWidth, canvasHeight);
 
                 // Fill the middle part (between the paths and tiles)
-                await context.SetFillStyleAsync("#000000");
-                await context.FillRectAsync((TileSize / 2) + TileSize - tileOutlineWidth, TileSize * 3 + tileOutlineWidth, canvasWidth - (TileSize * 2.5), canvasHeight - (TileSize * 5));
+                //await context.SetFillStyleAsync("#000000");
+                //await context.FillRectAsync((TileSize / 2) + TileSize - tileOutlineWidth, TileSize * 3 + tileOutlineWidth, canvasWidth - (TileSize * 2.5), canvasHeight - (TileSize * 5));
             }
 
             await DrawBoardLayout();
