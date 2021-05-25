@@ -75,12 +75,14 @@
 
 @code
 {
+    // Misc
     [Parameter]
     public Guid Id { get; set; }
     [CascadingParameter]
     private Task<AuthenticationState> AuthState { get; set; }
     private string userName;
     private AvailableGame _game;
+    private const string hubUrl = "https://localhost:5001/gamehub";
 
     // SignalR
     private HubConnection hubConnection;
@@ -88,8 +90,6 @@
     // Canvas
     protected BECanvasComponent _canvas;
     private Canvas2DContext _context;
-    private GameService _gameService;
-    private GameStatus _gameStatus;
     private GameRenderer _gameRenderer;
     private GameBoard _board;
     private ElementReference redToken, greenToken, blueToken, yellowToken;
@@ -100,6 +100,8 @@
     private string canvasHtmlString => isPlayerTurn ? "" : "hidden";
 
     // Game
+    private GameService _gameService;
+    private GameStatus _gameStatus;
     private bool hasJoinedGame = false;
     private string currentStatus = "Waiting for players...";
     private char selectedToken;
@@ -198,7 +200,7 @@
     protected async Task SetupSignalR()
     {
         hubConnection = new HubConnectionBuilder()
-        .WithUrl("https://localhost:5001/gamehub")
+        .WithUrl(hubUrl)
         .Build();
 
 
