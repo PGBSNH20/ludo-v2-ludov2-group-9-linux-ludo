@@ -31,6 +31,8 @@ namespace LinuxLudo.API.Controllers
 
             var game = _mapper.Map<CreateGameResource, Game>(resource);
             var res = await _gameService.CreateGameAsync(game);
+            if (res.Name == null)
+                return BadRequest(new ErrorResponse("Game with the name already exists", 500, null).Respond());
             return Created("", new SuccessResponse("Game Created", 201).Respond(res));
         }
 
