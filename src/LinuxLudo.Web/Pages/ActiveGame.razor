@@ -31,18 +31,12 @@
                 IsTokenDead('D'))><b>Select your token</b>
                 <div class="radio" hidden=@(IsTokenDead('A') && IsTokenDead('B') && IsTokenDead('C') &&
                     IsTokenDead('D'))>
-                    <input @onchange="@(() => UpdateTokenSelection('A'))" hidden=@IsTokenDead('A')
-                        checked="@(selectedToken.Equals('A'))" label="A" type="radio" id="token-a" name="token"
-                        value="token-a">
-                    <input @onchange="@(() => UpdateTokenSelection('B'))" hidden=@IsTokenDead('B')
-                        checked="@(selectedToken.Equals('B'))" label="B" type="radio" id="token-b" name="token"
-                        value="token-b">
-                    <input @onchange="@(() => UpdateTokenSelection('C'))" hidden=@IsTokenDead('C')
-                        checked="@(selectedToken.Equals('C'))" label="C" type="radio" id="token-c" name="token"
-                        value="token-c">
-                    <input @onchange="@(() => UpdateTokenSelection('D'))" hidden=@IsTokenDead('D')
-                        checked="@(selectedToken.Equals('D'))" label="D" type="radio" id="token-d" name="token"
-                        value="token-d">
+                    @foreach (char tokenSelection in tokenSelections)
+                    {
+                          <input @onchange="@(() => UpdateTokenSelection(tokenSelection))" hidden=@IsTokenDead(tokenSelection)
+                        checked="@(selectedToken.Equals(tokenSelection))" label=@tokenSelection type="radio" id=@($"token-{tokenSelection}") name="token"
+                        value=@($"token-{tokenSelection}")>
+                    }
                 </div>
             </h1>
         </div>
@@ -85,6 +79,7 @@
     private Task<AuthenticationState> AuthState { get; set; }
     private string userName;
     private AvailableGame _game;
+    private List<char> tokenSelections => new() {'A','B','C','D'};
 
     // Canvas
     protected BECanvasComponent _canvas;
