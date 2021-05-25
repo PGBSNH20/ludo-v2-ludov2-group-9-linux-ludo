@@ -1,6 +1,4 @@
-using System.Collections.Generic;
-
-namespace LinuxLudo.Web.Models
+namespace LinuxLudo.Web.Domain.Models
 {
     public class AuthenticatedUserModel
     {

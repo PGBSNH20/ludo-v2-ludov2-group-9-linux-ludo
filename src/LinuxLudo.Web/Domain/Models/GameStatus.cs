@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace LinuxLudo.Web.Game
+namespace LinuxLudo.Web.Domain.Models
 {
     public class GameStatus
     {

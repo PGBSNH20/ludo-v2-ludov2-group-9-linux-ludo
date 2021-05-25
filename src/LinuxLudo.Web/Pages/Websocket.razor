@@ -1,6 +1,7 @@
 @page "/Websocket"
 @using Microsoft.AspNetCore.SignalR.Client
-@inject NavigationManager NavigationManager
+@using LinuxLudo.Web.Hubs
+@inject HubController _hubController
 @implements IAsyncDisposable
 
 <div class="form-group">
@@ -27,38 +28,33 @@
 </ul>
 
 @code {
-    private HubConnection hubConnection;
-    private List<string> messages = new List<string>();
+    private HubConnection _hub;
+    private List<string> messages = new ();
     private string userInput;
     private string messageInput;
 
     protected override async Task OnInitializedAsync()
     {
-        hubConnection = new HubConnectionBuilder()
-            .WithUrl("https://localhost:5001/chathub", opts =>
-            {
-                opts.AccessTokenProvider = () => Task.FromResult("Hey");
-            })
-            .Build();
-
-        hubConnection.On<string, string>("ReceiveMessagesss", (user, message) =>
+        _hub = _hubController.Connect("chathub").Hub();
+        
+        _hub.On<string, string>("ReceiveMessage", (user, message) =>
         {
             var encodedMsg = $"{user}: {message}";
             messages.Add(encodedMsg);
             StateHasChanged();
         });
 
-        await hubConnection.StartAsync();
+        await _hub.StartAsync();
     }
 
     async Task Send() =>
-        await hubConnection.SendAsync("SendMessage", userInput, messageInput);
+        await _hub.SendAsync("SendMessage", userInput, messageInput);
 
-    public bool IsConnected =>
-        hubConnection.State == HubConnectionState.Connected;
+    private bool IsConnected =>
+        _hub.State == HubConnectionState.Connected;
 
     public async ValueTask DisposeAsync()
     {
-        await hubConnection.DisposeAsync();
+        await _hub.DisposeAsync();
     }
 }

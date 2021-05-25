@@ -1,6 +1,8 @@
-namespace LinuxLudo.Web.Game
+using LinuxLudo.Web.Domain.Services;
+
+namespace LinuxLudo.Web.Services
 {
-    public class GameService
+    public class GameService : IGameService
     {
         private readonly int _gameId;
         public GameService(int gameId)

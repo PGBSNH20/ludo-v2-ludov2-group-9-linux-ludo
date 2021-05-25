@@ -1,12 +1,11 @@
 using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Blazored.LocalStorage;
 using Microsoft.AspNetCore.Components.Authorization;
-using System.Net.Http.Headers;
-using System.Security.Claims;
-using LinuxLudo.Web.Authentication;
 
-namespace LinuxLudo.Web
+namespace LinuxLudo.Web.Authentication
 {
     public class AuthStateProvider : AuthenticationStateProvider
     {

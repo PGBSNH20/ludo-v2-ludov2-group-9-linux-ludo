@@ -1,16 +1,16 @@
-using System.Collections.Generic;
 using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Net.Http.Json;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Blazored.LocalStorage;
-using LinuxLudo.Web.Models;
+using LinuxLudo.Web.Authentication;
+using LinuxLudo.Web.Domain.Models;
+using LinuxLudo.Web.Domain.Services;
 using Microsoft.AspNetCore.Components.Authorization;
-using System.Net.Http.Headers;
-using System.Net.Http.Json;
 using Newtonsoft.Json.Linq;
-using System;
 
-namespace LinuxLudo.Web.Authentication
+namespace LinuxLudo.Web.Services
 {
     // This class is responsible for actually logging in/out through the API
     public class AuthenticationService : IAuthenticationService

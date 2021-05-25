@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace LinuxLudo.Web.Models
+namespace LinuxLudo.Web.Domain.Models
 {
     public class AuthenticationUserModel
     {
