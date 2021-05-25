@@ -203,9 +203,10 @@
 
 
         // Continously listens for received data
-        hubConnection.On<OpenGame>("ReceiveGameData", (game) =>
+        hubConnection.On<string, List<Player>>("ReceiveJoinGame", (userName, players) =>
         {
-            _gameStatus.Players = game.PlayersInGame;
+            _gameStatus.Players = players;
+            currentStatus = $"{userName} has joined the game!";
             StateHasChanged();
         });
 

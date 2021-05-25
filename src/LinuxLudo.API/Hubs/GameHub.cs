@@ -10,7 +10,7 @@ namespace LinuxLudo.API.Hubs
 {
     public class GameHub : Hub
     {
-        readonly IGameHubRepository _repository;
+        private readonly IGameHubRepository _repository;
         public GameHub(IGameHubRepository repository)
         {
             _repository = repository;
@@ -25,14 +25,19 @@ namespace LinuxLudo.API.Hubs
             }
 
             OpenGame game = _repository.FetchGameById(gameId);
-            _repository.AddPlayer(_repository.FetchGameById(gameId), username);
-            await SendGameData(_repository.FetchGameById(gameId));
+            // Adds the player if they don't already exist in the game
+            if (!game.PlayersInGame.Any(player => player.Name == username))
+            {
+                _repository.AddPlayer(_repository.FetchGameById(gameId), username);
+            }
+
+            // Updates all clients with the latest player list
+            await SendJoinGame(username, _repository.FetchGameById(gameId).PlayersInGame);
         }
 
-        private async Task SendGameData(OpenGame game)
+        private async Task SendJoinGame(string player, List<Player> players)
         {
-            // Send to all playing user the latest game data (players/tokens/positions etc)
-            await Clients.All.SendAsync("ReceiveGameData", game);
+            await Clients.All.SendAsync("ReceiveJoinGame", player, players);
         }
     }
 }
