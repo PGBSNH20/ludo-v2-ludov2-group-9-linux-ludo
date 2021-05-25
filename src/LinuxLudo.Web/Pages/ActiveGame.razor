@@ -92,6 +92,7 @@
     private int _canvasWidth, _canvasHeight;
     private const int _minWidthResize = 1600;
     private const int _minHeightResize = 720;
+    private const float _heightWidthMultiplierIsMobile = 1.2f;
     private string canvasHtmlString => isPlayerTurn ? "" : "hidden";
 
     // Game
@@ -114,9 +115,21 @@
             userName = authState.User.Identity.Name;
 
             var windowDim = await browserService.GetDimensions();
-            _canvasWidth = windowDim.Width >= _minWidthResize && windowDim.Height >= _minHeightResize ? (int)(windowDim.Width *
-            0.3) : (int)(windowDim.Width * 0.9);
+
+            // If the screen is more or less mobile resolution
+            if(windowDim.Height >= (windowDim.Width*_heightWidthMultiplierIsMobile))
+            {
+                _canvasWidth = (windowDim.Width);
+            }    
+            else if(windowDim.Width >= _minWidthResize && windowDim.Height >= _minHeightResize)
+            {
+                _canvasWidth = (int)(windowDim.Width  * 0.3);
+            }else
+            {
+                _canvasWidth = (int)(windowDim.Width * 0.7);
+            }
             _canvasHeight = (int)(_canvasWidth * 1.15);
+
             _board = new GameBoard();
 
             // Initialize a new GameService to communicate with API
