@@ -1,6 +1,7 @@
 @page "/Game/{Id:guid}"
 @using LinuxLudo.Web.Domain.Models
 @inject NavigationManager NavManager; // Used to navigate in the webbrowser to different urls
+@using Microsoft.AspNetCore.SignalR.Client
 @inject BrowserService browserService;
 @inject IJSRuntime JsRuntime;
 @inject Blazored.LocalStorage.ILocalStorageService localStorage;
@@ -49,7 +50,7 @@
             bool GameIsFull => _game.AmountPlaying >= _game.MaxPlayers && _game.MaxPlayers != 0; 
         }
 
-        if(_game.MaxPlayers > 0)
+        if(true || _game.MaxPlayers > 0)
         {
         <div class="game-info">
             <h1 class="game-name">@_game.Name</h1>
@@ -80,6 +81,9 @@
     private Task<AuthenticationState> AuthState { get; set; }
     private string userName;
     private AvailableGame _game;
+
+    // SignalR
+    private HubConnection hubConnection;
 
     // Canvas
     protected BECanvasComponent _canvas;
@@ -115,6 +119,36 @@
         {
             userName = authState.User.Identity.Name;
 
+            // Fit canvas has to be executed before signalR stuff
+            await FitCanvas();
+
+            _board = new GameBoard();
+
+            // Initialize a new GameService to communicate with API
+            _gameService = new GameService(@Id, userName);
+            var authToken = await localStorage.GetItemAsync<string>("authToken");
+
+            var allGames = await _gameService.FetchAllGames(authToken);
+            if(!allGames.Any(game => game.Id == Id.ToString()))
+            {
+                // Game not found (wrong url entered?)
+                Console.WriteLine($"No such game with id: {Id}");
+                NavManager.NavigateTo("/Play");
+            }else
+            {
+            _game = allGames.First(game => game.Id == Id.ToString());
+            }
+
+            await SetupSignalR();
+        }
+        else
+        {
+            NavManager.NavigateTo("/Login");
+        }
+    }
+
+    protected async Task FitCanvas()
+    {
             var windowDim = await browserService.GetDimensions();
 
             // If the screen is more or less mobile resolution
@@ -131,177 +165,61 @@
             }
 
             _canvasHeight = (int)(_canvasWidth * 1.15);
-            _board = new GameBoard();
-
-            // Initialize a new GameService to communicate with API
-            _gameService = new GameService(@Id, userName);
-            var authToken = await localStorage.GetItemAsync<string>("authToken");
-            var allGames = await _gameService.FetchAllGames(authToken);
-
-            if(!allGames.Any(game => game.Id == Id.ToString()))
-            {
-                // Game not found (wrong url entered?)
-                Console.WriteLine($"No such game with id: {Id}");
-                NavManager.NavigateTo("/Play");
-            }else
-            {
-            _game = allGames.First(game => game.Id == Id.ToString());
-            }
-        }
-        else
-        {
-            NavManager.NavigateTo("/Login");
-        }
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
         {
-            _context = await _canvas.CreateCanvas2DAsync();
             _gameStatus = new();
-            _gameStatus.Players = new List<Player>()
-{
-// RED
-new Player()
-{
-Name = "adambrodin",
-Color = "red",
-Tokens = new List<GameToken>() {
-new GameToken() {TilePos= 0, IdentifierChar = 'A', InBase = true},
-new GameToken() {TilePos= 0, IdentifierChar = 'B', InBase = true},
-new GameToken() {TilePos= 0, IdentifierChar = 'C', InBase = true},
-new GameToken() { TilePos = 0, IdentifierChar = 'D' , InBase = true}}
-},
-
-// GREEN
-new Player()
-{
-Name = "Jakob",
-Color = "green",
-Tokens = new List<GameToken>() {
-new GameToken() {TilePos= 0, IdentifierChar = 'A', InBase = true},
-new GameToken() {TilePos= 0, IdentifierChar = 'B', InBase = true},
-new GameToken() {TilePos= 0, IdentifierChar = 'C', InBase = true},
-new GameToken() { TilePos = 0, IdentifierChar = 'D', InBase = true }}
-},
-
-// BLUE
-new Player()
-{
-Name = "Stephan",
-Color = "blue",
-Tokens = new List<GameToken>() {
-new GameToken() {TilePos= 0, IdentifierChar = 'A', InBase = true},
-new GameToken() {TilePos= 0, IdentifierChar = 'B', InBase = true},
-new GameToken() {TilePos= 0, IdentifierChar = 'C', InBase = true},
-new GameToken() { TilePos = 0 , IdentifierChar = 'D', InBase = true}}
-},
-
-// YELLOW
-new Player()
-{
-Name = "Leo",
-Color = "yellow",
-Tokens = new List<GameToken>() {
-new GameToken() {TilePos= 0, IdentifierChar = 'A', InBase = true},
-new GameToken() {TilePos= 0, IdentifierChar = 'B', InBase = true},
-new GameToken() {TilePos= 0, IdentifierChar = 'C', InBase = true},
-new GameToken() { TilePos = 0 , IdentifierChar = 'D', InBase = true}}
-}
-};
+            _context = await _canvas.CreateCanvas2DAsync();
 
             // Reload UI components on page load (to hide e.g radiobtns)
             StateHasChanged();
             _gameRenderer = new GameRenderer(userName, _canvasWidth, _canvasHeight, redToken, greenToken, blueToken, yellowToken);
         }
 
+        if(hasJoinedGame)
+        {
         await RenderGame();
+        }
     }
 
+    // This function continously renders the game based on the current fetched data about the game
     protected async Task RenderGame()
     {
         // Creates a canvas
         _context = await _canvas.CreateCanvas2DAsync();
 
-        // Fetch latest data to render
-        // _gameStatus = await _gameService.GetGameStatus();
-
+        // Render the latest game details
         await _gameRenderer.RenderGame(_context, _board, _gameStatus, currentStatus, selectedToken);
+    }
+
+    protected async Task SetupSignalR()
+    {
+        hubConnection = new HubConnectionBuilder()
+        .WithUrl("https://localhost:5001/gamehub")
+        .Build();
+
+
+        // Continously listens for received data
+        hubConnection.On<OpenGame>("ReceiveGameData", (game) =>
+        {
+            _gameStatus.Players = game.PlayersInGame;
+            StateHasChanged();
+        });
+
+        await hubConnection.StartAsync();
     }
 
     protected async Task RollDice()
     {
-        /*Player player = GetPlayer();
-        if (isPlayerTurn && player.Tokens.Count(token => !token.InBase) > 0)
-        {
-            //await _gameService.RollDice();
-            // TODO IMPLEMENT WEBSOCKETS FOR ROLLING -- THIS IS ONLY FOR TESTING PURPOSES!!!!!!!!
-
-            Random rand = new Random();
-            int roll = rand.Next(0, 7);
-            currentStatus = $"{userName} rolled a {roll}!";
-
-            UpdateTokenSelection(selectedToken);
-            GameToken token = player.Tokens.Where(token => token.IdentifierChar ==
-            selectedToken).FirstOrDefault();
-
-            if (roll > 0)
-            {
-                token.TilePos += roll;
-                if (token.TilePos >= _board.Tiles.Count - 2)
-                {
-                    player.Tokens.Remove(token);
-                    token.TilePos = (token.TilePos - _board.Tiles.Count);
-                    UpdateTokenSelection(selectedToken);
-                }
-            }
-
-            await OnAfterRenderAsync(false);
-        }
-        else
-        {
-            currentStatus = "Bring out a token before rolling!";
-        }*/
+        // TODO IMPLEMENT AGAINST SERVER
     }
 
     protected async Task BringOutToken()
     {
-        /*Player player = GetPlayer();
-        if (isPlayerTurn && player.Tokens.Any(token => token.InBase))
-        {
-            int xPos = 0, yPos = 0;
-            switch (player.Color)
-            {
-                case "red":
-                    xPos = _board.redSpawnPosX;
-                    yPos = _board.redSpawnPosY;
-                    break;
-            }
-
-            char token = player.Tokens.First(token => token.InBase).IdentifierChar;
-
-            // Move out a token to the spawn position
-            int spawnIndex = _board.Tiles.FindIndex(tile => tile.XPos == xPos &&
-            tile.YPos
-            == yPos);
-
-            player.Tokens.First(t => t.IdentifierChar == token).TilePos = spawnIndex;
-            player.Tokens.First(t => t.IdentifierChar == token).InBase = false;
-
-            if (!player.Tokens.Any(t => !t.InBase && t.IdentifierChar != player.Tokens.First(t => t.IdentifierChar ==
-            token).IdentifierChar))
-                UpdateTokenSelection(player.Tokens.First(t => t.IdentifierChar == token).IdentifierChar);
-
-
-            // Render the changes
-            await OnAfterRenderAsync(false);
-        }
-        else
-        {
-            currentStatus = "No tokens in base!";
-        }*/
-
+        // TODO IMPLEMENT AGAINST SERVER
     }
 
     private void UpdateTokenSelection(char token)
@@ -351,16 +269,18 @@ new GameToken() { TilePos = 0 , IdentifierChar = 'D', InBase = true}}
         }
         else
         {
-            return new Player() { Name = userName + " (SPECTATING)" };
+            return new Player("dead", userName + " (SPECTATING)");
         }
     }
 
-    private void JoinGame()
+
+    private async Task JoinGame()
     {
         if (_game.AmountPlaying < _game.MaxPlayers)
         {
+            await hubConnection.SendAsync("JoinGame", userName, Id);
             hasJoinedGame = true;
-            Console.WriteLine("has joined game");
+            StateHasChanged();
         }
     }
 }

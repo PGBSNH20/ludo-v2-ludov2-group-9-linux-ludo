@@ -8,5 +8,10 @@ namespace LinuxLudo.Web.Domain.Models
         public DateTime StartedDateTime { get; set; }
         public List<Player> Players { get; set; }
         public bool IsCompleted { get; set; }
+
+        public GameStatus()
+        {
+            Players = new List<Player>();
+        }
     }
 }

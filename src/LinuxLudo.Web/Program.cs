@@ -23,6 +23,7 @@ namespace LinuxLudo.Web
             builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
             builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
             builder.Services.AddScoped<AuthenticationStateProvider, AuthStateProvider>();
+            builder.Services.AddScoped<BrowserService>();
             builder.Services.AddScoped<HubController>();
             builder.Services.AddBlazoredLocalStorage();
             builder.Services.AddAuthorizationCore();

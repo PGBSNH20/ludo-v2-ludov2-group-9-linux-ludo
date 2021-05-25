@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Net.Http.Headers;
 using Blazored.LocalStorage;
 using System.Collections.Generic;
+using LinuxLudo.Web.Domain.Models;
 
 namespace LinuxLudo.Web.Game.Services
 {

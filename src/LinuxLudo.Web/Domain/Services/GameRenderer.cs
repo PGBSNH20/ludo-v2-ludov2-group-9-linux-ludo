@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Blazor.Extensions.Canvas.Canvas2D;
+using LinuxLudo.Web.Domain.Models;
 using Microsoft.AspNetCore.Components;
 
 namespace LinuxLudo.Web.Game
@@ -75,7 +76,7 @@ namespace LinuxLudo.Web.Game
             TileSize * 6);
 
 
-            if (gameStatus.Players.Count > 0)
+            if (gameStatus.Players?.Count > 0)
             {
                 await context.SetFontAsync($"{canvasWidth / 25}px {fontFace}");
 

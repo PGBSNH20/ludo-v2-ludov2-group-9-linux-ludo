@@ -95,14 +95,14 @@ using LinuxLudo.Web.Shared;
 #nullable disable
 #nullable restore
 #line 13 "C:\Users\adam-\Documents\Workspace\ludo-v2-ludov2-group-9-linux-ludo\src\linuxludo.web\_Imports.razor"
-using LinuxLudo.Web.Models;
+using LinuxLudo.Web.Authentication;
 
 #line default
 #line hidden
 #nullable disable
 #nullable restore
 #line 14 "C:\Users\adam-\Documents\Workspace\ludo-v2-ludov2-group-9-linux-ludo\src\linuxludo.web\_Imports.razor"
-using LinuxLudo.Web.Authentication;
+using LinuxLudo.Web.Domain;
 
 #line default
 #line hidden

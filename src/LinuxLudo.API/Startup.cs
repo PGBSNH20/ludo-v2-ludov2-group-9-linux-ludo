@@ -105,6 +105,7 @@ namespace LinuxLudo.API
             services.AddTransient<IJwtService, JwtService>();
             services.AddTransient<IAuthService, AuthService>();
             services.AddTransient<IGameService, GameService>();
+            services.AddSingleton<IGameHubRepository, GameHubRepository>();
 
             services.AddAuth(jwtSettings);
 
@@ -117,13 +118,14 @@ namespace LinuxLudo.API
 
             services.AddResponseCompression(opts =>
             {
-                opts.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(new[] {"application/octet-stream"});
+                opts.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(new[] { "application/octet-stream" });
             });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+
             app.UseResponseCompression();
             if (env.IsDevelopment())
             {
@@ -132,7 +134,7 @@ namespace LinuxLudo.API
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "LinuxLudo.API v1"));
             }
 
-            app.UseHttpsRedirection();
+            //app.UseHttpsRedirection();
 
             app.UseRouting();
             app.UseCors("Open");
@@ -142,7 +144,7 @@ namespace LinuxLudo.API
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
-                endpoints.MapHub<ChatHub>("/chathub");
+                endpoints.MapHub<GameHub>("/gamehub");
             });
             app.ApplyRouteNotFoundMiddleware();
         }
