@@ -48,12 +48,14 @@
         </div>
     </div>
 
-    @if (!hasJoinedGame && _game.MaxPlayers > 0)
+    @if (!hasJoinedGame)
     {
         @functions {
             bool GameIsFull => _game.AmountPlaying >= _game.MaxPlayers && _game.MaxPlayers != 0; 
         }
 
+        if(_game.MaxPlayers > 0)
+        {
         <div class="game-info">
             <h1 class="game-name">@_game.Name</h1>
             <h2 class="game-details-text" style=@(GameIsFull ? "color: red;" : "")>Slots taken:
@@ -66,11 +68,12 @@
             <button class="game-option-button" id="browse-btn" @onclick=@(() => NavManager.NavigateTo("/Play"))>Browse
                 available games</button>
         </div>
-    }else
-    {
+        }else
+        {
         <div class="loading-section">
         <h1 class="loading-message">Loading... please wait</h1>
         </div>
+        }
     }
 </AuthorizeView>
 
