@@ -24,6 +24,7 @@
 .repository-link
 {
     font-size: 20px;
+    text-decoration: underline;
     color: blue;
 }
 

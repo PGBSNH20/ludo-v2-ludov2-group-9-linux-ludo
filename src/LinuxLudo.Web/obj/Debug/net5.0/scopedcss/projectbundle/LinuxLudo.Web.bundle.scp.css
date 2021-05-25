@@ -109,14 +109,16 @@
     background-color: green;
     color:white;
     float:left;
-	transition: transform 0.5s;
+	transition: all 0.2s ease-in-out;
 }
 
 .roll-button:hover[b-i9c2lkf1j2]
 {
 	color: white;
-	transform: scale(1.2);
-    box-shadow: inset 0 0 0 7px #000000;
+	transform: scale(1.25);
+    margin-right: 25px;
+    margin-top: 5px;
+    margin-bottom: 5px;
 }
 
 .bring-token-button[b-i9c2lkf1j2]
@@ -126,14 +128,16 @@
     height: 5em;
     background-color: brown;
     color:white;
-	transition: transform 0.5s;
+	transition: all 0.2s ease-in-out;
 }
 
 .bring-token-button:hover[b-i9c2lkf1j2]
 {
 	color: white;
-	transform: scale(1.2);
-    box-shadow: inset 0 0 0 7px #000000;
+	transform: scale(1.25);
+    margin-left: 25px;
+    margin-top: 5px;
+    margin-bottom: 5px;
 }
 
 .title-text[b-i9c2lkf1j2]
@@ -342,6 +346,7 @@
 .repository-link[b-m53w0cp7ne]
 {
     font-size: 20px;
+    text-decoration: underline;
     color: blue;
 }
 

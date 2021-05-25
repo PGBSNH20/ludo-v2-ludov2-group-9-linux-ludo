@@ -99,7 +99,7 @@
     // Game
     private bool hasJoinedGame = false;
     private string currentStatus = "Waiting for players...";
-    private char selectedToken = 'A';
+    private char selectedToken;
 
     // This is true if it's the client-side player's turn
     private bool isPlayerTurn = true; // TODO SET FROM API
@@ -215,7 +215,7 @@ new GameToken() { TilePos = 0 , IdentifierChar = 'D', InBase = true}}
         // Fetch latest data to render
         // _gameStatus = await _ gameService.GetGameStatus();
 
-        await _gameRenderer.RenderGame(_context, _board, _gameStatus, currentStatus);
+        await _gameRenderer.RenderGame(_context, _board, _gameStatus, currentStatus, selectedToken);
     }
 
     protected async Task RollDice()
