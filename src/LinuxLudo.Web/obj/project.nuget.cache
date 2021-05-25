@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "8LWuy/tE4BHSr7UqjazRSDd1TJ9pgTcWzgfODckM8YyDcWxmCz0iL3DmspTQYPbdbu0Y08pnIsv75c5JPcWm8A==",
+  "dgSpecHash": "OTQipETd/Hcnt+hckZVjFxyMSQMOULtQTEe2gKioB+1Qwmb7hNV+j0Cgdq0Hotfm+r+aZncawWHCkbINZqtqtQ==",
   "success": true,
-  "projectFilePath": "C:\\Users\\adam-\\Documents\\Workspace\\ludo-v2-ludov2-group-9-linux-ludo\\src\\LinuxLudo.Web\\LinuxLudo.Web.csproj",
+  "projectFilePath": "C:\\Users\\adam-\\Documents\\Workspace\\ludo-v2-ludov2-group-9-linux-ludo\\src\\linuxludo.web\\LinuxLudo.Web.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\adam-\\.nuget\\packages\\blazor.extensions.canvas\\1.1.1\\blazor.extensions.canvas.1.1.1.nupkg.sha512",
     "C:\\Users\\adam-\\.nuget\\packages\\blazored.localstorage\\4.1.1\\blazored.localstorage.4.1.1.nupkg.sha512",

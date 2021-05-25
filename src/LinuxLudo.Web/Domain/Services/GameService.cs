@@ -12,7 +12,6 @@ namespace LinuxLudo.Web.Game.Services
 {
     public class GameService
     {
-        private readonly ILocalStorageService _localStorage;
         private readonly Guid _gameId;
         private readonly string _userName;
         private readonly HttpClient _client;

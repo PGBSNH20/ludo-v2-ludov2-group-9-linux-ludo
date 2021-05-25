@@ -9,11 +9,15 @@ namespace LinuxLudo.API.Database.Repositories
     public class GameHubRepository : IGameHubRepository
     {
         public List<OpenGame> openGames = new();
-        public void AddGame(OpenGame game) => openGames.Add(game);
+        public void AddGame(OpenGame game)
+        {
+            openGames.Add(game);
+        }
         public void AddPlayer(OpenGame game, string username)
         {
             string color = GetAvailableColor(game);
-            game.PlayersInGame.Add(new Player(color, username));
+            Player player = new Player(color, username);
+            game.PlayersInGame.Add(player);
         }
 
         public IEnumerable<OpenGame> FetchAllGames()

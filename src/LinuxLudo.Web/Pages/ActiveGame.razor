@@ -50,7 +50,7 @@
             bool GameIsFull => _game.AmountPlaying >= _game.MaxPlayers && _game.MaxPlayers != 0; 
         }
 
-        if(true || _game.MaxPlayers > 0)
+        if(_game.MaxPlayers > 0)
         {
         <div class="game-info">
             <h1 class="game-name">@_game.Name</h1>
@@ -208,7 +208,7 @@
         hubConnection.On<string, List<Player>>("ReceiveJoinGame", (userName, players) =>
         {
             _gameStatus.Players = players;
-            currentStatus = $"{userName} has joined the game!";
+            currentStatus = this.userName == userName ? $"Welcome {userName}!" : $"{userName} has joined the game!";
             StateHasChanged();
         });
 

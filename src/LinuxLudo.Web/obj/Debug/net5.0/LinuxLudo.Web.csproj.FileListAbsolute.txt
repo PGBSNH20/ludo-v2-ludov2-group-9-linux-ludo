@@ -687,4 +687,4 @@ C:\Users\adam-\Documents\Workspace\ludo-v2-ludov2-group-9-linux-ludo\src\linuxlu
 C:\Users\adam-\Documents\Workspace\ludo-v2-ludov2-group-9-linux-ludo\src\linuxludo.web\obj\Debug\net5.0\build-gz\xlT7iV3g.gz
 C:\Users\adam-\Documents\Workspace\ludo-v2-ludov2-group-9-linux-ludo\src\linuxludo.web\obj\Debug\net5.0\build-gz\aAdW59bQ.gz
 C:\Users\adam-\Documents\Workspace\ludo-v2-ludov2-group-9-linux-ludo\src\linuxludo.web\obj\Debug\net5.0\build-gz\ncN8HCqU.gz
-C:\Users\adam-\Documents\Workspace\ludo-v2-ludov2-group-9-linux-ludo\src\LinuxLudo.Web\obj\Debug\net5.0\build-gz\QEH2hXOX.gz
+C:\Users\adam-\Documents\Workspace\ludo-v2-ludov2-group-9-linux-ludo\src\linuxludo.web\obj\Debug\net5.0\build-gz\TyADChh0.gz
