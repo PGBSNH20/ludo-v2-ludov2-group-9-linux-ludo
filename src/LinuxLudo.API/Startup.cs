@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json.Serialization;
@@ -8,6 +9,7 @@ using LinuxLudo.API.Domain.Repositories;
 using LinuxLudo.API.Domain.Response;
 using LinuxLudo.API.Domain.Services;
 using LinuxLudo.API.Extensions;
+using LinuxLudo.API.Hubs;
 using LinuxLudo.API.Middleware;
 using LinuxLudo.API.Services;
 using LinuxLudo.API.Settings;
@@ -16,6 +18,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -47,6 +50,11 @@ namespace LinuxLudo.API
                 .AddEntityFrameworkStores<AppDbContext>()
                 .AddDefaultTokenProviders();
             services.AddAutoMapper(typeof(Startup));
+            services.AddSignalR(opts =>
+            {
+                opts.EnableDetailedErrors = true;
+                opts.KeepAliveInterval = TimeSpan.FromMinutes(1);
+            });
             services.AddControllers()
                 .ConfigureApiBehaviorOptions(opts =>
                 {
@@ -101,16 +109,22 @@ namespace LinuxLudo.API
             services.AddAuth(jwtSettings);
 
             services.AddCors(options =>
-{
-    options.AddPolicy(
-        "Open",
-        builder => builder.AllowAnyOrigin().AllowAnyHeader());
-});
+            {
+                options.AddPolicy(
+                    "Open",
+                    builder => builder.AllowAnyOrigin().AllowAnyHeader());
+            });
+
+            services.AddResponseCompression(opts =>
+            {
+                opts.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(new[] {"application/octet-stream"});
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            app.UseResponseCompression();
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -125,7 +139,11 @@ namespace LinuxLudo.API
             app.ApplyCustomMiddleware();
 
             app.UseAuth();
-            app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllers();
+                endpoints.MapHub<ChatHub>("/chathub");
+            });
             app.ApplyRouteNotFoundMiddleware();
         }
     }

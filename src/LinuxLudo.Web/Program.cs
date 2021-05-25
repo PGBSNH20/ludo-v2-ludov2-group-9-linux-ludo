@@ -6,6 +6,9 @@ using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Net.Http;
 using System.Threading.Tasks;
+using LinuxLudo.Web.Domain.Services;
+using LinuxLudo.Web.Hubs;
+using LinuxLudo.Web.Services;
 
 namespace LinuxLudo.Web
 {
@@ -19,6 +22,7 @@ namespace LinuxLudo.Web
             builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
             builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
             builder.Services.AddScoped<AuthenticationStateProvider, AuthStateProvider>();
+            builder.Services.AddScoped<HubController>();
             builder.Services.AddBlazoredLocalStorage();
             builder.Services.AddAuthorizationCore();
 
