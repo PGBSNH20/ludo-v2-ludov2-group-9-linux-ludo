@@ -44,14 +44,47 @@ namespace LinuxLudo.API.Hubs
             await Clients.Client(Context.ConnectionId).SendAsync("ReceivePlayerTurn", game.CurrentTurnColor);
         }
 
-        public async Task RollDice(string username)
+        public async Task NotifyRollDice(string username, int roll)
+        => await Clients.Group(_repository.FetchUserById(Context.ConnectionId).JoinedGame.GameId.ToString()).SendAsync("ReceiveRollDice", username, roll);
+
+        public async Task MoveToken(string username, GameToken token)
         {
             // Fetches the game the player is in
             OpenGame game = _repository.FetchGameById(_repository.FetchUserById(Context.ConnectionId).JoinedGame.GameId);
-            int roll = engine.RollDice();
 
-            // Notify clients of roll
-            await Clients.Group(game.GameId.ToString()).SendAsync("ReceiveRollDice", username, roll);
+            int roll = engine.RollDice();
+            if (roll > 0)
+            {
+                Player player = game.PlayersInGame.First(player => player.Name == username);
+                engine.MoveToken(player, token, roll);
+
+                await Clients.Group(game.GameId.ToString()).SendAsync("ReceiveMoveToken", username, token, roll);
+            }
+            else
+            {
+                await NotifyRollDice(username, roll);
+            }
+
+            // Set the turn to the next player
+            await UpdatePlayerTurn(game);
+        }
+
+        public async Task BringOutToken(string username)
+        {
+            // Fetches the game the player is in
+            OpenGame game = _repository.FetchGameById(_repository.FetchUserById(Context.ConnectionId).JoinedGame.GameId);
+
+            // Decides whether or not to bring out a token
+            int roll = engine.RollDice();
+            if (roll == 6)
+            {
+                GameToken token = engine.BringOutToken(game.PlayersInGame.First(player => player.Name == username));
+                await Clients.Group(game.GameId.ToString()).SendAsync("ReceiveBringOutToken", username, token);
+            }
+            else
+            {
+                await NotifyRollDice(username, roll);
+            }
 
             // Set the turn to the next player
             await UpdatePlayerTurn(game);

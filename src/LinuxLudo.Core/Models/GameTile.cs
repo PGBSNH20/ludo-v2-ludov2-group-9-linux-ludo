@@ -8,7 +8,8 @@ namespace LinuxLudo.Web.Game
             Red,
             Green,
             Blue,
-            Yellow
+            Yellow,
+            Goal
         }
 
         public GameColor TileColor { get; set; }

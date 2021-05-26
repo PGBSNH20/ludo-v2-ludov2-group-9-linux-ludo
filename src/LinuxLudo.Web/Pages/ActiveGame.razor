@@ -47,13 +47,10 @@
                     style="content: attr(label); display: inline-block; text-align: center; width: 100%;">
                     @foreach (char tokenSelection in tokenSelections)
                     {
-                        <input
-                        class="w-auto h-full outline-none appearance-none cursor-pointer rounded-sm py-2 px-4 bg-gray-700 text-gray-300 text-base transition-all
-                                      checked:bg-gradient-to-r checked:from-purple-200 checked:to-purple-700 checked:text-white"
-                        @onchange="@(() => UpdateTokenSelection(tokenSelection))" hidden=@(!isPlayerTurn ||
-                        IsTokenDead(tokenSelection)) checked="@(_selectedToken.Equals(tokenSelection))"
-                        label=@tokenSelection type="radio" id=@($"token-{tokenSelection}") name="token"
-                        value=@($"token-{tokenSelection}")>
+                        <input class="w-auto h-full outline-none cursor-pointer"
+                        @onchange="@(() => UpdateTokenSelection(tokenSelection))" hidden=@(IsTokenDead(tokenSelection))
+                        checked="@(_selectedToken.Equals(tokenSelection))" label=@tokenSelection type="radio"
+                        id=@($"token-{tokenSelection}") name="token" value=@($"token-{tokenSelection}")>
                     }
                 </div>
             </h1>
@@ -123,7 +120,7 @@
     private const int MinHeightResize = 720;
     private const float HeightWidthMultiplierIsMobile = 1.2f;
     private string CanvasHtmlString => isPlayerTurn ? "" : "hidden";
-    private const int statusMessageUpdateIntervalMs = 500;
+    private const int statusMessageUpdateIntervalMs = 2000;
 
     // Game
     private GameService _gameService;
@@ -206,7 +203,7 @@
         // Display the next message after one second
         if (_statusMessages.Count > 1 && DateTime.Now >= _statusMessages[0].EndTime)
         {
-            _statusMessages.RemoveAt(0);
+            _statusMessages.RemoveAll(message => DateTime.Now >= message.EndTime);
         }
         await _gameRenderer.RenderGame(_context, _board, _gameStatus, _statusMessages, _selectedToken);
     }
@@ -230,24 +227,48 @@
         });
 
         // Called whenever the current player turn is updated
+        _hub.On<string, GameToken, int>("ReceiveMoveToken", async (username, token, roll) =>
+        {
+            ReceiveMoveToken(username, token, roll);
+            await OnAfterRenderAsync(false);
+        });
+
+        // Called whenever the current player turn is updated
+        _hub.On<string, GameToken>("ReceiveBringOutToken", async (username, token) =>
+        {
+            ReceiveBringOutToken(username, token);
+            await OnAfterRenderAsync(false);
+        });
+
+        // Called whenever the current player turn is updated
         _hub.On<string>("ReceivePlayerTurn", async (turnColor) =>
         {
             ReceivePlayerTurn(turnColor);
             await OnAfterRenderAsync(false);
         });
 
+
         await _hub.StartAsync();
     }
 
     protected async Task RollDice()
     {
-        // Send a roll request to the server
-        await _hub.InvokeAsync("RollDice", _username);
+        if (isPlayerTurn)
+        {
+            GameToken token = _gameStatus.Players.First(player => player.Name == _username).Tokens.First(t => t.IdentifierChar ==
+            _selectedToken);
+
+            // Send a roll request to the server
+            await _hub.InvokeAsync("MoveToken", _username, token);
+        }
     }
 
     protected async Task BringOutToken()
     {
-        // TODO IMPLEMENT AGAINST SERVER
+        if (isPlayerTurn)
+        {
+            await _hub.InvokeAsync("BringOutToken", _username);
+        }
     }
 
     private void UpdateTokenSelection(char token)
@@ -310,7 +331,29 @@
             _gameRenderer.userName = _username;
         }
     }
-    private void ReceivePlayerRoll() { }
+
+    private void ReceiveMoveToken(string username, GameToken token, int roll)
+    {
+        Console.WriteLine($"ReceiveMoveToken: {username} - token {token.IdentifierChar} - roll: {roll}, new position: {token.TilePos}");
+
+        _gameStatus.Players.First(player => player.Name == username).Tokens.First(t => t.IdentifierChar ==
+        token.IdentifierChar).TilePos = token.TilePos;
+        _statusMessages.Add(new($"{(_username == username ? "You" : username)} walked {roll} steps!",
+        _statusMessages));
+    }
+
+    private void ReceiveBringOutToken(string username, GameToken token)
+    {
+        _gameStatus.Players.First(player => player.Name == username).Tokens.First(t => t.IdentifierChar ==
+        token.IdentifierChar).InBase = token.InBase;
+
+        _gameStatus.Players.First(player => player.Name == username).Tokens.First(t => t.IdentifierChar ==
+        token.IdentifierChar).TilePos = token.TilePos;
+
+        _statusMessages.Add(new($"{(_username == username ? "You" : username)} brought out a token ({token.IdentifierChar})!",
+        _statusMessages));
+    }
+
     private void ReceiveConnectionChanged(string username, List<Player>
     players)
     {

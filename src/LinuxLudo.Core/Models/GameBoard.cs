@@ -101,6 +101,9 @@ namespace LinuxLudo.Web.Game
             new GameTile(GameColor.Any, 4, 4),
             new GameTile(GameColor.Any, 4, 3),
             new GameTile(GameColor.Any, 4, 2),
+
+            // GOAL/CENTER TILE
+            new GameTile(GameColor.Goal, 7, 8)
         };
 
         public int redBaseX1 = 1, redBaseY1 = 2, redSpawnPosX = 4, redSpawnPosY = 1;

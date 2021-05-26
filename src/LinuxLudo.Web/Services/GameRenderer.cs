@@ -171,6 +171,10 @@ namespace LinuxLudo.Web.Services
                 GameTile.GameColor.Yellow:
                         strokeColor = "#F0E68C";
                         break;
+                    case
+                GameTile.GameColor.Goal:
+                        strokeColor = "#FF00FF";
+                        break;
                 }
 
                 if (strokeColor != tileOutlineColor)
@@ -187,12 +191,6 @@ namespace LinuxLudo.Web.Services
                 await context.SetFillStyleAsync(fillColor);
                 await context.FillRectAsync(GetTilePos(i, xPos: true) + TileSize / 8 - tileOutlineWidth, GetTilePos(i, xPos: false) + TileSize / 8 - tileOutlineWidth, TileSize - (TileSize / 4) + tileOutlineWidth, TileSize - (TileSize / 4) + tileOutlineWidth);
             }
-
-            // Fill in the center most tile (goal tile)
-            await context.SetFillStyleAsync("#FFFF00");
-            await context.FillRectAsync(
-                GetTilePos(board.Tiles.FindLastIndex(tile => tile.TileColor == GameTile.GameColor.Red), true) + TileSize - tileOutlineWidth / 2,
-                 GetTilePos(board.Tiles.FindLastIndex(tile => tile.TileColor == GameTile.GameColor.Red), false) - tileOutlineWidth / 2, TileSize - tileOutlineWidth / 2, TileSize - tileOutlineWidth / 2);
         }
 
         protected async Task DrawPlayers(char selectedToken)

@@ -5,6 +5,7 @@ namespace LinuxLudo.Core.Models
         public int TilePos { get; set; }
         public char IdentifierChar { get; set; }
         public bool InBase { get; set; }
+        public bool MovedFromSpawn { get; set; }
 
         public GameToken(char identifierChar)
         {
