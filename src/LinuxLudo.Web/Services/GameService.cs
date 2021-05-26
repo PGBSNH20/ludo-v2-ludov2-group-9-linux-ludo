@@ -72,9 +72,8 @@ namespace LinuxLudo.Web.Services
             return await Task.FromResult(response);
         }
 
-        public async Task<List<AvailableGame>> FetchAllGames(string authToken)
+        public async Task<List<AvailableGame>> FetchAllGames()
         {
-            _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", authToken);
             var fetchResult = await _client.GetAsync(API_URL + "/Games");
 
             if (!fetchResult.IsSuccessStatusCode)

@@ -1,27 +1,26 @@
 @page "/Game/{Id:guid}"
 @using LinuxLudo.Web.Domain.Models
-@inject NavigationManager NavManager; // Used to navigate in the webbrowser to different urls
 @using Microsoft.AspNetCore.SignalR.Client
 @using LinuxLudo.Core.Models
-@using LinuxLudo.Web.Domain.Services
 @using LinuxLudo.Web.Services
-@inject BrowserService browserService;
-@inject IJSRuntime JsRuntime;
-@inject Blazored.LocalStorage.ILocalStorageService localStorage;
+@inject NavigationManager _navManager; // Used to navigate in the webbrowser to different urls
+@inject BrowserService _browserService;
+@inject IJSRuntime _jsRuntime;
+@inject Blazored.LocalStorage.ILocalStorageService _localStorage;
 
 <AuthorizeView>
-    <img @ref="redToken" hidden id="redToken" src="Images/redtoken.png" />
-    <img @ref="greenToken" hidden id="greenToken" src="Images/greentoken.png" />
-    <img @ref="blueToken" hidden id="blueToken" src="Images/bluetoken.png" />
-    <img @ref="yellowToken" hidden id="yellowToken" src="Images/yellowtoken.png" />
+    <img @ref="_redToken" hidden id="redToken" src="Images/redtoken.png" />
+    <img @ref="_greenToken" hidden id="greenToken" src="Images/greentoken.png" />
+    <img @ref="_blueToken" hidden id="blueToken" src="Images/bluetoken.png" />
+    <img @ref="_yellowToken" hidden id="yellowToken" src="Images/yellowtoken.png" />
 
-    <div class="game-screen" hidden=@(!hasJoinedGame)>
+    <div class="game-screen" hidden=@(!_hasJoinedGame)>
         <h1 class="title-text"><b>@_game.Name</b></h1>
         <div class="game-canvas">
             <BECanvas Width="@_canvasWidth" Height="@_canvasHeight" @ref="_canvas"></BECanvas>
         </div>
 
-        <div class="player-controls @canvasHtmlString">
+        <div class="player-controls @CanvasHtmlString">
             <button class="roll-button" @onclick=RollDiceClick>Roll dice</button>
             <button class="bring-token-button" @onclick=BringOutTokenClick>Bring out token</button>
 
@@ -39,7 +38,7 @@
                     @foreach (char tokenSelection in tokenSelections)
                     {
                           <input @onchange="@(() => UpdateTokenSelection(tokenSelection))" hidden=@IsTokenDead(tokenSelection)
-                        checked="@(selectedToken.Equals(tokenSelection))" label=@tokenSelection type="radio" id=@($"token-{tokenSelection}") name="token"
+                        checked="@(_selectedToken.Equals(tokenSelection))" label=@tokenSelection type="radio" id=@($"token-{tokenSelection}") name="token"
                         value=@($"token-{tokenSelection}")>
                     }
                 </div>
@@ -47,7 +46,7 @@
         </div>
     </div>
 
-    @if (!hasJoinedGame)
+    @if (!_hasJoinedGame)
     {
         @functions {
             bool GameIsFull => _game.AmountPlaying >= _game.MaxPlayers && _game.MaxPlayers != 0; 
@@ -61,10 +60,10 @@
                 <b>@_game.AmountPlaying</b>/<b>@_game.MaxPlayers</b>
             </h2>
         </div>
-        <div class="join-screen" hidden=@(!hasJoinedGame)>
+        <div class="join-screen" hidden=@(!_hasJoinedGame)>
             <button class="game-option-button" disabled=@(GameIsFull) id="play-btn"
             @onclick=JoinGame>@(GameIsFull ? "Game is full" : "Join game")</button>
-            <button class="game-option-button" id="browse-btn" @onclick=@(() => NavManager.NavigateTo("/Play"))>Browse
+            <button class="game-option-button" id="browse-btn" @onclick=@(() => _navManager.NavigateTo("/Play"))>Browse
                 available games</button>
         </div>
         }else
@@ -81,33 +80,31 @@
     // Misc
     [Parameter]
     public Guid Id { get; set; }
-    [CascadingParameter]
-    private Task<AuthenticationState> AuthState { get; set; }
-    private string userName;
+    private string _userName;
     private AvailableGame _game;
-    private const string hubUrl = "https://localhost:5001/gamehub";
+    private const string HubUrl = "https://localhost:5001/gamehub";
 
     // SignalR
-    private HubConnection hubConnection;
+    private HubConnection _hubConnection;
 
     // Canvas
-    protected BECanvasComponent _canvas;
+    private BECanvasComponent _canvas;
     private Canvas2DContext _context;
     private GameRenderer _gameRenderer;
     private GameBoard _board;
-    private ElementReference redToken, greenToken, blueToken, yellowToken;
+    private ElementReference _redToken, _greenToken, _blueToken, _yellowToken;
     private int _canvasWidth, _canvasHeight;
-    private const int _minWidthResize = 1600;
-    private const int _minHeightResize = 720;
-    private const float _heightWidthMultiplierIsMobile = 1.2f;
-    private string canvasHtmlString => isPlayerTurn ? "" : "hidden";
+    private const int MinWidthResize = 1600;
+    private const int MinHeightResize = 720;
+    private const float HeightWidthMultiplierIsMobile = 1.2f;
+    private string CanvasHtmlString => isPlayerTurn ? "" : "hidden";
 
     // Game
     private GameService _gameService;
     private GameStatus _gameStatus;
-    private bool hasJoinedGame = false;
-    private string currentStatus = "Waiting for players...";
-    private char selectedToken;
+    private bool _hasJoinedGame = false;
+    private string _currentStatus = "Waiting for players...";
+    private char _selectedToken;
     private List<char> tokenSelections => new() {'A','B','C','D'};
 
     // This is true if it's the client-side player's turn
@@ -117,12 +114,8 @@
     protected override async Task OnInitializedAsync()
     {
         _game = new();
-        var authState = await AuthState;
 
         // If the user is logged in
-        if (authState.User.Identity.IsAuthenticated)
-        {
-            userName = authState.User.Identity.Name;
 
             // Fit canvas has to be executed before signalR stuff
             await FitCanvas();
@@ -130,38 +123,32 @@
             _board = new GameBoard();
 
             // Initialize a new GameService to communicate with API
-            _gameService = new GameService(@Id, userName);
-            var authToken = await localStorage.GetItemAsync<string>("authToken");
+            _gameService = new GameService(@Id, _userName);
 
-            var allGames = await _gameService.FetchAllGames(authToken);
-            if(!allGames.Any(game => game.Id == Id.ToString()))
+            var allGames = await _gameService.FetchAllGames();
+            if(allGames.All(game => game.Id != Id.ToString()))
             {
                 // Game not found (wrong url entered?)
                 Console.WriteLine($"No such game with id: {Id}");
-                NavManager.NavigateTo("/Play");
+                _navManager.NavigateTo("/Play");
             }else
             {
             _game = allGames.First(game => game.Id == Id.ToString());
             }
 
             await SetupSignalR();
-        }
-        else
-        {
-            NavManager.NavigateTo("/Login");
-        }
     }
 
     protected async Task FitCanvas()
     {
-            var windowDim = await browserService.GetDimensions();
+            var windowDim = await _browserService.GetDimensions();
 
             // If the screen is more or less mobile resolution
-            if(windowDim.Height >= (windowDim.Width*_heightWidthMultiplierIsMobile))
+            if(windowDim.Height >= (windowDim.Width*HeightWidthMultiplierIsMobile))
             {
                 _canvasWidth = (windowDim.Width);
             }    
-            else if(windowDim.Width >= _minWidthResize && windowDim.Height >= _minHeightResize)
+            else if(windowDim.Width >= MinWidthResize && windowDim.Height >= MinHeightResize)
             {
                 _canvasWidth = (int)(windowDim.Width  * 0.35);
             }else
@@ -181,10 +168,10 @@
 
             // Reload UI components on page load (to hide e.g radiobtns)
             StateHasChanged();
-            _gameRenderer = new GameRenderer(userName, _canvasWidth, _canvasHeight, redToken, greenToken, blueToken, yellowToken);
+            _gameRenderer = new GameRenderer(_userName, _canvasWidth, _canvasHeight, _redToken, _greenToken, _blueToken, _yellowToken);
         }
 
-        if(hasJoinedGame)
+        if(_hasJoinedGame)
         {
         await RenderGame();
         }
@@ -197,25 +184,25 @@
         _context = await _canvas.CreateCanvas2DAsync();
 
         // Render the latest game details
-        await _gameRenderer.RenderGame(_context, _board, _gameStatus, currentStatus, selectedToken);
+        await _gameRenderer.RenderGame(_context, _board, _gameStatus, _currentStatus, _selectedToken);
     }
 
     protected async Task SetupSignalR()
     {
-        hubConnection = new HubConnectionBuilder()
-        .WithUrl(hubUrl)
+        _hubConnection = new HubConnectionBuilder()
+        .WithUrl(HubUrl)
         .Build();
 
 
         // Continously listens for received data
-        hubConnection.On<string, List<Player>>("ReceiveJoinGame", (userName, players) =>
+        _hubConnection.On<string, List<Player>>("ReceiveJoinGame", (userName, players) =>
         {
             _gameStatus.Players = players;
-            currentStatus = this.userName == userName ? $"Welcome {userName}!" : $"{userName} has joined the game!";
+            _currentStatus = this._userName == userName ? $"Welcome {userName}!" : $"{userName} has joined the game!";
             StateHasChanged();
         });
 
-        await hubConnection.StartAsync();
+        await _hubConnection.StartAsync();
     }
 
     protected async Task RollDice()
@@ -233,17 +220,17 @@
         Player player = GetPlayer();
         if (!IsTokenDead(token))
         {
-            selectedToken = token;
+            _selectedToken = token;
         }
         else if (player.Tokens.Count > 0)
         {
             if (player.Tokens.Any(t => !t.InBase))
             {
-                selectedToken = player.Tokens.FirstOrDefault(token => !token.InBase).IdentifierChar;
+                _selectedToken = player.Tokens.FirstOrDefault(token => !token.InBase).IdentifierChar;
             }
             else
             {
-                selectedToken = player.Tokens.First().IdentifierChar;
+                _selectedToken = player.Tokens.First().IdentifierChar;
             }
         }
     }
@@ -269,13 +256,13 @@
 
     private Player GetPlayer()
     {
-        if (_gameStatus != null && _gameStatus.Players.Any(p => p.Name == userName))
+        if (_gameStatus != null && _gameStatus.Players.Any(p => p.Name == _userName))
         {
-            return _gameStatus.Players.First(p => p.Name == userName);
+            return _gameStatus.Players.First(p => p.Name == _userName);
         }
         else
         {
-            return new Player("dead", userName + " (SPECTATING)");
+            return new Player("dead", _userName + " (SPECTATING)");
         }
     }
 
@@ -284,8 +271,8 @@
     {
         if (_game.AmountPlaying < _game.MaxPlayers)
         {
-            await hubConnection.SendAsync("JoinGame", userName, Id);
-            hasJoinedGame = true;
+            await _hubConnection.SendAsync("JoinGame", _userName, Id);
+            _hasJoinedGame = true;
             StateHasChanged();
         }
     }
