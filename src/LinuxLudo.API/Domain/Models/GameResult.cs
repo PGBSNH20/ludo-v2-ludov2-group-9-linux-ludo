@@ -8,6 +8,6 @@ namespace LinuxLudo.API.Domain.Models
         public string Winner { get; set; }
         public Guid GameId { get; set; }
         public Game Game { get; set; }
-        
+
     }
 }

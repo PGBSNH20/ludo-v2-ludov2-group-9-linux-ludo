@@ -11,13 +11,15 @@
 @inject HubController _hubController
 
 <AuthorizeView>
-    <img @ref="_redToken" hidden id="redToken" src="Images/redtoken.png" />
-    <img @ref="_greenToken" hidden id="greenToken" src="Images/greentoken.png" />
-    <img @ref="_blueToken" hidden id="blueToken" src="Images/bluetoken.png" />
-    <img @ref="_yellowToken" hidden id="yellowToken" src="Images/yellowtoken.png" />
+    <img @ref="_redToken" hidden id="redToken" src="Images/redtoken.png"/>
+    <img @ref="_greenToken" hidden id="greenToken" src="Images/greentoken.png"/>
+    <img @ref="_blueToken" hidden id="blueToken" src="Images/bluetoken.png"/>
+    <img @ref="_yellowToken" hidden id="yellowToken" src="Images/yellowtoken.png"/>
 
     <div class="game-screen" hidden=@(!_hasJoinedGame)>
-        <h1 class="title-text"><b>@_game.Name</b></h1>
+        <h1 class="title-text">
+            <b>@_game.Name</b>
+        </h1>
         <div class="game-canvas">
             <BECanvas Width="@_canvasWidth" Height="@_canvasHeight" @ref="_canvas"></BECanvas>
         </div>
@@ -30,18 +32,18 @@
                 async Task RollDiceClick() => await RollDice();
                 async Task BringOutTokenClick() => await BringOutToken();
             }
+
         </div>
 
         <div class="token-selection">
-            <h1 class="select-token-text" hidden=@(IsTokenDead('A') && IsTokenDead('B') && IsTokenDead('C') &&
-                IsTokenDead('D'))><b>Select your token</b>
-                <div class="radio" hidden=@(IsTokenDead('A') && IsTokenDead('B') && IsTokenDead('C') &&
-                    IsTokenDead('D'))>
+            <h1 class="select-token-text" hidden=@(IsTokenDead('A') && IsTokenDead('B') && IsTokenDead('C') && IsTokenDead('D'))>
+                <b>Select your token</b>
+                <div class="radio" hidden=@(IsTokenDead('A') && IsTokenDead('B') && IsTokenDead('C') && IsTokenDead('D'))>
                     @foreach (char tokenSelection in tokenSelections)
                     {
-                          <input @onchange="@(() => UpdateTokenSelection(tokenSelection))" hidden=@IsTokenDead(tokenSelection)
-                        checked="@(_selectedToken.Equals(tokenSelection))" label=@tokenSelection type="radio" id=@($"token-{tokenSelection}") name="token"
-                        value=@($"token-{tokenSelection}")>
+                        <input @onchange="@(() => UpdateTokenSelection(tokenSelection))" hidden=@IsTokenDead(tokenSelection)
+                               checked="@(_selectedToken.Equals(tokenSelection))" label=@tokenSelection type="radio" id=@($"token-{tokenSelection}") name="token"
+                               value=@($"token-{tokenSelection}")>
                     }
                 </div>
             </h1>
@@ -51,29 +53,33 @@
     @if (!_hasJoinedGame)
     {
         @functions {
-            bool GameIsFull => _game.AmountPlaying >= _game.MaxPlayers && _game.MaxPlayers != 0; 
-        }
-
-        if(_game.MaxPlayers > 0)
-        {
-        <div class="game-info">
-            <h1 class="game-name">@_game.Name</h1>
-            <h2 class="game-details-text" style=@(GameIsFull ? "color: red;" : "")>Slots taken:
-                <b>@_game.AmountPlaying</b>/<b>@_game.MaxPlayers</b>
-            </h2>
-        </div>
-        <div class="join-screen" hidden=@(!_hasJoinedGame)>
-            <button class="game-option-button" disabled=@(GameIsFull) id="play-btn"
-            @onclick=JoinGame>@(GameIsFull ? "Game is full" : "Join game")</button>
-            <button class="game-option-button" id="browse-btn" @onclick=@(() => _navManager.NavigateTo("/Play"))>Browse
-                available games</button>
-        </div>
-        }else
-        {
-        <div class="loading-section">
-        <h1 class="loading-message">Loading... please wait</h1>
-        </div>
-        }
+            bool GameIsFull => _game.AmountPlaying >= _game.MaxPlayers && _game.MaxPlayers != 0;
+        }if (_game.MaxPlayers > 0)
+         {
+             <div class="game-info">
+                 <h1 class="game-name">@_game.Name</h1>
+                 <h2 class="game-details-text" style=@(GameIsFull ? "color: red;" : "")>
+                     Slots taken:
+                     <b>@_game.AmountPlaying</b>/<b>@_game.MaxPlayers</b>
+                 </h2>
+             </div>
+             <div class="join-screen" hidden=@(!_hasJoinedGame)>
+                 <button class="game-option-button" disabled=@(GameIsFull) id="play-btn"
+                         @onclick=JoinGame>
+                     @(GameIsFull ? "Game is full" : "Join game")
+                 </button>
+                 <button class="game-option-button" id="browse-btn" @onclick=@(() => _navManager.NavigateTo("/Play"))>
+                     Browse
+                     available games
+                 </button>
+             </div>
+         }
+         else
+         {
+             <div class="loading-section">
+                 <h1 class="loading-message">Loading... please wait</h1>
+             </div>
+         }
     }
 </AuthorizeView>
 
@@ -82,9 +88,10 @@
     // Misc
     [Parameter]
     public Guid Id { get; set; }
+
     private string _userName;
     private AvailableGame _game;
-    private const string Hub = "https://localhost:5001/gamehub";
+        private const string Hub = "https://localhost:5001/gamehub";
 
     // SignalR
     private HubConnection _hub;
@@ -96,9 +103,9 @@
     private GameBoard _board;
     private ElementReference _redToken, _greenToken, _blueToken, _yellowToken;
     private int _canvasWidth, _canvasHeight;
-    private const int MinWidthResize = 1600;
-    private const int MinHeightResize = 720;
-    private const float HeightWidthMultiplierIsMobile = 1.2f;
+        private const int MinWidthResize = 1600;
+        private const int MinHeightResize = 720;
+        private const float HeightWidthMultiplierIsMobile = 1.2f;
     private string CanvasHtmlString => isPlayerTurn ? "" : "hidden";
 
     // Game
@@ -107,7 +114,7 @@
     private bool _hasJoinedGame = false;
     private string _currentStatus = "Waiting for players...";
     private char _selectedToken;
-    private List<char> tokenSelections => new() {'A','B','C','D'};
+    private List<char> tokenSelections => new() {'A', 'B', 'C', 'D'};
 
     // This is true if it's the client-side player's turn
     private bool isPlayerTurn = true; // TODO SET FROM API
@@ -117,48 +124,45 @@
     {
         _game = new();
 
-        // If the user is logged in
+        await FitCanvas();
 
-            // Fit canvas has to be executed before signalR stuff
-            await FitCanvas();
+        _board = new GameBoard();
 
-            _board = new GameBoard();
+        _gameService = new GameService(@Id, _userName);
 
-            // Initialize a new GameService to communicate with API
-            _gameService = new GameService(@Id, _userName);
-
-            var allGames = await _gameService.FetchAllGames();
-            if(allGames.All(game => game.Id != Id.ToString()))
-            {
-                // Game not found (wrong url entered?)
-                Console.WriteLine($"No such game with id: {Id}");
-                _navManager.NavigateTo("/Play");
-            }else
-            {
+        var allGames = await _gameService.FetchAllGames();
+        if (allGames.All(game => game.Id != Id.ToString()))
+        {
+            Console.WriteLine($"No such game with id: {Id}");
+            _navManager.NavigateTo("/Play");
+        }
+        else
+        {
             _game = allGames.First(game => game.Id == Id.ToString());
-            }
+        }
 
-            await SetupSignalR();
+        await SetupSignalR();
     }
 
     protected async Task FitCanvas()
     {
-            var windowDim = await _browserService.GetDimensions();
+        var windowDim = await _browserService.GetDimensions();
 
-            // If the screen is more or less mobile resolution
-            if(windowDim.Height >= (windowDim.Width*HeightWidthMultiplierIsMobile))
-            {
-                _canvasWidth = (windowDim.Width);
-            }    
-            else if(windowDim.Width >= MinWidthResize && windowDim.Height >= MinHeightResize)
-            {
-                _canvasWidth = (int)(windowDim.Width  * 0.35);
-            }else
-            {
-                _canvasWidth = (int)(windowDim.Width * 0.7);
-            }
+    // If the screen is more or less mobile resolution
+        if (windowDim.Height >= (windowDim.Width * HeightWidthMultiplierIsMobile))
+        {
+            _canvasWidth = (windowDim.Width);
+        }
+        else if (windowDim.Width >= MinWidthResize && windowDim.Height >= MinHeightResize)
+        {
+            _canvasWidth = (int) (windowDim.Width * 0.35);
+        }
+        else
+        {
+            _canvasWidth = (int) (windowDim.Width * 0.7);
+        }
 
-            _canvasHeight = (int)(_canvasWidth * 1.15);
+        _canvasHeight = (int) (_canvasWidth * 1.15);
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -172,9 +176,9 @@
             _gameRenderer = new GameRenderer(_userName, _canvasWidth, _canvasHeight, _redToken, _greenToken, _blueToken, _yellowToken);
         }
 
-        if(_hasJoinedGame)
+        if (_hasJoinedGame)
         {
-        await RenderGame();
+            await RenderGame();
         }
     }
 
@@ -201,12 +205,12 @@
 
     protected async Task RollDice()
     {
-        // TODO IMPLEMENT AGAINST SERVER
+    // TODO IMPLEMENT AGAINST SERVER
     }
 
     protected async Task BringOutToken()
     {
-        // TODO IMPLEMENT AGAINST SERVER
+    // TODO IMPLEMENT AGAINST SERVER
     }
 
     private void UpdateTokenSelection(char token)
@@ -235,15 +239,15 @@
         {
             Player player = GetPlayer();
 
-            // Token is not dead if found in list
+    // Token is not dead if found in list
             if (player.Tokens.All(token => token.IdentifierChar != tokenIdentifier) || player.Tokens.Any(token => token.IdentifierChar == tokenIdentifier &&
-            token.InBase))
+                                                                                                                  token.InBase))
             {
                 return true;
             }
         }
 
-        // Token is alive/exists in list
+    // Token is alive/exists in list
         return false;
     }
 
