@@ -2,6 +2,9 @@
 @using LinuxLudo.Web.Domain.Models
 @inject NavigationManager NavManager; // Used to navigate in the webbrowser to different urls
 @using Microsoft.AspNetCore.SignalR.Client
+@using LinuxLudo.Core.Models
+@using LinuxLudo.Web.Domain.Services
+@using LinuxLudo.Web.Services
 @inject BrowserService browserService;
 @inject IJSRuntime JsRuntime;
 @inject Blazored.LocalStorage.ILocalStorageService localStorage;

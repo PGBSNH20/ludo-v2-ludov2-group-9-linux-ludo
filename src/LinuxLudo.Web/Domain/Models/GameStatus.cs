@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using LinuxLudo.Core.Models;
 
 namespace LinuxLudo.Web.Domain.Models
 {

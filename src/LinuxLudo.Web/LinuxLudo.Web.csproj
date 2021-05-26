@@ -15,4 +15,8 @@
     <PackageReference Include="System.Net.Http.Json" Version="5.0.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\LinuxLudo.Core\LinuxLudo.Core.csproj" />
+  </ItemGroup>
+
 </Project>

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using LinuxLudo.Web.Domain.Models;
 using LinuxLudo.Web.Game;
 
-namespace LinuxLudo.Web.Domain.Services
+namespace LinuxLudo.Web.Services
 {
     public class GameService
     {

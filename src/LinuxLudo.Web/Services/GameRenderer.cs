@@ -7,7 +7,7 @@ using LinuxLudo.Web.Domain.Models;
 using LinuxLudo.Web.Game;
 using Microsoft.AspNetCore.Components;
 
-namespace LinuxLudo.Web.Domain.Services
+namespace LinuxLudo.Web.Services
 {
     public class GameRenderer
     {
