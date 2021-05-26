@@ -38,7 +38,7 @@ namespace LinuxLudo.API
             services.AddSignalR(opts =>
             {
                 opts.EnableDetailedErrors = true;
-                opts.KeepAliveInterval = TimeSpan.FromMinutes(1);
+                opts.KeepAliveInterval = TimeSpan.FromSeconds(10);
             });
             services.AddControllers()
                 .ConfigureApiBehaviorOptions(opts =>

@@ -35,7 +35,12 @@ namespace LinuxLudo.API.Database.Repositories
 
         public ConnectedUser FetchUserById(string connectionId)
         {
-            return connectedUsers.First(user => user.ConnectionId == connectionId);
+            if (connectedUsers.Any(user => user.ConnectionId == connectionId))
+            {
+                return connectedUsers.First(user => user.ConnectionId == connectionId);
+            }
+
+            return new ConnectedUser("", "", null);
         }
 
         public void RemovePlayer(OpenGame game, string username)

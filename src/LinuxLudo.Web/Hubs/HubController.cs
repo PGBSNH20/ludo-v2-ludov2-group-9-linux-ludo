@@ -1,7 +1,3 @@
-using System;
-using System.Linq.Expressions;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http.Connections.Client;
 using Microsoft.AspNetCore.SignalR.Client;
 
 namespace LinuxLudo.Web.Hubs
@@ -14,6 +10,7 @@ namespace LinuxLudo.Web.Hubs
         {
             _hub = new HubConnectionBuilder()
                 .WithUrl($"https://localhost:5001/{hub}")
+                .WithAutomaticReconnect()
                 .Build();
 
             return this;

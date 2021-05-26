@@ -4,6 +4,7 @@
 @using LinuxLudo.Core.Models
 @using LinuxLudo.Web.Hubs
 @using LinuxLudo.Web.Services
+@using System.Threading
 @inject NavigationManager _navManager; // Used to navigate in the webbrowser to different urls
 @inject BrowserService _browserService;
 @inject IJSRuntime _jsRuntime;
@@ -39,8 +40,8 @@
 
         </div>
 
-        <div class="flex flex-row justify-center" hidden=@(IsTokenDead('A') && IsTokenDead('B') && IsTokenDead('C') &&
-            IsTokenDead('D'))>
+        <div class="flex flex-row justify-center" hidden=@(!isPlayerTurn || (IsTokenDead('A') && IsTokenDead('B') &&
+            IsTokenDead('C') && IsTokenDead('D')))>
             <h1 class="mr-8">
                 <b>Select your token</b>
                 <div class="bg-gray-700 p-3 relative rounded"
@@ -50,9 +51,10 @@
                         <input
                         class="w-auto h-full outline-none appearance-none cursor-pointer rounded-sm py-2 px-4 bg-gray-700 text-gray-300 text-base transition-all
                                       checked:bg-gradient-to-r checked:from-purple-200 checked:to-purple-700 checked:text-white"
-                        @onchange="@(() => UpdateTokenSelection(tokenSelection))" hidden=@IsTokenDead(tokenSelection)
-                        checked="@(_selectedToken.Equals(tokenSelection))" label=@tokenSelection type="radio"
-                        id=@($"token-{tokenSelection}") name="token" value=@($"token-{tokenSelection}")>
+                        @onchange="@(() => UpdateTokenSelection(tokenSelection))" hidden=@(!isPlayerTurn ||
+                        IsTokenDead(tokenSelection)) checked="@(_selectedToken.Equals(tokenSelection))"
+                        label=@tokenSelection type="radio" id=@($"token-{tokenSelection}") name="token"
+                        value=@($"token-{tokenSelection}")>
                     }
                 </div>
             </h1>
@@ -214,6 +216,9 @@
 
         // Called whenever a user rolls the dice (NOT WHEN TOKEN MOVES)
         _hub.On<string, int>("ReceiveRollDice", (username, roll) => ReceiveRollDice(username, roll));
+
+        // Called whenever the current player turn is updated
+        _hub.On<string>("ReceivePlayerTurn", (turnColor) => ReceivePlayerTurn(turnColor));
         await _hub.StartAsync();
     }
 
@@ -306,11 +311,13 @@
         StateHasChanged();
     }
 
-    private void UpdatePlayerTurn(string newPlayerTurn)
+    private void ReceivePlayerTurn(string newTurnColor)
     {
-
+        isPlayerTurn = GetPlayer().Color == newTurnColor;
+        string newTurnName = _gameStatus.Players.First(player => player.Color == newTurnColor).Name;
+        _currentStatus = $"It's {(isPlayerTurn ? "your" : newTurnName)} turn!";
+        StateHasChanged();
     }
-
     private void ReceiveRollDice(string username, int roll)
     {
         _currentStatus = $"{(username == _username ? "You" : username)} rolled a {roll}!";

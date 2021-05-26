@@ -12,10 +12,8 @@ namespace LinuxLudo.API.Hubs
     public class GameHub : Hub
     {
         private readonly IGameHubRepository _repository;
-        public GameHub(IGameHubRepository repository)
-        {
-            _repository = repository;
-        }
+        private readonly GameEngine engine = new();
+        public GameHub(IGameHubRepository repository) { _repository = repository; }
 
         public async Task JoinGame(string username, Guid gameId)
         {
@@ -45,15 +43,24 @@ namespace LinuxLudo.API.Hubs
 
         public async Task RollDice(string username)
         {
-            // TODO remove initializing new object everytime
-            GameEngine engine = new();
-
             // Fetches the game the player is in
             OpenGame game = _repository.FetchGameById(_repository.FetchUserById(Context.ConnectionId).JoinedGame.GameId);
             int roll = engine.RollDice();
 
             // Notify clients of roll
             await Clients.Group(game.GameId.ToString()).SendAsync("ReceiveRollDice", username, roll);
+
+            // Set the turn to the next player
+            await UpdatePlayerTurn(game);
+        }
+
+        private async Task UpdatePlayerTurn(OpenGame game)
+        {
+            // Sets the current turn to the next player in order
+            game.CurrentTurnColor = engine.UpdatePlayerTurn(game);
+
+            // Updates the clients with whose turn it is
+            await Clients.Group(game.GameId.ToString()).SendAsync("ReceivePlayerTurn", game.CurrentTurnColor);
         }
 
         private async Task SendConnectionChanged(string gameId, string player, List<Player> players)
@@ -65,7 +72,7 @@ namespace LinuxLudo.API.Hubs
         public override async Task OnDisconnectedAsync(Exception exception)
         {
             ConnectedUser user = _repository.FetchUserById(Context.ConnectionId);
-            if (user != null)
+            if (user?.JoinedGame != null)
             {
                 // Removes the player from their game
                 _repository.RemovePlayer(user.JoinedGame, user.Username);
