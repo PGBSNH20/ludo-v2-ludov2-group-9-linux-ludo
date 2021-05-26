@@ -16,17 +16,17 @@
     <img @ref="_blueToken" class="hidden" id="blueToken" src="Images/bluetoken.png"/>
     <img @ref="_yellowToken" class="hidden" id="yellowToken" src="Images/yellowtoken.png"/>
 
-    <div class="game-screen" hidden=@(!_hasJoinedGame)>
-        <h1 class="title-text">
+    <div hidden=@(!_hasJoinedGame)>
+        <h1 class="text-lg text-center">
             <b>@_game.Name</b>
         </h1>
-        <div class="game-canvas">
+        <div class="mt-4 flex justify-center items-center">
             <BECanvas Width="@_canvasWidth" Height="@_canvasHeight" @ref="_canvas"></BECanvas>
         </div>
 
-        <div class="player-controls @CanvasHtmlString">
-            <button class="roll-button" @onclick=RollDiceClick>Roll dice</button>
-            <button class="bring-token-button" @onclick=BringOutTokenClick>Bring out token</button>
+        <div class="flex items-center justify-center @CanvasHtmlString">
+            <button class="w-40 h-20 bg-green-500 text-white float-left transition-all ease-in-out transform hover:scale-125 my-2 mr-6" @onclick=RollDiceClick>Roll dice</button>
+            <button class="w-40 h-20 bg-yellow-700 text-white float-left transition-all ease-in-out transform hover:scale-125 my-2 ml-6" @onclick=BringOutTokenClick>Bring out token</button>
 
             @functions {
                 async Task RollDiceClick() => await RollDice();
@@ -35,13 +35,16 @@
 
         </div>
 
-        <div class="token-selection">
-            <h1 class="select-token-text" hidden=@(IsTokenDead('A') && IsTokenDead('B') && IsTokenDead('C') && IsTokenDead('D'))>
+        <div class="flex flex-row justify-center" hidden=@(IsTokenDead('A') && IsTokenDead('B') && IsTokenDead('C') && IsTokenDead('D'))>
+            <h1 class="mr-8">
                 <b>Select your token</b>
-                <div class="radio" hidden=@(IsTokenDead('A') && IsTokenDead('B') && IsTokenDead('C') && IsTokenDead('D'))>
+                <div class="bg-gray-700 p-3 relative rounded"
+                     style="content: attr(label); display: inline-block; text-align: center; width: 100%;">
                     @foreach (char tokenSelection in tokenSelections)
                     {
-                        <input @onchange="@(() => UpdateTokenSelection(tokenSelection))" hidden=@IsTokenDead(tokenSelection)
+                        <input class="w-auto h-full outline-none appearance-none cursor-pointer rounded-sm py-2 px-4 bg-gray-700 text-gray-300 text-base transition-all
+                                      checked:bg-gradient-to-r checked:from-purple-200 checked:to-purple-700 checked:text-white" 
+                               @onchange="@(() => UpdateTokenSelection(tokenSelection))" hidden=@IsTokenDead(tokenSelection)
                                checked="@(_selectedToken.Equals(tokenSelection))" label=@tokenSelection type="radio" id=@($"token-{tokenSelection}") name="token"
                                value=@($"token-{tokenSelection}")>
                     }
@@ -54,9 +57,8 @@
     {
         @functions {
             bool GameIsFull => _game.AmountPlaying >= _game.MaxPlayers && _game.MaxPlayers != 0;
-        }
-        if (_game.MaxPlayers > 0)
-        {
+        }if (_game.MaxPlayers > 0)
+         {
              <div class="flex flex-col items-center text-center">
                  <h1 class="text-black w-1/4 text-center text-lg font-bold mb-6">@_game.Name</h1>
                  <h2 class="text-base" style=@(GameIsFull ? "color: red;" : "")>
@@ -90,7 +92,7 @@
     [Parameter]
     public Guid Id { get; set; }
 
-    private string _userName;
+    private string _username;
     private AvailableGame _game;
         private const string Hub = "gamehub";
 
@@ -129,7 +131,7 @@
 
         _board = new GameBoard();
 
-        _gameService = new GameService(@Id, _userName);
+        _gameService = new GameService(@Id, _username);
 
         var allGames = await _gameService.FetchAllGames();
         if (allGames.All(game => game.Id != Id.ToString()))
@@ -174,7 +176,7 @@
             _context = await _canvas.CreateCanvas2DAsync();
 
             StateHasChanged();
-            _gameRenderer = new GameRenderer(_userName, _canvasWidth, _canvasHeight, _redToken, _greenToken, _blueToken, _yellowToken);
+            _gameRenderer = new GameRenderer(_username, _canvasWidth, _canvasHeight, _redToken, _greenToken, _blueToken, _yellowToken);
         }
 
         if (_hasJoinedGame)
@@ -197,7 +199,7 @@
         _hub.On<string, List<Player>>("ReceiveJoinGame", (userName, players) =>
         {
             _gameStatus.Players = players;
-            _currentStatus = this._userName == userName ? $"Welcome {userName}!" : $"{userName} has joined the game!";
+            _currentStatus = this._username == userName ? $"Welcome {userName}!" : $"{userName} has joined the game!";
             StateHasChanged();
         });
 
@@ -254,13 +256,13 @@
 
     private Player GetPlayer()
     {
-        if (_gameStatus != null && _gameStatus.Players.Any(p => p.Name == _userName))
+        if (_gameStatus != null && _gameStatus.Players.Any(p => p.Name == _username))
         {
-            return _gameStatus.Players.First(p => p.Name == _userName);
+            return _gameStatus.Players.First(p => p.Name == _username);
         }
         else
         {
-            return new Player("dead", _userName + " (SPECTATING)");
+            return new Player("dead", _username + " (SPECTATING)");
         }
     }
 
@@ -269,7 +271,7 @@
     {
         if (_game.AmountPlaying < _game.MaxPlayers)
         {
-            await _hub.SendAsync("JoinGame", _userName, Id);
+            await _hub.SendAsync("JoinGame", _username, Id);
             _hasJoinedGame = true;
             StateHasChanged();
         }
