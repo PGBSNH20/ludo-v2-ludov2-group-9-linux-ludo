@@ -20,3 +20,4 @@ A multiplayer Ludo game developed by **Adam Brodin** and **Leo Rönnebro**.
 * PostgreSQL
 * Docker
 * Tailwind CSS
+* SignalR
