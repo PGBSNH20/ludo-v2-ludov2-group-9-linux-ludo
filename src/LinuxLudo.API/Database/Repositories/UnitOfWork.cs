@@ -8,7 +8,7 @@ namespace LinuxLudo.API.Database.Repositories
     {
         private readonly AppDbContext _ctx;
         private GameRepository _gameRepository;
-        private PlayerStatsRepository _playerStatsRepository;
+        private GameResultRepository _gameResultRepository;
 
         public UnitOfWork(AppDbContext ctx)
         {
@@ -16,7 +16,7 @@ namespace LinuxLudo.API.Database.Repositories
         }
 
         public IGameRepository Games => _gameRepository = _gameRepository ?? new(_ctx);
-        public IPlayerStatsRepository PlayerStats => _playerStatsRepository = _playerStatsRepository ?? new(_ctx);
+        public IGameResultRepository GameResult => _gameResultRepository = _gameResultRepository ?? new(_ctx);
 
         public void Dispose()
         {

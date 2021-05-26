@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using LinuxLudo.Web.Domain.Models;
+using LinuxLudo.Core.Models;
 
 namespace LinuxLudo.API.Domain.Repositories
 {

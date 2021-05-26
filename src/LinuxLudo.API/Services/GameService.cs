@@ -41,7 +41,7 @@ namespace LinuxLudo.API.Services
             var exists = _unitOfWork.Games.Find(t => t.Name == game.Name).FirstOrDefault();
             if (exists != null)
                 return new Game();
-            
+
             await _unitOfWork.Games.AddAsync(game);
             await _unitOfWork.CommitAsync();
             var res = _unitOfWork.Games.Find(t => t.Name == game.Name).FirstOrDefault();

@@ -1,4 +1,6 @@
 @page "/Play"
+@using LinuxLudo.Web.Domain.Services
+@using LinuxLudo.Web.Services
 @inject NavigationManager NavManager; // Used to navigate in the webbrowser to different urls
 @inject Blazored.LocalStorage.ILocalStorageService localStorage
 
@@ -34,8 +36,6 @@
 
 @code
 {
-    [CascadingParameter]
-    public Task<AuthenticationState> AuthState { get; set; }
     private string userName;
     private GameService gameService;
     private List<AvailableGame> availableGames;
@@ -43,19 +43,6 @@
     // When the page is fully loaded/on startup
     protected override async Task OnInitializedAsync()
     {
-        var authState = await AuthState;
-
-        // If the user is logged in
-        if (authState.User.Identity.IsAuthenticated)
-        {
-            userName = authState.User.Identity.Name;
-        }
-        else
-        {
-            NavManager.NavigateTo("/Login");
-        }
-
-
         availableGames = new List<AvailableGame>();
         gameService = new GameService();
         await FetchAvailableGames();
@@ -63,7 +50,6 @@
 
     private async Task FetchAvailableGames()
     {
-        var authToken = await localStorage.GetItemAsync<string>("authToken");
-        availableGames = await gameService.FetchAllGames(authToken);
+        availableGames = await gameService.FetchAllGames();
     }
 }
