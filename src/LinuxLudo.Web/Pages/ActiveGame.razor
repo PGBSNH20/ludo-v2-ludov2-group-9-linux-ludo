@@ -24,9 +24,9 @@
             <BECanvas Width="@_canvasWidth" Height="@_canvasHeight" @ref="_canvas"></BECanvas>
         </div>
 
-        <div class="flex items-center justify-center @CanvasHtmlString">
+        <div class="flex items-center justify-center">
             <button
-                class="w-40 h-20 bg-green-500 text-white float-left transition-all ease-in-out transform hover:scale-125 my-2 mr-6"
+                class="w-40 h-20 bg-green-500 text-white float-left transition-all ease-in-out transform hover:scale-125 my-2 mr-6 @(CanPlayerRoll() ? "" : "hidden")"
                 @onclick=RollDiceClick>Roll dice</button>
             <button
                 class="w-40 h-20 bg-yellow-700 text-white float-left transition-all ease-in-out transform hover:scale-125 my-2 ml-6"
@@ -36,19 +36,17 @@
                 async Task RollDiceClick() => await RollDice();
                 async Task BringOutTokenClick() => await BringOutToken();
             }
-
         </div>
 
-        <div class="flex flex-row justify-center" hidden=@(!isPlayerTurn || (IsTokenDead('A') && IsTokenDead('B') &&
-            IsTokenDead('C') && IsTokenDead('D')))>
+        <div class="flex flex-row justify-center @(CanPlayerRoll() ? "" : "hidden")">
             <h1 class="mr-8">
                 <b>Select your token</b>
                 <div class="bg-gray-700 p-3 relative rounded"
                     style="content: attr(label); display: inline-block; text-align: center; width: 100%;">
                     @foreach (char tokenSelection in tokenSelections)
                     {
-                        <input class="w-auto h-full outline-none cursor-pointer"
-                        @onchange="@(() => UpdateTokenSelection(tokenSelection))" hidden=@(IsTokenDead(tokenSelection))
+                        <input class="w-auto h-full outline-none cursor-pointer @(IsTokenDead(tokenSelection) ? "hidden" : "")"
+                        @onchange="@(() => UpdateTokenSelection(tokenSelection))"
                         checked="@(_selectedToken.Equals(tokenSelection))" label=@tokenSelection type="radio"
                         id=@($"token-{tokenSelection}") name="token" value=@($"token-{tokenSelection}")>
                     }
@@ -119,8 +117,7 @@
     private const int MinWidthResize = 1600;
     private const int MinHeightResize = 720;
     private const float HeightWidthMultiplierIsMobile = 1.2f;
-    private string CanvasHtmlString => isPlayerTurn ? "" : "hidden";
-    private const int statusMessageUpdateIntervalMs = 2000;
+    private const int statusMessageUpdateIntervalMs = 1000;
 
     // Game
     private GameService _gameService;
@@ -178,6 +175,12 @@
         _canvasHeight = (int)(_canvasWidth * 1.15);
     }
 
+    private bool CanPlayerRoll()
+    {
+        return _username != null && _gameStatus != null 
+        && _gameStatus.Players.Any(player => player.Name == _username && player.Tokens.Any(token => !token.InBase));
+    }
+
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
@@ -203,7 +206,7 @@
         // Display the next message after one second
         if (_statusMessages.Count > 1 && DateTime.Now >= _statusMessages[0].EndTime)
         {
-            _statusMessages.RemoveAll(message => DateTime.Now >= message.EndTime);
+            _statusMessages.RemoveAt(0);
         }
         await _gameRenderer.RenderGame(_context, _board, _gameStatus, _statusMessages, _selectedToken);
     }
@@ -213,45 +216,39 @@
         _hub = _hubController.Connect(Hub).Hub();
 
         // Called whenever a user joins/leaves
-        _hub.On<string, List<Player>>("ReceiveConnectionChanged", async (username, players) =>
+        _hub.On<string, List<Player>>("ReceiveConnectionChanged", (username, players) =>
         {
             ReceiveConnectionChanged(username, players);
-            await OnAfterRenderAsync(false);
         });
 
         // Called whenever a user rolls the dice (NOT WHEN TOKEN MOVES)
-        _hub.On<string, int>("ReceiveRollDice", async (username, roll) =>
+        _hub.On<string, int>("ReceiveRollDice", (username, roll) =>
         {
             ReceiveRollDice(username, roll);
-            await OnAfterRenderAsync(false);
         });
 
         // Called whenever the current player turn is updated
-        _hub.On<string, GameToken, int>("ReceiveMoveToken", async (username, token, roll) =>
+        _hub.On<string, GameToken, int>("ReceiveMoveToken", (username, token, roll) =>
         {
             ReceiveMoveToken(username, token, roll);
-            await OnAfterRenderAsync(false);
         });
 
         // Called whenever the current player turn is updated
-        _hub.On<string, GameToken>("ReceiveBringOutToken", async (username, token) =>
+        _hub.On<string, GameToken>("ReceiveBringOutToken", (username, token) =>
         {
             ReceiveBringOutToken(username, token);
-            await OnAfterRenderAsync(false);
         });
 
         // Called whenever the current player turn is updated
-        _hub.On<string>("ReceivePlayerTurn", async (turnColor) =>
+        _hub.On<string>("ReceivePlayerTurn", (turnColor) =>
         {
             ReceivePlayerTurn(turnColor);
-            await OnAfterRenderAsync(false);
         });
 
         // Called whenever the current player turn is updated
-        _hub.On<string, GameToken>("ReceiveTokenKnockout", async (tokenHolderName, token) =>
+        _hub.On<string, GameToken>("ReceiveTokenKnockout", (tokenHolderName, token) =>
         {
             ReceiveTokenKnockout(tokenHolderName, token);
-            await OnAfterRenderAsync(false);
         });
 
         await _hub.StartAsync();
@@ -334,7 +331,7 @@
         {
             await _hub.InvokeAsync("JoinGame", _username, Id);
             _hasJoinedGame = true;
-            _gameRenderer.userName = _username;
+            _gameRenderer.username = _username;
         }
     }
 
@@ -354,7 +351,7 @@
         _gameStatus.Players.First(player => player.Name == username).Tokens.First(t => t.IdentifierChar ==
         token.IdentifierChar).TilePos = token.TilePos;
 
-        _statusMessages.Add(new($"{(_username == username ? "You" : username)} brought out a token ({token.IdentifierChar})!",
+        _statusMessages.Add(new($"{(_username == username ? "You" : username)} brought out a token {token.IdentifierChar}!",
         _statusMessages));
     }
 

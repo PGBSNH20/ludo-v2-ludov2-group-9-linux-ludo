@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using Blazor.Extensions.Canvas.Canvas2D;
 using LinuxLudo.Core.Models;
@@ -16,7 +15,7 @@ namespace LinuxLudo.Web.Services
         private readonly ElementReference redToken, greenToken, blueToken, yellowToken;
         private Canvas2DContext context;
         private readonly int canvasWidth, canvasHeight;
-        public string userName;
+        public string username;
         private const string canvasBgHex = "#9CA6D9";
         private const string overlayTextColor = "#FFFFFF";
         private const string tokenTextColor = "#FFFFFF";
@@ -34,9 +33,9 @@ namespace LinuxLudo.Web.Services
         private GameBoard board;
         private GameStatus gameStatus;
 
-        public GameRenderer(string userName, int canvasWidth, int canvasHeight, ElementReference redToken, ElementReference greenToken, ElementReference blueToken, ElementReference yellowToken)
+        public GameRenderer(string username, int canvasWidth, int canvasHeight, ElementReference redToken, ElementReference greenToken, ElementReference blueToken, ElementReference yellowToken)
         {
-            this.userName = userName;
+            this.username = username;
             this.canvasWidth = canvasWidth;
             this.canvasHeight = canvasHeight;
             this.redToken = redToken;
@@ -90,7 +89,7 @@ namespace LinuxLudo.Web.Services
                 // Draw each players name on top of the base border
                 foreach (Player player in gameStatus.Players)
                 {
-                    await context.SetStrokeStyleAsync(player.Name == userName ? "#FFFFFF" : "#000000");
+                    await context.SetStrokeStyleAsync(player.Name == username ? "#FFFFFF" : "#000000");
 
                     int xPos = 0, yPos = 0;
                     switch (player.Color)
@@ -113,9 +112,7 @@ namespace LinuxLudo.Web.Services
                             break;
                     }
 
-                    bool isClientPlayer = player.Name == userName;
-                    if (isClientPlayer) { await context.SetStrokeStyleAsync(tokenHighlightTextColor); }
-                    await context.StrokeTextAsync(isClientPlayer ? "You" : player.Name, (xPos * TileSize) + TileSize / 2, (yPos * TileSize) + TileSize * 1.1, 2 * TileSize);
+                    await context.StrokeTextAsync(player.Name == username ? "You" : player.Name, (xPos * TileSize) + TileSize / 2, (yPos * TileSize) + TileSize * 1.1, 2 * TileSize);
                 }
             }
         }
@@ -266,7 +263,7 @@ namespace LinuxLudo.Web.Services
                 // Draws each token, splits up the space if more than one is on the same tile
                 foreach (GameToken token in player.Tokens.Where(token => !token.InBase).ToList())
                 {
-                    await context.SetStrokeStyleAsync(player.Name == userName && token.IdentifierChar == selectedToken ? tokenHighlightTextColor : tokenTextColor);
+                    await context.SetStrokeStyleAsync(player.Name == username && token.IdentifierChar == selectedToken ? tokenHighlightTextColor : tokenTextColor);
 
                     int tokensOnSameTile = player.Tokens.Count(t => t.TilePos == token.TilePos && !t.InBase);
                     double xPos, yPos, width = TokenSize, height = TokenSize;
@@ -284,7 +281,7 @@ namespace LinuxLudo.Web.Services
                             width = (TokenSize / tokensOnSameTile) + (TileSize / tokensOnSameTile / 2);
                             height = width;
 
-                            await context.SetStrokeStyleAsync(player.Name == userName && dupToken.IdentifierChar == selectedToken ? tokenHighlightTextColor : tokenTextColor);
+                            await context.SetStrokeStyleAsync(player.Name == username && dupToken.IdentifierChar == selectedToken ? tokenHighlightTextColor : tokenTextColor);
                             await context.DrawImageAsync(tokenToDraw, xPos, yPos, width, height);
                             await context.StrokeTextAsync(dupToken.IdentifierChar.ToString(), xPos + width / 3, yPos + (height / 1.5));
                             index++;

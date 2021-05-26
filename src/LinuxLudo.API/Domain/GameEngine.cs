@@ -1,10 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using LinuxLudo.Core.Models;
 using LinuxLudo.Web.Game;
-using Microsoft.AspNetCore.SignalR;
 
 namespace LinuxLudo.API
 {
@@ -111,11 +109,6 @@ namespace LinuxLudo.API
             || (string.Equals(board.Tiles[tileIndex].TileColor.ToString(), player.Color, StringComparison.OrdinalIgnoreCase) && token.MovedFromSpawn)
             || tileIndex == board.Tiles.FindLastIndex(tile => tile.TileColor == board.Tiles[tileIndex].TileColor) - 6
             || board.Tiles[tileIndex].TileColor == GameTile.GameColor.Goal;
-        }
-
-        public void KnockoutToken(GameToken token)
-        {
-
         }
     }
 }
