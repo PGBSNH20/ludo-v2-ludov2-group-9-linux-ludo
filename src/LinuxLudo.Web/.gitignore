@@ -7,9 +7,6 @@
 *.userosscache
 *.sln.docstates
 
-# Tailwind CSS --> (GENERATE CSS FILE BY "gulp css" command)
-wwwroot/css/
-
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
 

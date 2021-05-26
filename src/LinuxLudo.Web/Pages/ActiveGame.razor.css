@@ -1,34 +1,3 @@
-.join-screen
-{
-	display: flex;
-	align-items: center;
-	flex-direction: column;
-	padding-top: 50px;
-}
-
-.game-info
-{
-	display: flex;
-	align-items: center;
-	flex-direction: column;
-    text-align: center;
-}
-
-.game-name
-{
-    color: black;
-    width: 25%;
-    text-align: center;
-	font-size: 48px;
-    font-weight: bold;
-    margin-bottom: 25px;
-}
-
-.game-details-text
-{
-    font-size: 24px;
-}
-
 .game-option-button
 {
 	font-size: 36px;
@@ -44,36 +13,9 @@
 	min-height: 250px;
 }
 
-#browse-btn
-{
-	background-color: #6699CC;
-	transition: transform .5s;
-}
-
-#browse-btn:hover
-{
-	transform: scale(1.25);
-}
-
 #play-btn
 {
 	background-color: #FFA500;
-}
-
-.loading-section
-{
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.loading-message
-{
-    position: absolute;
-    font-size: 48px;
-    margin-top: 25%;
-    transition: all 2s ease-in-out;
 }
 
 #play-btn:hover
