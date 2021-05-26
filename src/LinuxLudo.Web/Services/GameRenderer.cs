@@ -75,9 +75,12 @@ namespace LinuxLudo.Web.Services
             await context.SetFontAsync($"{canvasWidth / 20}px {fontFace}");
             await context.SetLineWidthAsync(1);
 
-            // Draw a status text, starting at the top-left tile (with a max width of the first row as to not overlap with bases)
-            await context.StrokeTextAsync(statusMessages[0].Message, (board.Tiles[0].XPos * TileSize) + TileSize, TileSize * 1.5f,
-            TileSize * 6);
+            if (statusMessages.Count > 0)
+            {
+                // Draw a status text, starting at the top-left tile (with a max width of the first row as to not overlap with bases)
+                await context.StrokeTextAsync(statusMessages[0].Message, (board.Tiles[0].XPos * TileSize) + TileSize, TileSize * 1.5f,
+                TileSize * 6);
+            }
 
 
             if (gameStatus.Players?.Count > 0)

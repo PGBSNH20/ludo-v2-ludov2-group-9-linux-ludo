@@ -56,12 +56,21 @@ namespace LinuxLudo.API.Hubs
             if (roll > 0)
             {
                 Player player = game.PlayersInGame.First(player => player.Name == username);
-                engine.MoveToken(player, token, roll);
+                foreach (KeyValuePair<Player, List<GameToken>> pair in engine.MoveToken(game, player, token, roll))
+                {
+                    foreach (GameToken enemyToken in pair.Value)
+                    {
+                        // Broadcast a message for each token that has been knocked out
+                        await NotifyTokenKnockout(pair.Key.Name, enemyToken);
+                    }
+                }
 
+                // Notify that player has moved
                 await Clients.Group(game.GameId.ToString()).SendAsync("ReceiveMoveToken", username, token, roll);
             }
             else
             {
+                // Notify of 0 roll
                 await NotifyRollDice(username, roll);
             }
 
@@ -88,6 +97,15 @@ namespace LinuxLudo.API.Hubs
 
             // Set the turn to the next player
             await UpdatePlayerTurn(game);
+        }
+
+        public async Task NotifyTokenKnockout(string tokenHolderName, GameToken token)
+        {
+            // Fetches the game the player is in
+            OpenGame game = _repository.FetchGameById(_repository.FetchUserById(Context.ConnectionId).JoinedGame.GameId);
+
+            // Broadcast which token was knocked out
+            await Clients.Group(game.GameId.ToString()).SendAsync("ReceiveTokenKnockout", tokenHolderName, token);
         }
 
         private async Task UpdatePlayerTurn(OpenGame game)

@@ -247,6 +247,12 @@
             await OnAfterRenderAsync(false);
         });
 
+        // Called whenever the current player turn is updated
+        _hub.On<string, GameToken>("ReceiveTokenKnockout", async (tokenHolderName, token) =>
+        {
+            ReceiveTokenKnockout(tokenHolderName, token);
+            await OnAfterRenderAsync(false);
+        });
 
         await _hub.StartAsync();
     }
@@ -334,8 +340,6 @@
 
     private void ReceiveMoveToken(string username, GameToken token, int roll)
     {
-        Console.WriteLine($"ReceiveMoveToken: {username} - token {token.IdentifierChar} - roll: {roll}, new position: {token.TilePos}");
-
         _gameStatus.Players.First(player => player.Name == username).Tokens.First(t => t.IdentifierChar ==
         token.IdentifierChar).TilePos = token.TilePos;
         _statusMessages.Add(new($"{(_username == username ? "You" : username)} walked {roll} steps!",
@@ -381,9 +385,19 @@
         _statusMessages.Add(new($@"It's {(isPlayerTurn ? "your" : (newTurnName + $"{'\''}s"))} turn!", _statusMessages));
         StateHasChanged();
     }
+
     private void ReceiveRollDice(string username, int roll)
     {
         _statusMessages.Add(new($"{(username == _username ? "You" : username)} rolled a {roll}!", _statusMessages));
+        StateHasChanged();
+    }
+
+    private void ReceiveTokenKnockout(string tokenHolderName, GameToken token)
+    {
+        _gameStatus.Players.First(player => player.Name == tokenHolderName).Tokens.First(token => token.IdentifierChar == token.IdentifierChar).InBase = token.InBase;
+        _gameStatus.Players.First(player => player.Name == tokenHolderName).Tokens.First(token => token.IdentifierChar == token.IdentifierChar).TilePos = token.TilePos;
+        _gameStatus.Players.First(player => player.Name == tokenHolderName).Tokens.First(token => token.IdentifierChar == token.IdentifierChar).MovedFromSpawn = token.MovedFromSpawn;
+        _statusMessages.Add(new($@"{(tokenHolderName == _username ? "Your" : (tokenHolderName + $"{'\''}s"))}" + $" token ({token.IdentifierChar}) was knocked out!", _statusMessages));
         StateHasChanged();
     }
 }
