@@ -16,7 +16,7 @@ namespace LinuxLudo.Web.Services
         private readonly ElementReference redToken, greenToken, blueToken, yellowToken;
         private Canvas2DContext context;
         private readonly int canvasWidth, canvasHeight;
-        private readonly string userName;
+        public string userName;
         private const string canvasBgHex = "#9CA6D9";
         private const string overlayTextColor = "#FFFFFF";
         private const string tokenTextColor = "#FFFFFF";
@@ -110,7 +110,9 @@ namespace LinuxLudo.Web.Services
                             break;
                     }
 
-                    await context.StrokeTextAsync(player.Name == userName ? "You" : player.Name, (xPos * TileSize) + TileSize / 2, (yPos * TileSize) + TileSize * 1.1, 2 * TileSize);
+                    bool isClientPlayer = player.Name == userName;
+                    if (isClientPlayer) { await context.SetStrokeStyleAsync(tokenHighlightTextColor); }
+                    await context.StrokeTextAsync(isClientPlayer ? "You" : player.Name, (xPos * TileSize) + TileSize / 2, (yPos * TileSize) + TileSize * 1.1, 2 * TileSize);
                 }
             }
         }

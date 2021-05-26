@@ -11,6 +11,7 @@ namespace LinuxLudo.Web.Domain.Models
         public DateTime EndTime { get; set; }
         public int statusMessageUpdateIntervalMs = 750;
 
+        public StatusMessage(string message) => Message = message;
         public StatusMessage(string message, List<StatusMessage> messages)
         {
             Message = message;

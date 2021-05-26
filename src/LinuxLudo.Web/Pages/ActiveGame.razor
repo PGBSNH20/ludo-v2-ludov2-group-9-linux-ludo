@@ -129,7 +129,7 @@
     private GameService _gameService;
     private GameStatus _gameStatus;
     private bool _hasJoinedGame = false;
-    private List<StatusMessage> _statusMessages = new();
+    private List<StatusMessage> _statusMessages = new() { new("Waiting for players...") };
     private char _selectedToken;
     private List<char> tokenSelections => new() { 'A', 'B', 'C', 'D' };
 
@@ -235,6 +235,7 @@
             ReceivePlayerTurn(turnColor);
             await OnAfterRenderAsync(false);
         });
+
         await _hub.StartAsync();
     }
 
@@ -304,7 +305,9 @@
     {
         if (_game.AmountPlaying < _game.MaxPlayers)
         {
-            await _hub.InvokeAsync("JoinGame", _username, Id); _hasJoinedGame = true;
+            await _hub.InvokeAsync("JoinGame", _username, Id);
+            _hasJoinedGame = true;
+            _gameRenderer.userName = _username;
         }
     }
     private void ReceivePlayerRoll() { }
@@ -332,7 +335,7 @@
     {
         isPlayerTurn = GetPlayer().Color == newTurnColor;
         string newTurnName = _gameStatus.Players.First(player => player.Color == newTurnColor).Name;
-        _statusMessages.Add(new($"It's {(isPlayerTurn ? "your" : newTurnName)} turn!", _statusMessages));
+        _statusMessages.Add(new($@"It's {(isPlayerTurn ? "your" : (newTurnName + $"{'\''}s"))} turn!", _statusMessages));
         StateHasChanged();
     }
     private void ReceiveRollDice(string username, int roll)
