@@ -2,10 +2,12 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Blazor.Extensions.Canvas.Canvas2D;
+using LinuxLudo.Core.Models;
 using LinuxLudo.Web.Domain.Models;
+using LinuxLudo.Web.Game;
 using Microsoft.AspNetCore.Components;
 
-namespace LinuxLudo.Web.Game
+namespace LinuxLudo.Web.Domain.Services
 {
     public class GameRenderer
     {

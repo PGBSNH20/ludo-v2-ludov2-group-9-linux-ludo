@@ -4,9 +4,9 @@ using LinuxLudo.API.Domain.Repositories;
 
 namespace LinuxLudo.API.Database.Repositories
 {
-    public class PlayerStatsRepository : Repository<PlayerStats>, IPlayerStatsRepository
+    public class GameResultRepository : Repository<GameResult>, IGameResultRepository
     {
-        public PlayerStatsRepository(AppDbContext ctx) : base(ctx)
+        public GameResultRepository(AppDbContext ctx) : base(ctx)
         {
         }
 

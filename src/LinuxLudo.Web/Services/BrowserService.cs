@@ -1,7 +1,7 @@
-using Microsoft.JSInterop;
 using System.Threading.Tasks;
+using Microsoft.JSInterop;
 
-namespace LinuxLudo.Web.Game.Services
+namespace LinuxLudo.Web.Domain.Services
 {
     public class BrowserService
     {

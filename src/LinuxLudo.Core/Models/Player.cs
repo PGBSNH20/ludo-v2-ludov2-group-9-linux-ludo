@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace LinuxLudo.Web.Domain.Models
+namespace LinuxLudo.Core.Models
 {
     public class Player
     {

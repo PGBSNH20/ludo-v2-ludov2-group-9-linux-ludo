@@ -1,4 +1,4 @@
-namespace LinuxLudo.Web.Domain.Models
+namespace LinuxLudo.Core.Models
 {
     public class GameToken
     {

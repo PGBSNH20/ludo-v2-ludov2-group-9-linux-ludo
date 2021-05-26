@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using LinuxLudo.API.Domain.Repositories;
-using LinuxLudo.Web.Domain.Models;
+using LinuxLudo.Core.Models;
 using Microsoft.AspNetCore.SignalR;
 
 namespace LinuxLudo.API.Hubs
@@ -26,7 +26,7 @@ namespace LinuxLudo.API.Hubs
 
             OpenGame game = _repository.FetchGameById(gameId);
             // Adds the player if they don't already exist in the game
-            if (!game.PlayersInGame.Any(player => player.Name == username))
+            if (game.PlayersInGame.All(player => player.Name != username))
             {
                 _repository.AddPlayer(_repository.FetchGameById(gameId), username);
             }

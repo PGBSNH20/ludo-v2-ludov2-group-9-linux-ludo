@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using LinuxLudo.API.Domain.Repositories;
-using LinuxLudo.Web.Domain.Models;
+using LinuxLudo.Core.Models;
 
 namespace LinuxLudo.API.Database.Repositories
 {

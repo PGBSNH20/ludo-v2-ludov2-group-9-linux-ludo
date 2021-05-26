@@ -10,6 +10,6 @@ namespace LinuxLudo.API.Domain.Models
         public string Name { get; set; }
         public int MaxPlayers { get; set; }
         public GameStates State { get; set; }
-        public virtual ICollection<GamePlayerPivot> Players { get; set; }
+        public GameResult Result { get; set; }
     }
 }
