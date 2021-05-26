@@ -1,9 +1,9 @@
 {
     "devDependencies": {
-        "autoprefixer": "^9.7.4",
-        "gulp": "^4.0.2",
-        "gulp-postcss": "^8.0.0",
-        "precss": "^4.0.0",
-        "tailwindcss": "^1.2.0"
+        "autoprefixer": "^10.2.5",
+        "gulp": "^3.9.1",
+        "gulp-postcss": "^9.0.0",
+        "precss": "^3.1.2",
+        "tailwindcss": "^2.1.2"
     }
 }
