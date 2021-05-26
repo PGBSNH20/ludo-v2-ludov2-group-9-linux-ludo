@@ -2,11 +2,13 @@
 @using LinuxLudo.Web.Domain.Models
 @using Microsoft.AspNetCore.SignalR.Client
 @using LinuxLudo.Core.Models
+@using LinuxLudo.Web.Hubs
 @using LinuxLudo.Web.Services
 @inject NavigationManager _navManager; // Used to navigate in the webbrowser to different urls
 @inject BrowserService _browserService;
 @inject IJSRuntime _jsRuntime;
 @inject Blazored.LocalStorage.ILocalStorageService _localStorage;
+@inject HubController _hubController
 
 <AuthorizeView>
     <img @ref="_redToken" hidden id="redToken" src="Images/redtoken.png" />
@@ -82,10 +84,10 @@
     public Guid Id { get; set; }
     private string _userName;
     private AvailableGame _game;
-    private const string HubUrl = "https://localhost:5001/gamehub";
+    private const string Hub = "https://localhost:5001/gamehub";
 
     // SignalR
-    private HubConnection _hubConnection;
+    private HubConnection _hub;
 
     // Canvas
     private BECanvasComponent _canvas;
@@ -166,7 +168,6 @@
             _gameStatus = new();
             _context = await _canvas.CreateCanvas2DAsync();
 
-            // Reload UI components on page load (to hide e.g radiobtns)
             StateHasChanged();
             _gameRenderer = new GameRenderer(_userName, _canvasWidth, _canvasHeight, _redToken, _greenToken, _blueToken, _yellowToken);
         }
@@ -177,32 +178,25 @@
         }
     }
 
-    // This function continously renders the game based on the current fetched data about the game
     protected async Task RenderGame()
     {
-        // Creates a canvas
         _context = await _canvas.CreateCanvas2DAsync();
 
-        // Render the latest game details
         await _gameRenderer.RenderGame(_context, _board, _gameStatus, _currentStatus, _selectedToken);
     }
 
     protected async Task SetupSignalR()
     {
-        _hubConnection = new HubConnectionBuilder()
-        .WithUrl(HubUrl)
-        .Build();
+        _hub = _hubController.Connect(Hub).Hub();
 
-
-        // Continously listens for received data
-        _hubConnection.On<string, List<Player>>("ReceiveJoinGame", (userName, players) =>
+        _hub.On<string, List<Player>>("ReceiveJoinGame", (userName, players) =>
         {
             _gameStatus.Players = players;
             _currentStatus = this._userName == userName ? $"Welcome {userName}!" : $"{userName} has joined the game!";
             StateHasChanged();
         });
 
-        await _hubConnection.StartAsync();
+        await _hub.StartAsync();
     }
 
     protected async Task RollDice()
@@ -242,8 +236,7 @@
             Player player = GetPlayer();
 
             // Token is not dead if found in list
-            if (!player.Tokens.Any(token => token.IdentifierChar == tokenIdentifier)
-            || player.Tokens.Any(token => token.IdentifierChar == tokenIdentifier &&
+            if (player.Tokens.All(token => token.IdentifierChar != tokenIdentifier) || player.Tokens.Any(token => token.IdentifierChar == tokenIdentifier &&
             token.InBase))
             {
                 return true;
@@ -271,7 +264,7 @@
     {
         if (_game.AmountPlaying < _game.MaxPlayers)
         {
-            await _hubConnection.SendAsync("JoinGame", _userName, Id);
+            await _hub.SendAsync("JoinGame", _userName, Id);
             _hasJoinedGame = true;
             StateHasChanged();
         }
