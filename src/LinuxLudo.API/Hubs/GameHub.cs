@@ -65,7 +65,7 @@ namespace LinuxLudo.API.Hubs
                     {
                         // Broadcast a message for each token that has been knocked out
                         await NotifyTokenKnockout(pair.Key.Name, enemyToken);
-                        await Task.Delay(500);
+                        await Task.Delay(1000);
                     }
                 }
 
