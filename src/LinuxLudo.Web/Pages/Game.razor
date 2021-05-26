@@ -1,6 +1,6 @@
 @page "/Play"
-
 @inject NavigationManager NavManager; // Used to navigate in the webbrowser to different urls
+@inject Blazored.LocalStorage.ILocalStorageService localStorage
 
 <!-- This page displays the actual Ludo game and can only be accessed when logged in/authenticated -->
 
@@ -9,7 +9,23 @@
     <Authorized>
         <div class="game-container">
             <div class="game-board">
-                <h1 class="username-text">Playing as @userName</h1>
+                <h1 class="title-text">Available games</h1>
+            </div>
+
+            <div class="available-games">
+                <div class="btn-group">
+                    <ul>
+                        @if (availableGames != null)
+                {
+                        foreach (AvailableGame game in availableGames)
+                        {
+                            <li><button class="game-btn" @onclick=@(() =>
+                                NavManager.NavigateTo($"/Game/{game.Id}"))><b>@game.Name</b> - @game.MaxPlayers
+                                    players</button></li>
+                        }
+                }
+                    </ul>
+                </div>
             </div>
         </div>
     </Authorized>
@@ -21,6 +37,8 @@
     [CascadingParameter]
     public Task<AuthenticationState> AuthState { get; set; }
     private string userName;
+    private GameService gameService;
+    private List<AvailableGame> availableGames;
 
     // When the page is fully loaded/on startup
     protected override async Task OnInitializedAsync()
@@ -36,5 +54,16 @@
         {
             NavManager.NavigateTo("/Login");
         }
+
+
+        availableGames = new List<AvailableGame>();
+        gameService = new GameService();
+        await FetchAvailableGames();
+    }
+
+    private async Task FetchAvailableGames()
+    {
+        var authToken = await localStorage.GetItemAsync<string>("authToken");
+        availableGames = await gameService.FetchAllGames(authToken);
     }
 }

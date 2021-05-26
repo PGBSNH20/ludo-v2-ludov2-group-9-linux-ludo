@@ -2,8 +2,15 @@ namespace LinuxLudo.Web.Domain.Models
 {
     public class GameToken
     {
-        public int XPos { get; set; }
-        public int YPos { get; set; }
+        public int TilePos { get; set; }
+        public char IdentifierChar { get; set; }
         public bool InBase { get; set; }
+
+        public GameToken(char identifierChar)
+        {
+            TilePos = -1;
+            IdentifierChar = identifierChar;
+            InBase = true;
+        }
     }
 }

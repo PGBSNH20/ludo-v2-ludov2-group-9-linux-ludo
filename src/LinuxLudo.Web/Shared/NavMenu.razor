@@ -3,17 +3,16 @@
 
 <div id="heading">
     <h1 class="navbar-title">
-        <img src="Images/logo.png">LinuxLudo
+        <h1>LinuxLudo <img src="Images/logo.png"></h1>
+        <AuthorizeView>
+            <!-- Displayed only when logged IN -->
+            <Authorized>
+                <h1 class="navbar-name-text">Playing as&nbsp;<b>@userName</b>
+                </h1>
+            </Authorized>
+        </AuthorizeView>
     </h1>
 </div>
-<AuthorizeView>
-    <!-- Displayed only when logged IN -->
-    <Authorized>
-        <div class="navbar-name-section">
-            <h1 class="navbar-name-text">Playing as @userName</h1>
-        </div>
-    </Authorized>
-</AuthorizeView>
 
 <div class="nav-menu">
     <!-- Flexbox to put the text to the left and menu button to the right -->
@@ -39,11 +38,11 @@
     <ul
         class="@($"flex flex-col {menuVisibleStr} bg-gray-700 px-4 py-2 md:flex md:flex-row md:bg-transparent items-center")">
         <NavLink class="md:pl-4 md:pr-4 md:py-1 hover:bg-gray-700" href="/Home">Home</NavLink>
-        <NavLink class="md:px-4 md:py-1 hover:bg-gray-700" href="/Play">Play</NavLink>
 
         <AuthorizeView>
             <!-- Displayed only when logged IN -->
             <Authorized>
+                <NavLink class="md:px-4 md:py-1 hover:bg-gray-700" href="/Play">Play</NavLink>
                 <NavLink class="md:px-4 md:py-1 hover:bg-gray-700" href="/Logout">Logout</NavLink>
             </Authorized>
 

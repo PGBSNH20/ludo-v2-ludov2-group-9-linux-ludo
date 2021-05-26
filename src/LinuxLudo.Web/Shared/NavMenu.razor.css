@@ -1,14 +1,18 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 .navbar-title
 {
+    background-color: #9ca6d9;
     margin-left: 15px;
-    margin-top: 5px;
     color: white;
     font-size: 28px;
 }
 
 #heading
 {
-    background-color: #9932CC;
+    background-color: #9ca6d9;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -17,10 +21,11 @@
 .nav-menu
 {
     color: white;
-    background-color: #9932CC;
+    background-color: #9ca6d9;
     display: flex;
     align-items: center;
     justify-content: center;
+    text-align: center;
 }
 
 #heading img{
@@ -32,16 +37,12 @@
     position: relative;
 }
 
-.navbar-name-section
-{
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
 .navbar-name-text
 {
-    color: black;
+    margin-top: 5px;
+    font-size: 12px;
+    background-color: rgba(0, 0, 0, 0.5);
+    color: #a6d99c;
     display: flex;
     align-items: center;
     justify-content: center;
