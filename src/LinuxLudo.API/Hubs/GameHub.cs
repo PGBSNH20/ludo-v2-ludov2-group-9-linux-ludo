@@ -39,6 +39,9 @@ namespace LinuxLudo.API.Hubs
 
             // Updates all clients with the latest player list
             await SendConnectionChanged(gameId.ToString(), username, _repository.FetchGameById(gameId).PlayersInGame);
+
+            // Update the specific player on whose turn it is
+            await Clients.Client(Context.ConnectionId).SendAsync("ReceivePlayerTurn", game.CurrentTurnColor);
         }
 
         public async Task RollDice(string username)
@@ -74,11 +77,18 @@ namespace LinuxLudo.API.Hubs
             ConnectedUser user = _repository.FetchUserById(Context.ConnectionId);
             if (user?.JoinedGame != null)
             {
+                // If it's the user that disconnected's turn, change turn to the next one
+                if (user.JoinedGame.CurrentTurnColor == user.JoinedGame.PlayersInGame.First(player => player.Name == user.Username).Color)
+                {
+                    await UpdatePlayerTurn(user.JoinedGame);
+                }
+
                 // Removes the player from their game
                 _repository.RemovePlayer(user.JoinedGame, user.Username);
 
                 // Update the clients that user has left
                 await SendConnectionChanged(user.JoinedGame.GameId.ToString(), user.Username, _repository.FetchGameById(user.JoinedGame.GameId).PlayersInGame);
+
             }
 
             await base.OnDisconnectedAsync(exception);

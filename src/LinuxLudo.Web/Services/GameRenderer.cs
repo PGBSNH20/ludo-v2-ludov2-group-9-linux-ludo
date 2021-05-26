@@ -1,5 +1,7 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Blazor.Extensions.Canvas.Canvas2D;
 using LinuxLudo.Core.Models;
@@ -28,7 +30,7 @@ namespace LinuxLudo.Web.Services
         private int TileSize => canvasWidth / 16;
         private int TokenSize => canvasWidth / 18;
         private int TopOffset => TileSize * 2;
-        private string currentStatus;
+        private List<StatusMessage> statusMessages;
         private GameBoard board;
         private GameStatus gameStatus;
 
@@ -43,12 +45,12 @@ namespace LinuxLudo.Web.Services
             this.yellowToken = yellowToken;
         }
 
-        public async Task RenderGame(Canvas2DContext context, GameBoard board, GameStatus gameStatus, string currentStatus, char selectedToken)
+        public async Task RenderGame(Canvas2DContext context, GameBoard board, GameStatus gameStatus, List<StatusMessage> statusMessages, char selectedToken)
         {
             this.context = context;
             this.board = board;
             this.gameStatus = gameStatus;
-            this.currentStatus = currentStatus;
+            this.statusMessages = statusMessages;
 
             // Draws a basic canvas background color
             await context.SetFillStyleAsync(canvasBgHex);
@@ -74,7 +76,7 @@ namespace LinuxLudo.Web.Services
             await context.SetLineWidthAsync(1);
 
             // Draw a status text, starting at the top-left tile (with a max width of the first row as to not overlap with bases)
-            await context.StrokeTextAsync(currentStatus, (board.Tiles[0].XPos * TileSize) + TileSize, TileSize * 1.5f,
+            await context.StrokeTextAsync(statusMessages[0].Message, (board.Tiles[0].XPos * TileSize) + TileSize, TileSize * 1.5f,
             TileSize * 6);
 
 
@@ -195,7 +197,6 @@ namespace LinuxLudo.Web.Services
         {
             if (gameStatus.Players == null || gameStatus.Players.Count == 0)
             {
-                currentStatus = "No players in game!";
                 return;
             }
 

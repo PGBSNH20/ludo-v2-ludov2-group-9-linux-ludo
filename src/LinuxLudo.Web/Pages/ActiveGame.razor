@@ -4,7 +4,6 @@
 @using LinuxLudo.Core.Models
 @using LinuxLudo.Web.Hubs
 @using LinuxLudo.Web.Services
-@using System.Threading
 @inject NavigationManager _navManager; // Used to navigate in the webbrowser to different urls
 @inject BrowserService _browserService;
 @inject IJSRuntime _jsRuntime;
@@ -124,17 +123,18 @@
     private const int MinHeightResize = 720;
     private const float HeightWidthMultiplierIsMobile = 1.2f;
     private string CanvasHtmlString => isPlayerTurn ? "" : "hidden";
+    private const int statusMessageUpdateIntervalMs = 500;
 
     // Game
     private GameService _gameService;
     private GameStatus _gameStatus;
     private bool _hasJoinedGame = false;
-    private string _currentStatus = "Waiting for players...";
+    private List<StatusMessage> _statusMessages = new();
     private char _selectedToken;
     private List<char> tokenSelections => new() { 'A', 'B', 'C', 'D' };
 
     // This is true if it's the client-side player's turn
-    private bool isPlayerTurn = true;
+    private bool isPlayerTurn;
 
     // When the page has fully loaded
     protected override async Task OnInitializedAsync()
@@ -142,7 +142,6 @@
         _game = new();
 
         await FitCanvas();
-
         _board = new GameBoard();
 
         _gameService = new GameService(@Id, _username);
@@ -203,7 +202,13 @@
     protected async Task RenderGame()
     {
         _context = await _canvas.CreateCanvas2DAsync();
-        await _gameRenderer.RenderGame(_context, _board, _gameStatus, _currentStatus, _selectedToken);
+
+        // Display the next message after one second
+        if (_statusMessages.Count > 1 && DateTime.Now >= _statusMessages[0].EndTime)
+        {
+            _statusMessages.RemoveAt(0);
+        }
+        await _gameRenderer.RenderGame(_context, _board, _gameStatus, _statusMessages, _selectedToken);
     }
 
     protected async Task SetupSignalR()
@@ -211,14 +216,25 @@
         _hub = _hubController.Connect(Hub).Hub();
 
         // Called whenever a user joins/leaves
-        _hub.On<string, List<Player>>("ReceiveConnectionChanged", (username, players) =>
-        ReceiveConnectionChanged(username, players));
+        _hub.On<string, List<Player>>("ReceiveConnectionChanged", async (username, players) =>
+        {
+            ReceiveConnectionChanged(username, players);
+            await OnAfterRenderAsync(false);
+        });
 
         // Called whenever a user rolls the dice (NOT WHEN TOKEN MOVES)
-        _hub.On<string, int>("ReceiveRollDice", (username, roll) => ReceiveRollDice(username, roll));
+        _hub.On<string, int>("ReceiveRollDice", async (username, roll) =>
+        {
+            ReceiveRollDice(username, roll);
+            await OnAfterRenderAsync(false);
+        });
 
         // Called whenever the current player turn is updated
-        _hub.On<string>("ReceivePlayerTurn", (turnColor) => ReceivePlayerTurn(turnColor));
+        _hub.On<string>("ReceivePlayerTurn", async (turnColor) =>
+        {
+            ReceivePlayerTurn(turnColor);
+            await OnAfterRenderAsync(false);
+        });
         await _hub.StartAsync();
     }
 
@@ -288,23 +304,24 @@
     {
         if (_game.AmountPlaying < _game.MaxPlayers)
         {
-            await _hub.InvokeAsync("JoinGame", _username, Id);
-            _hasJoinedGame = true;
+            await _hub.InvokeAsync("JoinGame", _username, Id); _hasJoinedGame = true;
         }
     }
-
     private void ReceivePlayerRoll() { }
-    private void ReceiveConnectionChanged(string username, List<Player> players)
+    private void ReceiveConnectionChanged(string username, List<Player>
+    players)
     {
         // Display the join/leave message in the canvas
         if (players.Count > _gameStatus.Players.Count)
         {
-            _currentStatus = _username == username ? $"Welcome {username}!" : $"{username} has joined the game!";
+            _statusMessages.Add(new(_username == username ? $"Welcome {username}!" : $"{username} has joined the game!",
+            _statusMessages));
         }
         else
         {
-            _currentStatus = $"{username} has left the game :(";
+            _statusMessages.Add(new($"{username} has left the game :(", _statusMessages));
         }
+
 
         // Update the players
         _gameStatus.Players = players;
@@ -315,12 +332,12 @@
     {
         isPlayerTurn = GetPlayer().Color == newTurnColor;
         string newTurnName = _gameStatus.Players.First(player => player.Color == newTurnColor).Name;
-        _currentStatus = $"It's {(isPlayerTurn ? "your" : newTurnName)} turn!";
+        _statusMessages.Add(new($"It's {(isPlayerTurn ? "your" : newTurnName)} turn!", _statusMessages));
         StateHasChanged();
     }
     private void ReceiveRollDice(string username, int roll)
     {
-        _currentStatus = $"{(username == _username ? "You" : username)} rolled a {roll}!";
+        _statusMessages.Add(new($"{(username == _username ? "You" : username)} rolled a {roll}!", _statusMessages));
         StateHasChanged();
     }
 }
