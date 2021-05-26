@@ -132,7 +132,7 @@
     private List<char> tokenSelections => new() { 'A', 'B', 'C', 'D' };
 
     // This is true if it's the client-side player's turn
-    private bool isPlayerTurn = true; // TODO SET FROM API
+    private bool isPlayerTurn = true;
 
     // When the page has fully loaded
     protected override async Task OnInitializedAsync()
@@ -212,12 +212,15 @@
         _hub.On<string, List<Player>>("ReceiveConnectionChanged", (username, players) =>
         ReceiveConnectionChanged(username, players));
 
+        // Called whenever a user rolls the dice (NOT WHEN TOKEN MOVES)
+        _hub.On<string, int>("ReceiveRollDice", (username, roll) => ReceiveRollDice(username, roll));
         await _hub.StartAsync();
     }
 
     protected async Task RollDice()
     {
-        // TODO IMPLEMENT AGAINST SERVER
+        // Send a roll request to the server
+        await _hub.InvokeAsync("RollDice", _username);
     }
 
     protected async Task BringOutToken()
@@ -276,30 +279,41 @@
         }
     }
 
-
     private async Task JoinGame()
     {
         if (_game.AmountPlaying < _game.MaxPlayers)
         {
-            await _hub.InvokeAsync("JoinGame", _username, Id); _hasJoinedGame = true;
-            StateHasChanged();
+            await _hub.InvokeAsync("JoinGame", _username, Id);
+            _hasJoinedGame = true;
         }
     }
-    private void GetRollFromPlayer() { }
-    private void ReceiveConnectionChanged(string userName, List<Player> players)
+
+    private void ReceivePlayerRoll() { }
+    private void ReceiveConnectionChanged(string username, List<Player> players)
     {
         // Display the join/leave message in the canvas
         if (players.Count > _gameStatus.Players.Count)
         {
-            _currentStatus = this._username == userName ? $"Welcome {userName}!" : $"{userName} has joined the game!";
+            _currentStatus = _username == username ? $"Welcome {username}!" : $"{username} has joined the game!";
         }
         else
         {
-            _currentStatus = $"{userName} has left the game :(";
+            _currentStatus = $"{username} has left the game :(";
         }
 
         // Update the players
         _gameStatus.Players = players;
+        StateHasChanged();
+    }
+
+    private void UpdatePlayerTurn(string newPlayerTurn)
+    {
+
+    }
+
+    private void ReceiveRollDice(string username, int roll)
+    {
+        _currentStatus = $"{(username == _username ? "You" : username)} rolled a {roll}!";
         StateHasChanged();
     }
 }

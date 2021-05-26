@@ -43,6 +43,19 @@ namespace LinuxLudo.API.Hubs
             await SendConnectionChanged(gameId.ToString(), username, _repository.FetchGameById(gameId).PlayersInGame);
         }
 
+        public async Task RollDice(string username)
+        {
+            // TODO remove initializing new object everytime
+            GameEngine engine = new();
+
+            // Fetches the game the player is in
+            OpenGame game = _repository.FetchGameById(_repository.FetchUserById(Context.ConnectionId).JoinedGame.GameId);
+            int roll = engine.RollDice();
+
+            // Notify clients of roll
+            await Clients.Group(game.GameId.ToString()).SendAsync("ReceiveRollDice", username, roll);
+        }
+
         private async Task SendConnectionChanged(string gameId, string player, List<Player> players)
         {
             // Broadcasts to all connected clients (users) that a new player has joined
