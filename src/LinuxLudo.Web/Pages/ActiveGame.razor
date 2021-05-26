@@ -83,7 +83,7 @@
             </div>
 
             <input @bind="_username" class="flex items-center text-center" style="background-color: #000000; color: #FFFFFF;"
-        placeholder="ENTER YOUR USERNAME">
+        placeholder="Enter your username">
         }
         else
         {
@@ -123,7 +123,7 @@
     private GameService _gameService;
     private GameStatus _gameStatus;
     private bool _hasJoinedGame = false;
-    private List<StatusMessage> _statusMessages = new() { new("Waiting for players...") };
+    private string _statusMessage = "Waiting for players...";
     private char _selectedToken;
     private List<char> tokenSelections => new() { 'A', 'B', 'C', 'D' };
 
@@ -202,13 +202,7 @@
     protected async Task RenderGame()
     {
         _context = await _canvas.CreateCanvas2DAsync();
-
-        // Display the next message after one second
-        if (_statusMessages.Count > 1 && DateTime.Now >= _statusMessages[0].EndTime)
-        {
-            _statusMessages.RemoveAt(0);
-        }
-        await _gameRenderer.RenderGame(_context, _board, _gameStatus, _statusMessages, _selectedToken);
+        await _gameRenderer.RenderGame(_context, _board, _gameStatus, _statusMessage, _selectedToken);
     }
 
     protected async Task SetupSignalR()
@@ -339,8 +333,7 @@
     {
         _gameStatus.Players.First(player => player.Name == username).Tokens.First(t => t.IdentifierChar ==
         token.IdentifierChar).TilePos = token.TilePos;
-        _statusMessages.Add(new($"{(_username == username ? "You" : username)} walked {roll} steps!",
-        _statusMessages));
+        _statusMessage = $"{(_username == username ? "You" : username)} walked {roll} steps!";
     }
 
     private void ReceiveBringOutToken(string username, GameToken token)
@@ -351,8 +344,8 @@
         _gameStatus.Players.First(player => player.Name == username).Tokens.First(t => t.IdentifierChar ==
         token.IdentifierChar).TilePos = token.TilePos;
 
-        _statusMessages.Add(new($"{(_username == username ? "You" : username)} brought out a token {token.IdentifierChar}!",
-        _statusMessages));
+        _statusMessage = $"{(_username == username ? "You" : username)} brought out token {token.IdentifierChar.ToString().ToUpper()}!";
+        StateHasChanged();
     }
 
     private void ReceiveConnectionChanged(string username, List<Player>
@@ -361,12 +354,11 @@
         // Display the join/leave message in the canvas
         if (players.Count > _gameStatus.Players.Count)
         {
-            _statusMessages.Add(new(_username == username ? $"Welcome {username}!" : $"{username} has joined the game!",
-            _statusMessages));
+            _statusMessage = _username == username ? $"Welcome {username}!" : $"{username} has joined the game!";
         }
         else
         {
-            _statusMessages.Add(new($"{username} has left the game :(", _statusMessages));
+            _statusMessage= $"{username} has left the game :(";
         }
 
 
@@ -379,13 +371,13 @@
     {
         isPlayerTurn = GetPlayer().Color == newTurnColor;
         string newTurnName = _gameStatus.Players.First(player => player.Color == newTurnColor).Name;
-        _statusMessages.Add(new($@"It's {(isPlayerTurn ? "your" : (newTurnName + $"{'\''}s"))} turn!", _statusMessages));
+        _statusMessage = $@"It's {(isPlayerTurn ? "your" : (newTurnName + $"{'\''}s"))} turn!";
         StateHasChanged();
     }
 
     private void ReceiveRollDice(string username, int roll)
     {
-        _statusMessages.Add(new($"{(username == _username ? "You" : username)} rolled a {roll}!", _statusMessages));
+        _statusMessage = $"{(username == _username ? "You" : username)} rolled a {roll}!";
         StateHasChanged();
     }
 
@@ -394,7 +386,7 @@
         _gameStatus.Players.First(player => player.Name == tokenHolderName).Tokens.First(token => token.IdentifierChar == token.IdentifierChar).InBase = token.InBase;
         _gameStatus.Players.First(player => player.Name == tokenHolderName).Tokens.First(token => token.IdentifierChar == token.IdentifierChar).TilePos = token.TilePos;
         _gameStatus.Players.First(player => player.Name == tokenHolderName).Tokens.First(token => token.IdentifierChar == token.IdentifierChar).MovedFromSpawn = token.MovedFromSpawn;
-        _statusMessages.Add(new($@"{(tokenHolderName == _username ? "Your" : (tokenHolderName + $"{'\''}s"))}" + $" token ({token.IdentifierChar}) was knocked out!", _statusMessages));
+        _statusMessage = $@"{(tokenHolderName == _username ? "Your" : (tokenHolderName + $"{'\''}s"))}" + $" token ({token.IdentifierChar}) was knocked out!";
         StateHasChanged();
     }
 }

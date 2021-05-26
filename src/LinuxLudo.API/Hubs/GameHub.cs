@@ -45,7 +45,10 @@ namespace LinuxLudo.API.Hubs
         }
 
         public async Task NotifyRollDice(string username, int roll)
-        => await Clients.Group(_repository.FetchUserById(Context.ConnectionId).JoinedGame.GameId.ToString()).SendAsync("ReceiveRollDice", username, roll);
+        {
+            await Clients.Group(_repository.FetchUserById(Context.ConnectionId).JoinedGame.GameId.ToString()).SendAsync("ReceiveRollDice", username, roll);
+            await Task.Delay(500);
+        }
 
         public async Task MoveToken(string username, GameToken token)
         {
@@ -62,17 +65,20 @@ namespace LinuxLudo.API.Hubs
                     {
                         // Broadcast a message for each token that has been knocked out
                         await NotifyTokenKnockout(pair.Key.Name, enemyToken);
+                        await Task.Delay(500);
                     }
                 }
 
                 // Notify that player has moved
                 await Clients.Group(game.GameId.ToString()).SendAsync("ReceiveMoveToken", username, token, roll);
+                await Task.Delay(500);
             }
             else
             {
                 // Notify of 0 roll
                 await NotifyRollDice(username, roll);
             }
+
 
             // Set the turn to the next player
             await UpdatePlayerTurn(game);
@@ -94,6 +100,8 @@ namespace LinuxLudo.API.Hubs
             {
                 await NotifyRollDice(username, roll);
             }
+
+            await Task.Delay(1000);
 
             // Set the turn to the next player
             await UpdatePlayerTurn(game);

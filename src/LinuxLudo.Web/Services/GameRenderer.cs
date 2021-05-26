@@ -29,7 +29,7 @@ namespace LinuxLudo.Web.Services
         private int TileSize => canvasWidth / 16;
         private int TokenSize => canvasWidth / 18;
         private int TopOffset => TileSize * 2;
-        private List<StatusMessage> statusMessages;
+        private string statusMessage;
         private GameBoard board;
         private GameStatus gameStatus;
 
@@ -44,12 +44,12 @@ namespace LinuxLudo.Web.Services
             this.yellowToken = yellowToken;
         }
 
-        public async Task RenderGame(Canvas2DContext context, GameBoard board, GameStatus gameStatus, List<StatusMessage> statusMessages, char selectedToken)
+        public async Task RenderGame(Canvas2DContext context, GameBoard board, GameStatus gameStatus, string statusMessage, char selectedToken)
         {
             this.context = context;
             this.board = board;
             this.gameStatus = gameStatus;
-            this.statusMessages = statusMessages;
+            this.statusMessage = statusMessage;
 
             // Draws a basic canvas background color
             await context.SetFillStyleAsync(canvasBgHex);
@@ -74,13 +74,9 @@ namespace LinuxLudo.Web.Services
             await context.SetFontAsync($"{canvasWidth / 20}px {fontFace}");
             await context.SetLineWidthAsync(1);
 
-            if (statusMessages.Count > 0)
-            {
-                // Draw a status text, starting at the top-left tile (with a max width of the first row as to not overlap with bases)
-                await context.StrokeTextAsync(statusMessages[0].Message, (board.Tiles[0].XPos * TileSize) + TileSize, TileSize * 1.5f,
-                TileSize * 6);
-            }
-
+            // Draw a status text, starting at the top-left tile (with a max width of the first row as to not overlap with bases)
+            await context.StrokeTextAsync(statusMessage, (board.Tiles[0].XPos * TileSize) + TileSize, TileSize * 1.5f,
+            TileSize * 6);
 
             if (gameStatus.Players?.Count > 0)
             {
