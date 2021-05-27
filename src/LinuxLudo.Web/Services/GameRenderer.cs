@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Blazor.Extensions.Canvas.Canvas2D;
@@ -14,7 +15,7 @@ namespace LinuxLudo.Web.Services
         private readonly ElementReference redToken, greenToken, blueToken, yellowToken;
         private Canvas2DContext context;
         private readonly int canvasWidth, canvasHeight;
-        private readonly string userName;
+        public string username;
         private const string canvasBgHex = "#9CA6D9";
         private const string overlayTextColor = "#FFFFFF";
         private const string tokenTextColor = "#FFFFFF";
@@ -28,13 +29,13 @@ namespace LinuxLudo.Web.Services
         private int TileSize => canvasWidth / 16;
         private int TokenSize => canvasWidth / 18;
         private int TopOffset => TileSize * 2;
-        private string currentStatus;
+        private string statusMessage;
         private GameBoard board;
         private GameStatus gameStatus;
 
-        public GameRenderer(string userName, int canvasWidth, int canvasHeight, ElementReference redToken, ElementReference greenToken, ElementReference blueToken, ElementReference yellowToken)
+        public GameRenderer(string username, int canvasWidth, int canvasHeight, ElementReference redToken, ElementReference greenToken, ElementReference blueToken, ElementReference yellowToken)
         {
-            this.userName = userName;
+            this.username = username;
             this.canvasWidth = canvasWidth;
             this.canvasHeight = canvasHeight;
             this.redToken = redToken;
@@ -43,12 +44,12 @@ namespace LinuxLudo.Web.Services
             this.yellowToken = yellowToken;
         }
 
-        public async Task RenderGame(Canvas2DContext context, GameBoard board, GameStatus gameStatus, string currentStatus, char selectedToken)
+        public async Task RenderGame(Canvas2DContext context, GameBoard board, GameStatus gameStatus, string statusMessage, char selectedToken)
         {
             this.context = context;
             this.board = board;
             this.gameStatus = gameStatus;
-            this.currentStatus = currentStatus;
+            this.statusMessage = statusMessage;
 
             // Draws a basic canvas background color
             await context.SetFillStyleAsync(canvasBgHex);
@@ -74,9 +75,8 @@ namespace LinuxLudo.Web.Services
             await context.SetLineWidthAsync(1);
 
             // Draw a status text, starting at the top-left tile (with a max width of the first row as to not overlap with bases)
-            await context.StrokeTextAsync(currentStatus, (board.Tiles[0].XPos * TileSize) + TileSize, TileSize * 1.5f,
+            await context.StrokeTextAsync(statusMessage, (board.Tiles[0].XPos * TileSize) + TileSize, TileSize * 1.5f,
             TileSize * 6);
-
 
             if (gameStatus.Players?.Count > 0)
             {
@@ -85,7 +85,7 @@ namespace LinuxLudo.Web.Services
                 // Draw each players name on top of the base border
                 foreach (Player player in gameStatus.Players)
                 {
-                    await context.SetStrokeStyleAsync(player.Name == userName ? "#FFFFFF" : "#000000");
+                    await context.SetStrokeStyleAsync(player.Name == username ? "#FFFFFF" : "#000000");
 
                     int xPos = 0, yPos = 0;
                     switch (player.Color)
@@ -108,7 +108,7 @@ namespace LinuxLudo.Web.Services
                             break;
                     }
 
-                    await context.StrokeTextAsync(player.Name == userName ? "You" : player.Name, (xPos * TileSize) + TileSize / 2, (yPos * TileSize) + TileSize * 1.1, 2 * TileSize);
+                    await context.StrokeTextAsync(player.Name == username ? "You" : player.Name, (xPos * TileSize) + TileSize / 2, (yPos * TileSize) + TileSize * 1.1, 2 * TileSize);
                 }
             }
         }
@@ -167,6 +167,10 @@ namespace LinuxLudo.Web.Services
                 GameTile.GameColor.Yellow:
                         strokeColor = "#F0E68C";
                         break;
+                    case
+                GameTile.GameColor.Goal:
+                        strokeColor = "#FF00FF";
+                        break;
                 }
 
                 if (strokeColor != tileOutlineColor)
@@ -183,19 +187,12 @@ namespace LinuxLudo.Web.Services
                 await context.SetFillStyleAsync(fillColor);
                 await context.FillRectAsync(GetTilePos(i, xPos: true) + TileSize / 8 - tileOutlineWidth, GetTilePos(i, xPos: false) + TileSize / 8 - tileOutlineWidth, TileSize - (TileSize / 4) + tileOutlineWidth, TileSize - (TileSize / 4) + tileOutlineWidth);
             }
-
-            // Fill in the center most tile (goal tile)
-            await context.SetFillStyleAsync("#FFFF00");
-            await context.FillRectAsync(
-                GetTilePos(board.Tiles.FindLastIndex(tile => tile.TileColor == GameTile.GameColor.Red), true) + TileSize - tileOutlineWidth / 2,
-                 GetTilePos(board.Tiles.FindLastIndex(tile => tile.TileColor == GameTile.GameColor.Red), false) - tileOutlineWidth / 2, TileSize - tileOutlineWidth / 2, TileSize - tileOutlineWidth / 2);
         }
 
         protected async Task DrawPlayers(char selectedToken)
         {
             if (gameStatus.Players == null || gameStatus.Players.Count == 0)
             {
-                currentStatus = "No players in game!";
                 return;
             }
 
@@ -262,7 +259,7 @@ namespace LinuxLudo.Web.Services
                 // Draws each token, splits up the space if more than one is on the same tile
                 foreach (GameToken token in player.Tokens.Where(token => !token.InBase).ToList())
                 {
-                    await context.SetStrokeStyleAsync(player.Name == userName && token.IdentifierChar == selectedToken ? tokenHighlightTextColor : tokenTextColor);
+                    await context.SetStrokeStyleAsync(player.Name == username && token.IdentifierChar == selectedToken ? tokenHighlightTextColor : tokenTextColor);
 
                     int tokensOnSameTile = player.Tokens.Count(t => t.TilePos == token.TilePos && !t.InBase);
                     double xPos, yPos, width = TokenSize, height = TokenSize;
@@ -280,7 +277,7 @@ namespace LinuxLudo.Web.Services
                             width = (TokenSize / tokensOnSameTile) + (TileSize / tokensOnSameTile / 2);
                             height = width;
 
-                            await context.SetStrokeStyleAsync(player.Name == userName && dupToken.IdentifierChar == selectedToken ? tokenHighlightTextColor : tokenTextColor);
+                            await context.SetStrokeStyleAsync(player.Name == username && dupToken.IdentifierChar == selectedToken ? tokenHighlightTextColor : tokenTextColor);
                             await context.DrawImageAsync(tokenToDraw, xPos, yPos, width, height);
                             await context.StrokeTextAsync(dupToken.IdentifierChar.ToString(), xPos + width / 3, yPos + (height / 1.5));
                             index++;

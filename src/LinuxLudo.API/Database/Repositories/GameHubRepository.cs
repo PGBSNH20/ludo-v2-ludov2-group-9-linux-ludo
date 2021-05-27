@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using LinuxLudo.API.Domain.Models;
 using LinuxLudo.API.Domain.Repositories;
 using LinuxLudo.Core.Models;
 
@@ -9,6 +10,8 @@ namespace LinuxLudo.API.Database.Repositories
     public class GameHubRepository : IGameHubRepository
     {
         public List<OpenGame> openGames = new();
+        public List<ConnectedUser> connectedUsers = new();
+
         public void AddGame(OpenGame game)
         {
             openGames.Add(game);
@@ -16,8 +19,33 @@ namespace LinuxLudo.API.Database.Repositories
         public void AddPlayer(OpenGame game, string username)
         {
             string color = GetAvailableColor(game);
-            Player player = new Player(color, username);
+            Player player = new(color, username);
             game.PlayersInGame.Add(player);
+        }
+
+        public void ConnectUser(ConnectedUser user)
+        {
+            connectedUsers.Add(user);
+        }
+
+        public void DisconnectUser(ConnectedUser user)
+        {
+            connectedUsers.Remove(user);
+        }
+
+        public ConnectedUser FetchUserById(string connectionId)
+        {
+            if (connectedUsers.Any(user => user.ConnectionId == connectionId))
+            {
+                return connectedUsers.First(user => user.ConnectionId == connectionId);
+            }
+
+            return new ConnectedUser("", "", null);
+        }
+
+        public void RemovePlayer(OpenGame game, string username)
+        {
+            game.PlayersInGame.Remove(game.PlayersInGame.First(player => player.Name == username));
         }
 
         public IEnumerable<OpenGame> FetchAllGames()
