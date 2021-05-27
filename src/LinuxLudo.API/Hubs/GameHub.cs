@@ -60,12 +60,21 @@ namespace LinuxLudo.API.Hubs
             OpenGame game = _repository.FetchGameById(_repository.FetchUserById(Context.ConnectionId).JoinedGame.GameId);
 
             int roll = engine.RollDice();
+            bool hasWalkedIntoGoal = false;
             if (roll > 0)
             {
                 Player player = game.PlayersInGame.First(player => player.Name == deserializedMessage.Username);
                 GameToken token = player.Tokens.First(token => token.IdentifierChar == deserializedMessage.TokenIdentifierChar);
+
                 foreach (KeyValuePair<Player, List<GameToken>> pair in engine.MoveToken(game, player, token, roll))
                 {
+                    if (pair.Key == player)
+                    {
+                        // Player has walked into goal with token
+                        hasWalkedIntoGoal = true;
+                        break;
+                    }
+
                     foreach (GameToken enemyToken in pair.Value)
                     {
                         // Broadcast a message for each token that has been knocked out
@@ -76,14 +85,23 @@ namespace LinuxLudo.API.Hubs
                 var sendMessage = MessagePackSerializer.Serialize(new TokenMoveMessage(new TokenChangeMessage(deserializedMessage.Username, token.IdentifierChar, token.TilePos), roll));
 
                 // Notify that player has moved
-                await Clients.Group(game.GameId.ToString()).SendAsync("ReceiveMoveToken", sendMessage);
+                await Clients.Group(game.GameId.ToString()).SendAsync("ReceiveTokenMove", sendMessage);
+
+                if (hasWalkedIntoGoal)
+                {
+                    var goalMessage = MessagePackSerializer.Serialize(new TokenActionMessage(player.Name, token.IdentifierChar));
+
+                    player.Tokens.Remove(token);
+
+                    // Notify clients that token is out
+                    await Clients.Group(game.GameId.ToString()).SendAsync("ReceiveTokenGoal", goalMessage);
+                }
             }
             else
             {
                 // Notify of 0 roll
                 await NotifyRollDice(deserializedMessage.Username, roll);
             }
-
 
             // Set the turn to the next player
             await UpdatePlayerTurn(game);

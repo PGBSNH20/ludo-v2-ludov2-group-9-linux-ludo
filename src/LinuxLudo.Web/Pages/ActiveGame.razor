@@ -217,7 +217,7 @@
         _hub.On<byte[]>("ReceiveRollDice", (message) => ReceiveRollDice(message));
 
         // Called whenever the current player turn is updated
-        _hub.On<byte[]>("ReceiveMoveToken", (message) => ReceiveMoveToken(message));
+        _hub.On<byte[]>("ReceiveTokenMove", (message) => ReceiveTokenMove(message));
 
         // Called whenever the current player turn is updated
         _hub.On<byte[]>("ReceiveBringOutToken", (message) => ReceiveBringOutToken(message));
@@ -228,6 +228,9 @@
         // Called whenever the current player turn is updated
         _hub.On<byte[]>("ReceiveTokenKnockout", (message) => ReceiveTokenKnockout(message));
 
+        // Called whenever the a token walks into goal (center tile)
+        _hub.On<byte[]>("ReceiveTokenGoal", (message) => ReceiveTokenGoal(message));
+
         await _hub.StartAsync();
     }
 
@@ -236,7 +239,7 @@
         if (isPlayerTurn)
         {
             // Send a roll request to the server
-            await _hub.InvokeAsync("MoveToken", MessagePackSerializer.Serialize(new TokenActionMessage(_username, _selectedToken)));
+            await _hub.InvokeAsync("MoveToken", MessagePackSerializer.Serialize(new TokenActionMessage(_username,  _selectedToken)));
         }
     }
 
@@ -273,12 +276,8 @@
     {
         if (_gameStatus != null)
         {
-            Player player = GetPlayer();
-
-            // Token is not dead if found in list
-            if (player.Tokens.All(token => token.IdentifierChar != tokenIdentifier) || player.Tokens.Any(token =>
-            token.IdentifierChar == tokenIdentifier &&
-            token.InBase))
+            // If no brought out token matches
+            if(!GetPlayer().Tokens.Any(token => token.IdentifierChar == tokenIdentifier && !token.InBase))
             {
                 return true;
             }
@@ -310,7 +309,7 @@
         }
     }
 
-    private void ReceiveMoveToken(byte[] receivedMessage)
+    private void ReceiveTokenMove(byte[] receivedMessage)
     {
         TokenMoveMessage message = MessagePackSerializer.Deserialize<TokenMoveMessage>(receivedMessage);
 
@@ -327,6 +326,8 @@
         playerToken.TilePos = message.TilePos;
 
         _statusMessage = $"{(_username == message.Username ? "You" : message.Username)} brought out token {message.TokenIdentifierChar.ToString().ToUpper()}!";
+
+        if(message.Username == _username) {UpdateTokenSelection(_selectedToken);}
         StateHasChanged();
     }
 
@@ -373,6 +374,16 @@
         playerToken.TilePos = -1;
         playerToken.MovedFromSpawn = false;
         _statusMessage = $@"{(message.Username == _username ? "Your" : (message.Username + $"{'\''}s"))}" + $" token ({message.TokenIdentifierChar}) was knocked out!";
+        if(message.Username == _username && playerToken.IdentifierChar == _selectedToken) {UpdateTokenSelection(_selectedToken);}
+        StateHasChanged();
+    }
+
+    private void ReceiveTokenGoal(byte[] receivedMessage)
+    {
+        TokenActionMessage message = MessagePackSerializer.Deserialize<TokenActionMessage>(receivedMessage);
+        _gameStatus.Players.First(player => player.Name == message.Username).Tokens.RemoveAll(token => token.IdentifierChar == message.TokenIdentifierChar);
+        _statusMessage = $@"{(message.Username == _username ? "Your" : (message.Username + $"{'\''}s"))}" + $" token ({message.TokenIdentifierChar}) walked into goal!!!";
+        if(message.Username == _username && message.TokenIdentifierChar == _selectedToken) {UpdateTokenSelection(_selectedToken);}
         StateHasChanged();
     }
 }

@@ -38,16 +38,28 @@ namespace LinuxLudo.API
         public Dictionary<Player, List<GameToken>> MoveToken(OpenGame game, Player player, GameToken token, int roll)
         {
             Dictionary<Player, List<GameToken>> knockedOutTokens = new();
+            if (string.Equals(board.Tiles[token.TilePos].TileColor.ToString(), player.Color, StringComparison.OrdinalIgnoreCase) &&
+            token.MovedFromSpawn && (token.TilePos + roll) > board.Tiles.FindLastIndex(tile => string.Equals(tile.TileColor.ToString(), player.Color, StringComparison.OrdinalIgnoreCase)))
+            {
+                // Token walked into goal
+                knockedOutTokens.Add(player, new List<GameToken>() { token });
+                return knockedOutTokens;
+            }
+
             for (int i = 0; i < roll; i++)
             {
                 int stepIndex = token.TilePos + 1;
+                if (stepIndex > board.Tiles.Count - 1)
+                {
+                    stepIndex = stepIndex -= board.Tiles.Count;
+                }
                 while (!IsWalkable(stepIndex, player, token))
                 {
-                    if (stepIndex >= board.Tiles.Count - 1)
+                    stepIndex++;
+                    if (stepIndex > board.Tiles.Count - 1)
                     {
                         stepIndex = stepIndex -= board.Tiles.Count;
                     }
-                    stepIndex++;
                 }
 
                 token.TilePos = stepIndex;
@@ -107,12 +119,11 @@ namespace LinuxLudo.API
         private bool IsWalkable(int tileIndex, Player player, GameToken token)
         {
             // A tile is walkable if it matches any color, (the players color and did not just spawn at color start), the start of any colored path or the goal tile
-
             return
             (string.Equals(board.Tiles[tileIndex].TileColor.ToString(), "Any", StringComparison.OrdinalIgnoreCase)
             || (string.Equals(board.Tiles[tileIndex].TileColor.ToString(), player.Color, StringComparison.OrdinalIgnoreCase) && token.MovedFromSpawn)
             || (tileIndex == board.Tiles.FindLastIndex(tile => tile.TileColor == board.Tiles[tileIndex].TileColor) - 6))
-            && board.Tiles[tileIndex].TileColor != GameTile.GameColor.Goal;
+            && (board.Tiles[tileIndex].TileColor != GameTile.GameColor.Goal);
         }
     }
 }
