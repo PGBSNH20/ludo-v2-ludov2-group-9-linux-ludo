@@ -12,7 +12,7 @@ Instead of creating individual hubs for each game there is only one [hub](https:
 The hub then splits its users up into groups which are correlated to the game's **UUID**.
 
 # GameHub methods
-The player's turn is updated through UpdatePlayerTurn() after each of the following methods has executed fully:
+The player's turn is updated through UpdatePlayerTurn() after any of the following methods have executed fully:
 - MoveToken()
 - BringOutToken()
 
@@ -64,7 +64,7 @@ A helper method used to notify connected clients on which token has been knocked
 private async Task UpdatePlayerTurn(OpenGame game)
 ```
 A helper method used to notify connected clients on whose turn it is. Sends the color of whose turn it is.
-Called after each full execution of:
+Called after any full execution from:
 - MoveToken()
 - BringOutToken()
 
