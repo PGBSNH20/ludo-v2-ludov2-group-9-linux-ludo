@@ -5,7 +5,6 @@ using LinuxLudo.Core.Models;
 using System;
 using System.Collections.Generic;
 using LinuxLudo.Web.Game;
-using System.Linq;
 
 namespace LinuxLudo.Test.Game
 {
@@ -29,7 +28,7 @@ namespace LinuxLudo.Test.Game
 
         [Fact]
         [Description("Verifies that when a token moves that it doesn't walk up its enemies colored paths")]
-        public void MoveToken_Avoid_EnemyPath()
+        public void MoveToken_EnemyPath()
         {
             OpenGame game = new(new Guid("dddddddddddddddddddddddddddddddd"));
             game.PlayersInGame.Add(new Player("Red", "Adam") { Tokens = new List<GameToken>() { new GameToken('A') } });
@@ -56,6 +55,47 @@ namespace LinuxLudo.Test.Game
 
             // Verifies that the token did not land on the yellow path, instead on the "any" path
             Assert.Contains(knockedOutTokens, pair => pair.Value[0] == game.PlayersInGame[1].Tokens[0]);
+        }
+
+        [Fact]
+        [Description("Verifies that a token can be brought out when the player just joined")]
+        public void NewPlayer_BringToken()
+        {
+            OpenGame game = new(new Guid("dddddddddddddddddddddddddddddddd"));
+
+            // Add the player, their tokens WITHOUT setting any parameters (as is done ingame)
+            game.PlayersInGame.Add(new Player("Red", "Adam")
+            {
+                Tokens = new List<GameToken>() {
+                     new GameToken('A'),
+                     new GameToken('B'),
+                     new GameToken('C'),
+                     new GameToken('D'), }
+            });
+
+            GameToken token = engine.BringOutToken(game.PlayersInGame[0]);
+            Assert.NotNull(token);
+        }
+
+        [Fact]
+        [Description("Verifies that a token CANNOT be brought out if all tokens are already out of the base")]
+        public void Player_BringToken_AllOut()
+        {
+            OpenGame game = new(new Guid("dddddddddddddddddddddddddddddddd"));
+
+            // Add the player, their tokens WITHOUT setting any parameters (as is done ingame)
+            game.PlayersInGame.Add(new Player("Red", "Adam")
+            {
+                Tokens = new List<GameToken>() {
+                     new GameToken('A'),
+                     new GameToken('B'),
+                     new GameToken('C'),
+                     new GameToken('D'), }
+            });
+
+            game.PlayersInGame[0].Tokens.ForEach(token => token.InBase = false);
+            GameToken token = engine.BringOutToken(game.PlayersInGame[0]);
+            Assert.Null(token);
         }
     }
 }
