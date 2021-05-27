@@ -90,11 +90,20 @@ namespace LinuxLudo.API.Hubs
                 if (hasWalkedIntoGoal)
                 {
                     var goalMessage = MessagePackSerializer.Serialize(new TokenActionMessage(player.Name, token.IdentifierChar));
-
                     player.Tokens.Remove(token);
 
                     // Notify clients that token is out
                     await Clients.Group(game.GameId.ToString()).SendAsync("ReceiveTokenGoal", goalMessage);
+
+                    if (player.Tokens.Count == 0)
+                    {
+                        await Task.Delay(2000);
+                        var victoryMessage = MessagePackSerializer.Serialize(player.Name);
+
+                        // Player has won the game
+                        await Clients.Group(game.GameId.ToString()).SendAsync("ReceiveGameOver", victoryMessage);
+                        return;
+                    }
                 }
             }
             else

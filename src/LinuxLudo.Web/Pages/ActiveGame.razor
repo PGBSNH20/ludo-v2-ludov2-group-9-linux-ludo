@@ -123,7 +123,7 @@
     // Game
     private GameService _gameService;
     private GameStatus _gameStatus;
-    private bool _hasJoinedGame = false;
+    private bool _hasJoinedGame;
     private string _statusMessage = "Waiting for players...";
     private char _selectedToken;
     private List<char> tokenSelections => new() { 'A', 'B', 'C', 'D' };
@@ -179,7 +179,7 @@
     private bool CanPlayerRoll()
     {
         return _username != null && _gameStatus != null 
-        && _gameStatus.Players.Any(player => player.Name == _username && player.Tokens.Any(token => !token.InBase));
+        && _gameStatus.Players.Any(player => player.Name == _username && player.Tokens.Any(token => !token.InBase)) && !_gameStatus.IsCompleted;
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -225,11 +225,14 @@
         // Called whenever the current player turn is updated
         _hub.On<byte[]>("ReceivePlayerTurn", (turnColor) => ReceivePlayerTurn(turnColor));
 
-        // Called whenever the current player turn is updated
+        // Called whenever the a token is knocked out
         _hub.On<byte[]>("ReceiveTokenKnockout", (message) => ReceiveTokenKnockout(message));
 
         // Called whenever the a token walks into goal (center tile)
         _hub.On<byte[]>("ReceiveTokenGoal", (message) => ReceiveTokenGoal(message));
+
+        // Called whenever a player has won the game (no tokens left)
+        _hub.On<byte[]>("ReceiveGameOver", (message) => ReceiveGameOver(message));
 
         await _hub.StartAsync();
     }
@@ -277,7 +280,7 @@
         if (_gameStatus != null)
         {
             // If no brought out token matches
-            if(!GetPlayer().Tokens.Any(token => token.IdentifierChar == tokenIdentifier && !token.InBase))
+            if(!GetPlayer().Tokens.Any(token => token.IdentifierChar == tokenIdentifier && !token.InBase) || _gameStatus.IsCompleted)
             {
                 return true;
             }
@@ -384,6 +387,15 @@
         _gameStatus.Players.First(player => player.Name == message.Username).Tokens.RemoveAll(token => token.IdentifierChar == message.TokenIdentifierChar);
         _statusMessage = $@"{(message.Username == _username ? "Your" : (message.Username + $"{'\''}s"))}" + $" token ({message.TokenIdentifierChar}) walked into goal!!!";
         if(message.Username == _username && message.TokenIdentifierChar == _selectedToken) {UpdateTokenSelection(_selectedToken);}
+        StateHasChanged();
+    }
+
+    private void ReceiveGameOver(byte[] receivedMessage)
+    {
+        string winner = MessagePackSerializer.Deserialize<string>(receivedMessage);
+        isPlayerTurn = false;
+        _gameStatus.IsCompleted = true;
+        _statusMessage = $"{(winner == _username ? "YOU" : winner)}" + " won the game!!!".ToUpper();
         StateHasChanged();
     }
 }

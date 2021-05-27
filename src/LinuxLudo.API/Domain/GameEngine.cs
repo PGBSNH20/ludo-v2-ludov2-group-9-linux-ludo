@@ -65,7 +65,7 @@ namespace LinuxLudo.API
                 token.TilePos = stepIndex;
 
                 // If the player steps on any tokens (knocks them out)
-                if (game.PlayersInGame.Any(player => player.Tokens.Any(enemyToken => enemyToken.TilePos == token.TilePos)))
+                if (game.PlayersInGame.Any(player => player.Tokens.Any(enemyToken => enemyToken.TilePos == token.TilePos) && !IsColorSafeZone(token.TilePos, player.Color)))
                 {
                     foreach (Player enemyPlayer in game.PlayersInGame.Where(p => p.Tokens.Any(eToken => eToken.TilePos == token.TilePos) && p.Name != player.Name))
                     {
@@ -124,6 +124,16 @@ namespace LinuxLudo.API
             || (string.Equals(board.Tiles[tileIndex].TileColor.ToString(), player.Color, StringComparison.OrdinalIgnoreCase) && token.MovedFromSpawn)
             || (tileIndex == board.Tiles.FindLastIndex(tile => tile.TileColor == board.Tiles[tileIndex].TileColor) - 6))
             && (board.Tiles[tileIndex].TileColor != GameTile.GameColor.Goal);
+        }
+
+        private bool IsColorSafeZone(int tileIndex, string tokenColor)
+        {
+            return
+            (tileIndex == board.Tiles.FindLastIndex(tile => tile.TileColor == GameTile.GameColor.Red) - 6)
+            || (tileIndex == board.Tiles.FindLastIndex(tile => tile.TileColor == GameTile.GameColor.Green) - 6)
+            || (tileIndex == board.Tiles.FindLastIndex(tile => tile.TileColor == GameTile.GameColor.Blue) - 6)
+            || ((tileIndex == board.Tiles.FindLastIndex(tile => tile.TileColor == GameTile.GameColor.Yellow) - 6)
+            && !string.Equals(board.Tiles[tileIndex].TileColor.ToString(), tokenColor, StringComparison.OrdinalIgnoreCase));
         }
     }
 }
