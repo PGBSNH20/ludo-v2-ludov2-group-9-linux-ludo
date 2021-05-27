@@ -9,7 +9,7 @@ The MessagePack protocol works by serializing the data into byte-arrays which ar
 The SignalR framework works by receiving/sending data through **hubs**.</br>
 Instead of creating individual hubs for each game there is only one [hub](https://github.com/PGBSNH20/ludo-v2-ludov2-group-9-linux-ludo/blob/main/src/LinuxLudo.Web/Hubs/HubController.cs) in the game which handles all traffic, across **all** games & users.</br>
 
-The hub then splits its user up into groups which are correlated to the game's **UUID**.
+The hub then splits its users up into groups which are correlated to the game's **UUID**.
 
 # GameHub methods
 The player's turn is updated through UpdatePlayerTurn() after each of the following methods has executed fully:
