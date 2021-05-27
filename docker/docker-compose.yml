@@ -1,9 +1,21 @@
 version: '3'
 
 services:
+  api:
+    container_name: linux-ludo-api
+    build:
+      context: ../src/
+      dockerfile: LinuxLudo.API/Dockerfile
+    ports:
+      - "80:80"
+    environment:
+      DB_CONNECTION_STRING: "host=db;port=5432;database=ludo;username=root;password=secret"
+    networks:
+      - db
+      - api
   db:
     image: postgres:13.2
-    container_name: linux-ludo-db
+    container_name: db
     environment:
       - POSTGRES_USER=root
       - POSTGRES_PASSWORD=secret
@@ -11,8 +23,16 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - pgdata:/var/lib/postgresql/data
+      - test:/var/lib/postgresql/data
+    networks:
+      - db
 
 volumes:
-  pgdata:
+  test:
     driver: local
+
+networks:
+  db:
+    driver: bridge
+  api:
+    driver: bridge
