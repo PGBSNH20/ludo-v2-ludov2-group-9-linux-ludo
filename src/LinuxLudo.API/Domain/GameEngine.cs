@@ -9,7 +9,7 @@ namespace LinuxLudo.API
     public class GameEngine
     {
         private readonly GameBoard board = new();
-        private const int minRoll = 0, maxRoll = 6;
+        private const int minRoll = 1, maxRoll = 6;
         private readonly List<string> playerColors = new() { "red", "green", "blue", "yellow" };
         private readonly Random random = new();
 

@@ -222,15 +222,15 @@
         });
 
         // Called whenever the current player turn is updated
-        _hub.On<string, GameToken, int>("ReceiveMoveToken", (username, token, roll) =>
+        _hub.On<string, char, int, int>("ReceiveMoveToken", (username, tokenIdentifierChar, tilePos, roll) =>
         {
-            ReceiveMoveToken(username, token, roll);
+            ReceiveMoveToken(username, tokenIdentifierChar, tilePos, roll);
         });
 
         // Called whenever the current player turn is updated
-        _hub.On<string, GameToken>("ReceiveBringOutToken", (username, token) =>
+        _hub.On<string, char, int>("ReceiveBringOutToken", (username, tokenIdentifierChar, tilePos) =>
         {
-            ReceiveBringOutToken(username, token);
+            ReceiveBringOutToken(username, tokenIdentifierChar, tilePos);
         });
 
         // Called whenever the current player turn is updated
@@ -240,9 +240,9 @@
         });
 
         // Called whenever the current player turn is updated
-        _hub.On<string, GameToken>("ReceiveTokenKnockout", (tokenHolderName, token) =>
+        _hub.On<string, char>("ReceiveTokenKnockout", (tokenHolderName, tokenIdentifierChar) =>
         {
-            ReceiveTokenKnockout(tokenHolderName, token);
+            ReceiveTokenKnockout(tokenHolderName, tokenIdentifierChar);
         });
 
         await _hub.StartAsync();
@@ -252,11 +252,8 @@
     {
         if (isPlayerTurn)
         {
-            GameToken token = _gameStatus.Players.First(player => player.Name == _username).Tokens.First(t => t.IdentifierChar ==
-            _selectedToken);
-
             // Send a roll request to the server
-            await _hub.InvokeAsync("MoveToken", _username, token);
+            await _hub.InvokeAsync("MoveToken", _username, _selectedToken);
         }
     }
 
@@ -329,20 +326,20 @@
         }
     }
 
-    private void ReceiveMoveToken(string username, GameToken token, int roll)
+    private void ReceiveMoveToken(string username, char tokenIdentifierChar, int tilePos, int roll)
     {
         _gameStatus.Players.First(player => player.Name == username).Tokens.First(t => t.IdentifierChar ==
-        token.IdentifierChar).TilePos = token.TilePos;
+        tokenIdentifierChar).TilePos = tilePos;
         _statusMessage = $"{(_username == username ? "You" : username)} walked {roll} steps!";
     }
 
-    private void ReceiveBringOutToken(string username, GameToken token)
+    private void ReceiveBringOutToken(string username, char tokenIdentifierChar, int tilePos)
     {
-        GameToken playerToken = _gameStatus.Players.First(player => player.Name == username).Tokens.First(t => t.IdentifierChar == token.IdentifierChar);
-        playerToken.InBase = token.InBase;
-        playerToken.TilePos = token.TilePos;
+        GameToken playerToken = _gameStatus.Players.First(player => player.Name == username).Tokens.First(t => t.IdentifierChar == tokenIdentifierChar);
+        playerToken.InBase = false;
+        playerToken.TilePos = tilePos;
 
-        _statusMessage = $"{(_username == username ? "You" : username)} brought out token {token.IdentifierChar.ToString().ToUpper()}!";
+        _statusMessage = $"{(_username == username ? "You" : username)} brought out token {tokenIdentifierChar.ToString().ToUpper()}!";
         StateHasChanged();
     }
 
@@ -378,13 +375,13 @@
         StateHasChanged();
     }
 
-    private void ReceiveTokenKnockout(string tokenHolderName, GameToken token)
+    private void ReceiveTokenKnockout(string tokenHolderName, char tokenIdentifierChar)
     {
         GameToken playerToken = _gameStatus.Players.First(player => player.Name == tokenHolderName).Tokens.First(token => token.IdentifierChar == token.IdentifierChar);
-        playerToken.InBase = token.InBase;
-        playerToken.TilePos = token.TilePos;
-        playerToken.MovedFromSpawn = token.MovedFromSpawn;
-        _statusMessage = $@"{(tokenHolderName == _username ? "Your" : (tokenHolderName + $"{'\''}s"))}" + $" token ({token.IdentifierChar}) was knocked out!";
+        playerToken.InBase = true;
+        playerToken.TilePos = -1;
+        playerToken.MovedFromSpawn = false;
+        _statusMessage = $@"{(tokenHolderName == _username ? "Your" : (tokenHolderName + $"{'\''}s"))}" + $" token ({tokenIdentifierChar}) was knocked out!";
         StateHasChanged();
     }
 }

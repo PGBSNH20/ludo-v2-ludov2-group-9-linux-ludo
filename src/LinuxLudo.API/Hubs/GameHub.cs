@@ -47,10 +47,10 @@ namespace LinuxLudo.API.Hubs
         public async Task NotifyRollDice(string username, int roll)
         {
             await Clients.Group(_repository.FetchUserById(Context.ConnectionId).JoinedGame.GameId.ToString()).SendAsync("ReceiveRollDice", username, roll);
-            await Task.Delay(500);
+            await Task.Delay(200);
         }
 
-        public async Task MoveToken(string username, GameToken token)
+        public async Task MoveToken(string username, char tokenIdentifierChar)
         {
             // Fetches the game the player is in
             OpenGame game = _repository.FetchGameById(_repository.FetchUserById(Context.ConnectionId).JoinedGame.GameId);
@@ -59,25 +59,27 @@ namespace LinuxLudo.API.Hubs
             if (roll > 0)
             {
                 Player player = game.PlayersInGame.First(player => player.Name == username);
+                GameToken token = player.Tokens.First(token => token.IdentifierChar == tokenIdentifierChar);
                 foreach (KeyValuePair<Player, List<GameToken>> pair in engine.MoveToken(game, player, token, roll))
                 {
                     foreach (GameToken enemyToken in pair.Value)
                     {
                         // Broadcast a message for each token that has been knocked out
-                        await NotifyTokenKnockout(pair.Key.Name, enemyToken);
+                        await NotifyTokenKnockout(pair.Key.Name, enemyToken.IdentifierChar);
                         await Task.Delay(1000);
                     }
                 }
 
                 // Notify that player has moved
-                await Clients.Group(game.GameId.ToString()).SendAsync("ReceiveMoveToken", username, token, roll);
-                await Task.Delay(500);
+                await Clients.Group(game.GameId.ToString()).SendAsync("ReceiveMoveToken", username, token.IdentifierChar, token.TilePos, roll);
             }
             else
             {
                 // Notify of 0 roll
                 await NotifyRollDice(username, roll);
             }
+
+            await Task.Delay(200);
 
 
             // Set the turn to the next player
@@ -94,26 +96,26 @@ namespace LinuxLudo.API.Hubs
             if (roll == 6)
             {
                 GameToken token = engine.BringOutToken(game.PlayersInGame.First(player => player.Name == username));
-                await Clients.Group(game.GameId.ToString()).SendAsync("ReceiveBringOutToken", username, token);
+                await Clients.Group(game.GameId.ToString()).SendAsync("ReceiveBringOutToken", username, token.IdentifierChar, token.TilePos);
             }
             else
             {
                 await NotifyRollDice(username, roll);
             }
 
-            await Task.Delay(1000);
+            await Task.Delay(500);
 
             // Set the turn to the next player
             await UpdatePlayerTurn(game);
         }
 
-        public async Task NotifyTokenKnockout(string tokenHolderName, GameToken token)
+        public async Task NotifyTokenKnockout(string tokenHolderName, char tokenIdentifierChar)
         {
             // Fetches the game the player is in
             OpenGame game = _repository.FetchGameById(_repository.FetchUserById(Context.ConnectionId).JoinedGame.GameId);
 
             // Broadcast which token was knocked out
-            await Clients.Group(game.GameId.ToString()).SendAsync("ReceiveTokenKnockout", tokenHolderName, token);
+            await Clients.Group(game.GameId.ToString()).SendAsync("ReceiveTokenKnockout", tokenHolderName, tokenIdentifierChar);
         }
 
         private async Task UpdatePlayerTurn(OpenGame game)
