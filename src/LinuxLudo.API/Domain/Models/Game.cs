@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using LinuxLudo.API.Domain.Enums;
 
 namespace LinuxLudo.API.Domain.Models
