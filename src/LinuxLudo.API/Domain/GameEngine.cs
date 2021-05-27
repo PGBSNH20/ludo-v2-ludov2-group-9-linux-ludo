@@ -95,25 +95,29 @@ namespace LinuxLudo.API
 
         public GameToken BringOutToken(Player player)
         {
-            GameToken token = player.Tokens.First(t => t.InBase);
-            token.InBase = false;
-            switch (player.Color)
+            if (player.Tokens.Any(t => t.InBase))
             {
-                case "red":
-                    token.TilePos = board.Tiles.IndexOf(board.Tiles.First(tile => tile.TileColor == GameTile.GameColor.Red));
-                    break;
-                case "green":
-                    token.TilePos = board.Tiles.IndexOf(board.Tiles.First(tile => tile.TileColor == GameTile.GameColor.Green));
-                    break;
-                case "blue":
-                    token.TilePos = board.Tiles.IndexOf(board.Tiles.First(tile => tile.TileColor == GameTile.GameColor.Blue));
-                    break;
-                case "yellow":
-                    token.TilePos = board.Tiles.IndexOf(board.Tiles.First(tile => tile.TileColor == GameTile.GameColor.Yellow));
-                    break;
+                GameToken token = player.Tokens.First(t => t.InBase);
+                token.InBase = false;
+                switch (player.Color)
+                {
+                    case "red":
+                        token.TilePos = board.Tiles.IndexOf(board.Tiles.First(tile => tile.TileColor == GameTile.GameColor.Red));
+                        break;
+                    case "green":
+                        token.TilePos = board.Tiles.IndexOf(board.Tiles.First(tile => tile.TileColor == GameTile.GameColor.Green));
+                        break;
+                    case "blue":
+                        token.TilePos = board.Tiles.IndexOf(board.Tiles.First(tile => tile.TileColor == GameTile.GameColor.Blue));
+                        break;
+                    case "yellow":
+                        token.TilePos = board.Tiles.IndexOf(board.Tiles.First(tile => tile.TileColor == GameTile.GameColor.Yellow));
+                        break;
+                }
+                return token;
             }
 
-            return token;
+            return null;
         }
 
         private bool IsWalkable(int tileIndex, Player player, GameToken token)
