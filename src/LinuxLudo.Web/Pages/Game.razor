@@ -1,15 +1,37 @@
 @page "/Play"
-
-@inject NavigationManager NavManager; // Used to navigate in the webbrowser to different urls
+@using LinuxLudo.Web.Services
+@inject NavigationManager _navManager; // Used to navigate in the webbrowser to different urls
+@inject Blazored.LocalStorage.ILocalStorageService _localStorage
 
 <!-- This page displays the actual Ludo game and can only be accessed when logged in/authenticated -->
 
 <AuthorizeView>
     <!-- Logged in/game view -->
     <Authorized>
-        <div class="game-container">
-            <div class="game-board">
-                <h1 class="username-text">Playing as @userName</h1>
+        <div class="text-center">
+            <div class="my-2">
+                <h1 class="font-bold flex text-lg justify-center items-center">Available games</h1>
+            </div>
+
+            <div class="flex flex-row justify-center">
+                <div>
+                    <ul>
+                        @if (availableGames != null)
+                        {
+                            foreach (AvailableGame game in availableGames)
+                            {
+                            <li>
+                                
+                                <button class="w-40 h-20 text-black text-lg bg-green-300 my-2 hover:my-4 hover:bg-green-700 transition-all transform hover:scale-125"
+                                        @onclick=@(() => _navManager.NavigateTo($"/Game/{game.Id}"))>
+                                    <b>@game.Name</b> - @game.MaxPlayers
+                                    players
+                                </button>
+                            </li>
+                            }
+                        }
+                    </ul>
+                </div>
             </div>
         </div>
     </Authorized>
@@ -18,23 +40,20 @@
 
 @code
 {
-    [CascadingParameter]
-    public Task<AuthenticationState> AuthState { get; set; }
     private string userName;
+    private GameService gameService;
+    private List<AvailableGame> availableGames;
 
     // When the page is fully loaded/on startup
     protected override async Task OnInitializedAsync()
     {
-        var authState = await AuthState;
-
-        // If the user is logged in
-        if (authState.User.Identity.IsAuthenticated)
-        {
-            userName = authState.User.Identity.Name;
-        }
-        else
-        {
-            NavManager.NavigateTo("/Login");
-        }
+        availableGames = new List<AvailableGame>();
+        gameService = new GameService();
+        await FetchAvailableGames();
+    }
+    
+    private async Task FetchAvailableGames()
+    {
+        availableGames = await gameService.FetchAllGames();
     }
 }

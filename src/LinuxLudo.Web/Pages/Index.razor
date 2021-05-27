@@ -1,6 +1,20 @@
 ﻿@page "/"
 @page "/Home"
+@inject NavigationManager NavManager;
 <!-- The start/main page of the website -->
 
-<h1 class="index-body">A multiplayer ludo game</h1>
-<p class="index-body">Developed by Adam Brodin & Leo Rönnebro</p>
+<div class="text-center p-3">
+    <h1 class="font-bold text-lg">A multiplayer ludo game</h1>
+    <p>Developed by Adam Brodin & Leo Rönnebro</p>
+
+    <div class="text-base mt-6">
+        <h2>This is the result of a school-project that was built using <b>Blazor</b> & the <b>ASP.NET Core</b>
+            framework.</h2>
+        <h2 class="text-blue-500 text-base underline"><a href="https://github.com/PGBSNH20/ludo-v2-ludov2-group-9-linux-ludo">Link to
+                repository</a></h2>
+    </div>
+
+    <div class="mt-4">
+        <button class="transition-all transform hover:scale-125 font-bold text-white text-lg border-2 border-solid border-blue-300 h-20 w-40 bg-blue-300 hover:border-4 hover:border-solid hover:border-black" @onclick=@(() => NavManager.NavigateTo("/Play"))>Play</button>
+    </div>
+</div>

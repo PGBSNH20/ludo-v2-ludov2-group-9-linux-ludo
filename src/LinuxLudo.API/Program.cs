@@ -24,5 +24,6 @@ namespace LinuxLudo.API
                     logging.AddConsole();
                 })
                 .ConfigureWebHostDefaults(webBuilder => { webBuilder.UseStartup<Startup>(); });
+
     }
 }

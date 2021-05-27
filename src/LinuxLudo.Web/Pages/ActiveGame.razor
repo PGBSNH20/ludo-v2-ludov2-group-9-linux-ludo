@@ -1,50 +1,279 @@
-@page "/Game/{Id:int}"
-@inject NavigationManager NavManager; // Used to navigate in the webbrowser to different urls
+@page "/Game/{Id:guid}"
+@using LinuxLudo.Web.Domain.Models
+@using Microsoft.AspNetCore.SignalR.Client
+@using LinuxLudo.Core.Models
+@using LinuxLudo.Web.Hubs
+@using LinuxLudo.Web.Services
+@inject NavigationManager _navManager; // Used to navigate in the webbrowser to different urls
+@inject BrowserService _browserService;
+@inject IJSRuntime _jsRuntime;
+@inject Blazored.LocalStorage.ILocalStorageService _localStorage;
+@inject HubController _hubController
 
-<h1 class="title-text">Game (@Id) - Playing as @userName</h1>
+<LayoutView>
+    <img @ref="_redToken" class="hidden" id="redToken" src="Images/redtoken.png"/>
+    <img @ref="_greenToken" class="hidden" id="greenToken" src="Images/greentoken.png"/>
+    <img @ref="_blueToken" class="hidden" id="blueToken" src="Images/bluetoken.png"/>
+    <img @ref="_yellowToken" class="hidden" id="yellowToken" src="Images/yellowtoken.png"/>
 
-<AuthorizeView>
-    <div class="game-canvas">
-        <BECanvas Width="512" Height="512" @ref="_canvas"></BECanvas>
+    <div hidden=@(!_hasJoinedGame)>
+        <h1 class="text-lg text-center">
+            <b>@_game.Name</b>
+        </h1>
+        <div class="mt-4 flex justify-center items-center">
+            <BECanvas Width="@_canvasWidth" Height="@_canvasHeight" @ref="_canvas"></BECanvas>
+        </div>
+
+        <div class="flex items-center justify-center @CanvasHtmlString">
+            <button class="w-40 h-20 bg-green-500 text-white float-left transition-all ease-in-out transform hover:scale-125 my-2 mr-6" @onclick=RollDiceClick>Roll dice</button>
+            <button class="w-40 h-20 bg-yellow-700 text-white float-left transition-all ease-in-out transform hover:scale-125 my-2 ml-6" @onclick=BringOutTokenClick>Bring out token</button>
+
+            @functions {
+                async Task RollDiceClick() => await RollDice();
+                async Task BringOutTokenClick() => await BringOutToken();
+            }
+
+        </div>
+
+        <div class="flex flex-row justify-center" hidden=@(IsTokenDead('A') && IsTokenDead('B') && IsTokenDead('C') && IsTokenDead('D'))>
+            <h1 class="mr-8">
+                <b>Select your token</b>
+                <div class="bg-gray-700 p-3 relative rounded"
+                     style="content: attr(label); display: inline-block; text-align: center; width: 100%;">
+                    @foreach (char tokenSelection in tokenSelections)
+                    {
+                        <input class="w-auto h-full outline-none appearance-none cursor-pointer rounded-sm py-2 px-4 bg-gray-700 text-gray-300 text-base transition-all
+                                      checked:bg-gradient-to-r checked:from-purple-200 checked:to-purple-700 checked:text-white" 
+                               @onchange="@(() => UpdateTokenSelection(tokenSelection))" hidden=@IsTokenDead(tokenSelection)
+                               checked="@(_selectedToken.Equals(tokenSelection))" label=@tokenSelection type="radio" id=@($"token-{tokenSelection}") name="token"
+                               value=@($"token-{tokenSelection}")>
+                    }
+                </div>
+            </h1>
+        </div>
     </div>
-</AuthorizeView>
+
+    @if (!_hasJoinedGame)
+    {
+        @functions {
+            bool GameIsFull => _game.AmountPlaying >= _game.MaxPlayers && _game.MaxPlayers != 0;
+        }if (_game.MaxPlayers > 0)
+         {
+             <div class="flex flex-col items-center text-center">
+                 <h1 class="text-black w-1/4 text-center text-lg font-bold mb-6">@_game.Name</h1>
+                 <h2 class="text-base" style=@(GameIsFull ? "color: red;" : "")>
+                     Slots taken:
+                     <b>@_game.AmountPlaying</b>/<b>@_game.MaxPlayers</b>
+                 </h2>
+             </div>
+             <div class="flex items-center flex-col pt-12" hidden=@(!_hasJoinedGame)>
+                 <button class="text-white text-center min-w-96 min-h-64 px-4 w-10 h-20 bg-yellow-700" disabled=@(GameIsFull) id="play-btn"
+                         @onclick=JoinGame>
+                     @(GameIsFull ? "Game is full" : "Join game")
+                 </button>
+                 <button class="text-white text-center min-w-96 min-h-64 px-4 w-auto bg-blue-400 transition transform hover:scale-125" id="browse-btn" @onclick=@(() => _navManager.NavigateTo("/Play"))>
+                     Browse
+                     available games
+                 </button>
+             </div>
+         }
+         else
+         {
+             <div class="relative flex items-center justify-center">
+                 <h1 class="absolute text-2xl mt-24 transition-all ease-in-out">Loading... please wait</h1>
+             </div>
+         }
+    }
+</LayoutView>
 
 @code
 {
+    // Misc
     [Parameter]
-    public int Id { get; set; }
-    [CascadingParameter]
-    private Task<AuthenticationState> AuthState { get; set; }
-    private string userName;
+    public Guid Id { get; set; }
+
+    private string _username;
+    private AvailableGame _game;
+        private const string Hub = "gamehub";
+
+    // SignalR
+    private HubConnection _hub;
 
     // Canvas
-    protected BECanvasComponent _canvas;
+    private BECanvasComponent _canvas;
     private Canvas2DContext _context;
+    private GameRenderer _gameRenderer;
+    private GameBoard _board;
+    private ElementReference _redToken, _greenToken, _blueToken, _yellowToken;
+    private int _canvasWidth, _canvasHeight;
+        private const int MinWidthResize = 1600;
+        private const int MinHeightResize = 720;
+        private const float HeightWidthMultiplierIsMobile = 1.2f;
+    private string CanvasHtmlString => isPlayerTurn ? "" : "hidden";
+
+    // Game
+    private GameService _gameService;
     private GameStatus _gameStatus;
+    private bool _hasJoinedGame = false;
+    private string _currentStatus = "Waiting for players...";
+    private char _selectedToken;
+    private List<char> tokenSelections => new() {'A', 'B', 'C', 'D'};
+
+    // This is true if it's the client-side player's turn
+    private bool isPlayerTurn = true; // TODO SET FROM API
 
     // When the page has fully loaded
     protected override async Task OnInitializedAsync()
     {
-        var authState = await AuthState;
+        _game = new();
 
-        // If the user is logged in
-        if (authState.User.Identity.IsAuthenticated)
+        await FitCanvas();
+
+        _board = new GameBoard();
+
+        _gameService = new GameService(@Id, _username);
+
+        var allGames = await _gameService.FetchAllGames();
+        if (allGames.All(game => game.Id != Id.ToString()))
         {
-            userName = authState.User.Identity.Name;
+            Console.WriteLine($"No such game with id: {Id}");
+            _navManager.NavigateTo("/Play");
         }
         else
         {
-            NavManager.NavigateTo("/Login");
+            _game = allGames.First(game => game.Id == Id.ToString());
         }
+
+        await SetupSignalR();
+    }
+
+    protected async Task FitCanvas()
+    {
+        var windowDim = await _browserService.GetDimensions();
+
+    // If the screen is more or less mobile resolution
+        if (windowDim.Height >= (windowDim.Width * HeightWidthMultiplierIsMobile))
+        {
+            _canvasWidth = (windowDim.Width);
+        }
+        else if (windowDim.Width >= MinWidthResize && windowDim.Height >= MinHeightResize)
+        {
+            _canvasWidth = (int) (windowDim.Width * 0.35);
+        }
+        else
+        {
+            _canvasWidth = (int) (windowDim.Width * 0.7);
+        }
+
+        _canvasHeight = (int) (_canvasWidth * 1.15);
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        // Creates a canvas
+        if (firstRender)
+        {
+            _gameStatus = new();
+            _context = await _canvas.CreateCanvas2DAsync();
+
+            StateHasChanged();
+            _gameRenderer = new GameRenderer(_username, _canvasWidth, _canvasHeight, _redToken, _greenToken, _blueToken, _yellowToken);
+        }
+
+        if (_hasJoinedGame)
+        {
+            await RenderGame();
+        }
+    }
+
+    protected async Task RenderGame()
+    {
         _context = await _canvas.CreateCanvas2DAsync();
 
-        // Draws a basic canvas background color
-        await _context.SetFillStyleAsync("gray");
-        await _context.FillRectAsync(0, 0, 512, 512);
+        await _gameRenderer.RenderGame(_context, _board, _gameStatus, _currentStatus, _selectedToken);
+    }
+
+    protected async Task SetupSignalR()
+    {
+        _hub = _hubController.Connect(Hub).Hub();
+
+        _hub.On<string, List<Player>>("ReceiveJoinGame", (userName, players) =>
+        {
+            _gameStatus.Players = players;
+            _currentStatus = this._username == userName ? $"Welcome {userName}!" : $"{userName} has joined the game!";
+            StateHasChanged();
+        });
+
+        await _hub.StartAsync();
+    }
+
+    protected async Task RollDice()
+    {
+    // TODO IMPLEMENT AGAINST SERVER
+    }
+
+    protected async Task BringOutToken()
+    {
+    // TODO IMPLEMENT AGAINST SERVER
+    }
+
+    private void UpdateTokenSelection(char token)
+    {
+        Player player = GetPlayer();
+        if (!IsTokenDead(token))
+        {
+            _selectedToken = token;
+        }
+        else if (player.Tokens.Count > 0)
+        {
+            if (player.Tokens.Any(t => !t.InBase))
+            {
+                _selectedToken = player.Tokens.FirstOrDefault(token => !token.InBase).IdentifierChar;
+            }
+            else
+            {
+                _selectedToken = player.Tokens.First().IdentifierChar;
+            }
+        }
+    }
+
+    private bool IsTokenDead(char tokenIdentifier)
+    {
+        if (_gameStatus != null)
+        {
+            Player player = GetPlayer();
+
+    // Token is not dead if found in list
+            if (player.Tokens.All(token => token.IdentifierChar != tokenIdentifier) || player.Tokens.Any(token => token.IdentifierChar == tokenIdentifier &&
+                                                                                                                  token.InBase))
+            {
+                return true;
+            }
+        }
+
+    // Token is alive/exists in list
+        return false;
+    }
+
+    private Player GetPlayer()
+    {
+        if (_gameStatus != null && _gameStatus.Players.Any(p => p.Name == _username))
+        {
+            return _gameStatus.Players.First(p => p.Name == _username);
+        }
+        else
+        {
+            return new Player("dead", _username + " (SPECTATING)");
+        }
+    }
+
+
+    private async Task JoinGame()
+    {
+        if (_game.AmountPlaying < _game.MaxPlayers)
+        {
+            await _hub.SendAsync("JoinGame", _username, Id);
+            _hasJoinedGame = true;
+            StateHasChanged();
+        }
     }
 }
