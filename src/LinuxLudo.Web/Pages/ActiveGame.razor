@@ -1,5 +1,6 @@
 @page "/Game/{Id:guid}"
 @using LinuxLudo.Web.Domain.Models
+@using MessagePack
 @using Microsoft.AspNetCore.SignalR.Client
 @using LinuxLudo.Core.Models
 @using LinuxLudo.Web.Hubs
@@ -210,37 +211,37 @@
         _hub = _hubController.Connect(Hub).Hub();
 
         // Called whenever a user joins/leaves
-        _hub.On<string, List<Player>>("ReceiveConnectionChanged", (username, players) =>
+        _hub.On<byte[], byte[]>("ReceiveConnectionChanged", (username, players) =>
         {
             ReceiveConnectionChanged(username, players);
         });
 
-        // Called whenever a user rolls the dice (NOT WHEN TOKEN MOVES)
-        _hub.On<string, int>("ReceiveRollDice", (username, roll) =>
+    // Called whenever a user rolls the dice (NOT WHEN TOKEN MOVES)
+        _hub.On<byte[], byte[]>("ReceiveRollDice", (username, roll) =>
         {
             ReceiveRollDice(username, roll);
         });
 
         // Called whenever the current player turn is updated
-        _hub.On<string, char, int, int>("ReceiveMoveToken", (username, tokenIdentifierChar, tilePos, roll) =>
+        _hub.On<byte[], byte[], byte[], byte[]>("ReceiveMoveToken", (username, tokenIdentifierChar, tilePos, roll) =>
         {
             ReceiveMoveToken(username, tokenIdentifierChar, tilePos, roll);
         });
 
         // Called whenever the current player turn is updated
-        _hub.On<string, char, int>("ReceiveBringOutToken", (username, tokenIdentifierChar, tilePos) =>
+        _hub.On<byte[], byte[], byte[]>("ReceiveBringOutToken", (username, tokenIdentifierChar, tilePos) =>
         {
             ReceiveBringOutToken(username, tokenIdentifierChar, tilePos);
         });
 
         // Called whenever the current player turn is updated
-        _hub.On<string>("ReceivePlayerTurn", (turnColor) =>
+        _hub.On<byte[]>("ReceivePlayerTurn", (turnColor) =>
         {
             ReceivePlayerTurn(turnColor);
         });
 
         // Called whenever the current player turn is updated
-        _hub.On<string, char>("ReceiveTokenKnockout", (tokenHolderName, tokenIdentifierChar) =>
+        _hub.On<byte[], byte[]>("ReceiveTokenKnockout", (tokenHolderName, tokenIdentifierChar) =>
         {
             ReceiveTokenKnockout(tokenHolderName, tokenIdentifierChar);
         });
@@ -326,62 +327,80 @@
         }
     }
 
-    private void ReceiveMoveToken(string username, char tokenIdentifierChar, int tilePos, int roll)
+    private void ReceiveMoveToken(byte[] username, byte[] tokenIdentifierChar, byte[] tilePos, byte[] roll)
     {
-        _gameStatus.Players.First(player => player.Name == username).Tokens.First(t => t.IdentifierChar ==
-        tokenIdentifierChar).TilePos = tilePos;
-        _statusMessage = $"{(_username == username ? "You" : username)} walked {roll} steps!";
+        string deserializedUsername = MessagePackSerializer.Deserialize<string>(username);
+        char deserializedTokenChar = MessagePackSerializer.Deserialize<char>(tokenIdentifierChar);
+        int deserializedTilePos = MessagePackSerializer.Deserialize<int>(tilePos);
+        int deserializedRoll = MessagePackSerializer.Deserialize<int>(roll);
+
+        _gameStatus.Players.First(player => player.Name == deserializedUsername).Tokens.First(t => t.IdentifierChar ==
+        deserializedTokenChar).TilePos = deserializedTilePos;
+        _statusMessage = $"{(_username == deserializedUsername ? "You" : username)} walked {deserializedRoll} steps!";
     }
 
-    private void ReceiveBringOutToken(string username, char tokenIdentifierChar, int tilePos)
+    private void ReceiveBringOutToken(byte[] username, byte[] tokenIdentifierChar, byte[] tilePos)
     {
-        GameToken playerToken = _gameStatus.Players.First(player => player.Name == username).Tokens.First(t => t.IdentifierChar == tokenIdentifierChar);
-        playerToken.InBase = false;
-        playerToken.TilePos = tilePos;
+        string deserializedUsername = MessagePackSerializer.Deserialize<string>(username);
+        char deserializedTokenChar =  MessagePackSerializer.Deserialize<char>(tokenIdentifierChar);
+        int deserializedTilePos = MessagePackSerializer.Deserialize<int>(tilePos);
 
-        _statusMessage = $"{(_username == username ? "You" : username)} brought out token {tokenIdentifierChar.ToString().ToUpper()}!";
+        GameToken playerToken = _gameStatus.Players.First(player => player.Name == deserializedUsername).Tokens.First(t => t.IdentifierChar == deserializedTokenChar);
+        playerToken.InBase = false;
+        playerToken.TilePos = deserializedTilePos;
+
+        _statusMessage = $"{(_username == deserializedUsername ? "You" : username)} brought out token {tokenIdentifierChar.ToString().ToUpper()}!";
         StateHasChanged();
     }
 
-    private void ReceiveConnectionChanged(string username, List<Player> players)
+    private void ReceiveConnectionChanged(byte[] username, byte[] players)
     {
+                string deserializedUsername = MessagePackSerializer.Deserialize<string>(username);
+        List<Player> deserializedList = MessagePackSerializer.Deserialize<List<Player>>(players);
+
         // Display the join/leave message in the canvas
-        if (players.Count > _gameStatus.Players.Count)
+        if (deserializedList.Count > _gameStatus.Players.Count)
         {
-            _statusMessage = _username == username ? $"Welcome {username}!" : $"{username} has joined the game!";
+            _statusMessage = _username == deserializedUsername ? $"Welcome {username}!" : $"{username} has joined the game!";
         }
         else
         {
             _statusMessage= $"{username} has left the game :(";
         }
 
-
         // Update the players
-        _gameStatus.Players = players;
+        _gameStatus.Players = deserializedList;
         StateHasChanged();
     }
 
-    private void ReceivePlayerTurn(string newTurnColor)
+    private void ReceivePlayerTurn(byte[] newTurnColor)
     {
-        isPlayerTurn = GetPlayer().Color == newTurnColor;
-        string newTurnName = _gameStatus.Players.First(player => player.Color == newTurnColor).Name;
+        string deserialiedTurnColor = MessagePackSerializer.Deserialize<string>(newTurnColor);
+        isPlayerTurn = GetPlayer().Color == deserialiedTurnColor;
+        string newTurnName = _gameStatus.Players.First(player => player.Color == deserialiedTurnColor).Name;
         _statusMessage = $@"It's {(isPlayerTurn ? "your" : (newTurnName + $"{'\''}s"))} turn!";
         StateHasChanged();
     }
 
-    private void ReceiveRollDice(string username, int roll)
+    private void ReceiveRollDice(byte[] username, byte[] roll)
     {
-        _statusMessage = $"{(username == _username ? "You" : username)} rolled a {roll}!";
+        string deserializedUsername = MessagePackSerializer.Deserialize<string>(username);
+        int deserializedRoll = MessagePackSerializer.Deserialize<int>(roll);
+
+        _statusMessage = $"{(deserializedUsername == _username ? "You" : username)} rolled a {deserializedRoll}!";
         StateHasChanged();
     }
 
-    private void ReceiveTokenKnockout(string tokenHolderName, char tokenIdentifierChar)
+    private void ReceiveTokenKnockout(byte[] tokenHolderName, byte[] tokenIdentifierChar)
     {
-        GameToken playerToken = _gameStatus.Players.First(player => player.Name == tokenHolderName).Tokens.First(token => token.IdentifierChar == token.IdentifierChar);
+        string deserializedHolderName = MessagePackSerializer.Deserialize<string>(tokenHolderName);
+        char deserializedTokenChar =  MessagePackSerializer.Deserialize<char>(tokenIdentifierChar);
+
+        GameToken playerToken = _gameStatus.Players.First(player => player.Name == deserializedHolderName).Tokens.First(token => token.IdentifierChar == deserializedTokenChar);
         playerToken.InBase = true;
         playerToken.TilePos = -1;
         playerToken.MovedFromSpawn = false;
-        _statusMessage = $@"{(tokenHolderName == _username ? "Your" : (tokenHolderName + $"{'\''}s"))}" + $" token ({tokenIdentifierChar}) was knocked out!";
+        _statusMessage = $@"{(deserializedHolderName == _username ? "Your" : (tokenHolderName + $"{'\''}s"))}" + $" token ({tokenIdentifierChar}) was knocked out!";
         StateHasChanged();
     }
 }

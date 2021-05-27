@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.SignalR.Client;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace LinuxLudo.Web.Hubs
 {
@@ -11,6 +12,7 @@ namespace LinuxLudo.Web.Hubs
             _hub = new HubConnectionBuilder()
                 .WithUrl($"https://localhost:5001/{hub}")
                 .WithAutomaticReconnect()
+                .AddMessagePackProtocol()
                 .Build();
 
             return this;

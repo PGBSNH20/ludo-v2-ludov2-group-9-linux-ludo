@@ -9,6 +9,7 @@ using LinuxLudo.API.Domain.Services;
 using LinuxLudo.API.Extensions;
 using LinuxLudo.API.Hubs;
 using LinuxLudo.API.Services;
+using MessagePack;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -39,7 +40,12 @@ namespace LinuxLudo.API
             {
                 opts.EnableDetailedErrors = true;
                 opts.KeepAliveInterval = TimeSpan.FromSeconds(10);
+            }).AddMessagePackProtocol(options =>
+            {
+                options.SerializerOptions = MessagePackSerializerOptions.Standard
+                    .WithSecurity(MessagePackSecurity.UntrustedData);
             });
+
             services.AddControllers()
                 .ConfigureApiBehaviorOptions(opts =>
                 {

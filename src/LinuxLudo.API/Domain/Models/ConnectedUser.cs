@@ -4,9 +4,9 @@ namespace LinuxLudo.API.Domain.Models
 {
     public class ConnectedUser
     {
-        public string Username { get; set; }
-        public string ConnectionId { get; set; }
-        public OpenGame JoinedGame { get; set; }
+        public string Username { get; }
+        public string ConnectionId { get; }
+        public OpenGame JoinedGame { get; }
 
         public ConnectedUser(string username, string connectionId, OpenGame joinedGame)
         {

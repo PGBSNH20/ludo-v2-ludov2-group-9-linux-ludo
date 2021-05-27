@@ -43,6 +43,10 @@ namespace LinuxLudo.API
                 int stepIndex = token.TilePos + 1;
                 while (!IsWalkable(stepIndex, player, token))
                 {
+                    if (stepIndex >= board.Tiles.Count - 1)
+                    {
+                        stepIndex = stepIndex -= board.Tiles.Count;
+                    }
                     stepIndex++;
                 }
 
@@ -105,10 +109,10 @@ namespace LinuxLudo.API
             // A tile is walkable if it matches any color, (the players color and did not just spawn at color start), the start of any colored path or the goal tile
 
             return
-            string.Equals(board.Tiles[tileIndex].TileColor.ToString(), "Any", StringComparison.OrdinalIgnoreCase)
+            (string.Equals(board.Tiles[tileIndex].TileColor.ToString(), "Any", StringComparison.OrdinalIgnoreCase)
             || (string.Equals(board.Tiles[tileIndex].TileColor.ToString(), player.Color, StringComparison.OrdinalIgnoreCase) && token.MovedFromSpawn)
-            || tileIndex == board.Tiles.FindLastIndex(tile => tile.TileColor == board.Tiles[tileIndex].TileColor) - 6
-            || board.Tiles[tileIndex].TileColor == GameTile.GameColor.Goal;
+            || (tileIndex == board.Tiles.FindLastIndex(tile => tile.TileColor == board.Tiles[tileIndex].TileColor) - 6))
+            && board.Tiles[tileIndex].TileColor != GameTile.GameColor.Goal;
         }
     }
 }

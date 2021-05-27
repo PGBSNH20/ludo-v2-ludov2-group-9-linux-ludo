@@ -1,11 +1,18 @@
 using System.Collections.Generic;
+using MessagePack;
 
 namespace LinuxLudo.Core.Models
 {
+    [MessagePackObject]
     public class Player
     {
+        [Key(0)]
         public string Color { get; set; }
+
+        [Key(1)]
         public string Name { get; set; }
+
+        [Key(2)]
         public List<GameToken> Tokens { get; set; }
 
         public Player(string color, string name)
@@ -20,5 +27,7 @@ namespace LinuxLudo.Core.Models
                 new GameToken('D'),
             };
         }
+
+        public Player() { }
     }
 }
