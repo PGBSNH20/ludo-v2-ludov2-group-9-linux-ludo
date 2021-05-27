@@ -29,12 +29,16 @@ namespace LinuxLudo.API
             Configuration = configuration;
         }
 
-        public IConfiguration Configuration { get; }
+        private IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<AppDbContext>(opts => opts.UseNpgsql(Configuration.GetConnectionString("Default")));
+            var connectionString = Configuration.GetConnectionString("Default");
+            if (Environment.GetEnvironmentVariable("ConnectionString") != null) 
+                connectionString = Environment.GetEnvironmentVariable("ConnectionString");
+            
+            services.AddDbContext<AppDbContext>(opts => opts.UseNpgsql(connectionString));
             services.AddAutoMapper(typeof(Startup));
             services.AddSignalR(opts =>
             {
