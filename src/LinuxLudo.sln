@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LinuxLudo.Web", "LinuxLudo.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LinuxLudo.Core", "LinuxLudo.Core\LinuxLudo.Core.csproj", "{7F8E972D-2398-42F0-8A91-0EAD0E4EF36D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LinuxLudo.Test", "LinuxLudo.Test\LinuxLudo.Test.csproj", "{FD0E3CB0-4F1F-4422-960D-C8B8D92077E4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{7F8E972D-2398-42F0-8A91-0EAD0E4EF36D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7F8E972D-2398-42F0-8A91-0EAD0E4EF36D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7F8E972D-2398-42F0-8A91-0EAD0E4EF36D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FD0E3CB0-4F1F-4422-960D-C8B8D92077E4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FD0E3CB0-4F1F-4422-960D-C8B8D92077E4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FD0E3CB0-4F1F-4422-960D-C8B8D92077E4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FD0E3CB0-4F1F-4422-960D-C8B8D92077E4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -85,10 +85,5 @@ namespace LinuxLudo.Web.Services
             var response = JsonSerializer.Deserialize<GamesResponseModel>(resultContent, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
             return response.Data;
         }
-
-        public async Task RollDice()
-        {
-
-        }
     }
 }
