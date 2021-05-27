@@ -21,3 +21,4 @@ A multiplayer Ludo game developed by **Adam Brodin** and **Leo Rönnebro**.
 * Docker
 * Tailwind CSS
 * SignalR
+* MessagePack as SignalR protocol
