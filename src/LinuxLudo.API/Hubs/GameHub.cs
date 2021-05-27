@@ -7,6 +7,7 @@ using LinuxLudo.Core.Models;
 using Microsoft.AspNetCore.SignalR;
 using LinuxLudo.API.Domain.Models;
 using MessagePack;
+using LinuxLudo.Core;
 
 namespace LinuxLudo.API.Hubs
 {
@@ -39,7 +40,7 @@ namespace LinuxLudo.API.Hubs
             await Groups.AddToGroupAsync(Context.ConnectionId, gameId.ToString());
 
             // Updates all clients with the latest player list
-            await SendConnectionChanged(gameId.ToString(), MessagePackSerializer.Serialize(username), MessagePackSerializer.Serialize(_repository.FetchGameById(gameId).PlayersInGame));
+            await SendConnectionChanged(gameId.ToString(), username, _repository.FetchGameById(gameId).PlayersInGame);
 
             // Update the specific player on whose turn it is
             await Clients.Client(Context.ConnectionId).SendAsync("ReceivePlayerTurn", MessagePackSerializer.Serialize(game.CurrentTurnColor));
@@ -47,50 +48,51 @@ namespace LinuxLudo.API.Hubs
 
         public async Task NotifyRollDice(string username, int roll)
         {
-            await Clients.Group(_repository.FetchUserById(Context.ConnectionId).JoinedGame.GameId.ToString()).SendAsync("ReceiveRollDice", MessagePackSerializer.Serialize(username),
-            MessagePackSerializer.Serialize(roll));
-            await Task.Delay(200);
+            var message = MessagePackSerializer.Serialize(new PlayerRollMessage(username, roll));
+            await Clients.Group(_repository.FetchUserById(Context.ConnectionId).JoinedGame.GameId.ToString()).SendAsync("ReceiveRollDice", message);
         }
 
-        public async Task MoveToken(string username, char tokenIdentifierChar)
+        public async Task MoveToken(byte[] receivedMessage)
         {
+            TokenActionMessage deserializedMessage = MessagePackSerializer.Deserialize<TokenActionMessage>(receivedMessage);
+
             // Fetches the game the player is in
             OpenGame game = _repository.FetchGameById(_repository.FetchUserById(Context.ConnectionId).JoinedGame.GameId);
 
             int roll = engine.RollDice();
             if (roll > 0)
             {
-                Player player = game.PlayersInGame.First(player => player.Name == username);
-                GameToken token = player.Tokens.First(token => token.IdentifierChar == tokenIdentifierChar);
+                Player player = game.PlayersInGame.First(player => player.Name == deserializedMessage.Username);
+                GameToken token = player.Tokens.First(token => token.IdentifierChar == deserializedMessage.TokenIdentifierChar);
                 foreach (KeyValuePair<Player, List<GameToken>> pair in engine.MoveToken(game, player, token, roll))
                 {
                     foreach (GameToken enemyToken in pair.Value)
                     {
                         // Broadcast a message for each token that has been knocked out
                         await NotifyTokenKnockout(pair.Key.Name, enemyToken.IdentifierChar);
-                        await Task.Delay(1000);
                     }
                 }
 
+                var sendMessage = MessagePackSerializer.Serialize(new TokenMoveMessage(new TokenChangeMessage(deserializedMessage.Username, token.IdentifierChar, token.TilePos), roll));
+
                 // Notify that player has moved
-                await Clients.Group(game.GameId.ToString()).SendAsync("ReceiveMoveToken", MessagePackSerializer.Serialize(username),
-                MessagePackSerializer.Serialize(token.IdentifierChar), MessagePackSerializer.Serialize(token.TilePos), MessagePackSerializer.Serialize(roll));
+                await Clients.Group(game.GameId.ToString()).SendAsync("ReceiveMoveToken", sendMessage);
             }
             else
             {
                 // Notify of 0 roll
-                await NotifyRollDice(username, roll);
+                await NotifyRollDice(deserializedMessage.Username, roll);
             }
-
-            await Task.Delay(200);
 
 
             // Set the turn to the next player
             await UpdatePlayerTurn(game);
         }
 
-        public async Task BringOutToken(string username)
+        public async Task BringOutToken(byte[] receivedMessage)
         {
+            string username = MessagePackSerializer.Deserialize<string>(receivedMessage);
+
             // Fetches the game the player is in
             OpenGame game = _repository.FetchGameById(_repository.FetchUserById(Context.ConnectionId).JoinedGame.GameId);
 
@@ -99,17 +101,14 @@ namespace LinuxLudo.API.Hubs
             if (roll == 6)
             {
                 GameToken token = engine.BringOutToken(game.PlayersInGame.First(player => player.Name == username));
-                await Clients.Group(game.GameId.ToString()).SendAsync("ReceiveBringOutToken",
-                MessagePackSerializer.Serialize(username),
-                MessagePackSerializer.Serialize(token.IdentifierChar),
-                MessagePackSerializer.Serialize(token.TilePos));
+
+                var message = MessagePackSerializer.Serialize(new TokenChangeMessage(username, token.IdentifierChar, token.TilePos));
+                await Clients.Group(game.GameId.ToString()).SendAsync("ReceiveBringOutToken", message);
             }
             else
             {
                 await NotifyRollDice(username, roll);
             }
-
-            await Task.Delay(500);
 
             // Set the turn to the next player
             await UpdatePlayerTurn(game);
@@ -121,9 +120,8 @@ namespace LinuxLudo.API.Hubs
             OpenGame game = _repository.FetchGameById(_repository.FetchUserById(Context.ConnectionId).JoinedGame.GameId);
 
             // Broadcast which token was knocked out
-            await Clients.Group(game.GameId.ToString()).SendAsync("ReceiveTokenKnockout",
-            MessagePackSerializer.Serialize(tokenHolderName),
-            MessagePackSerializer.Serialize(tokenIdentifierChar));
+            var message = MessagePackSerializer.Serialize(new TokenActionMessage(tokenHolderName, tokenIdentifierChar));
+            await Clients.Group(game.GameId.ToString()).SendAsync("ReceiveTokenKnockout", message);
         }
 
         private async Task UpdatePlayerTurn(OpenGame game)
@@ -135,10 +133,11 @@ namespace LinuxLudo.API.Hubs
             await Clients.Group(game.GameId.ToString()).SendAsync("ReceivePlayerTurn", MessagePackSerializer.Serialize(game.CurrentTurnColor));
         }
 
-        private async Task SendConnectionChanged(string gameId, byte[] player, byte[] players)
+        private async Task SendConnectionChanged(string gameId, string username, List<Player> players)
         {
             // Broadcasts to all connected clients (users) that a new player has joined
-            await Clients.Group(gameId).SendAsync("ReceiveConnectionChanged", player, players);
+            var message = MessagePackSerializer.Serialize(new ConnectionMessage(username, players));
+            await Clients.Group(gameId).SendAsync("ReceiveConnectionChanged", message);
         }
 
         public override async Task OnDisconnectedAsync(Exception exception)
@@ -156,7 +155,7 @@ namespace LinuxLudo.API.Hubs
                 _repository.RemovePlayer(user.JoinedGame, user.Username);
 
                 // Update the clients that user has left
-                await SendConnectionChanged(user.JoinedGame.GameId.ToString(), MessagePackSerializer.Serialize(user.Username), MessagePackSerializer.Serialize(_repository.FetchGameById(user.JoinedGame.GameId).PlayersInGame));
+                await SendConnectionChanged(user.JoinedGame.GameId.ToString(), user.Username, _repository.FetchGameById(user.JoinedGame.GameId).PlayersInGame);
 
             }
 

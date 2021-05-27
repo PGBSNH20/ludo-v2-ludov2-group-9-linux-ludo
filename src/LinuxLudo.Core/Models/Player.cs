@@ -15,6 +15,7 @@ namespace LinuxLudo.Core.Models
         [Key(2)]
         public List<GameToken> Tokens { get; set; }
 
+        public Player() { }
         public Player(string color, string name)
         {
             Color = color;
@@ -27,7 +28,5 @@ namespace LinuxLudo.Core.Models
                 new GameToken('D'),
             };
         }
-
-        public Player() { }
     }
 }
