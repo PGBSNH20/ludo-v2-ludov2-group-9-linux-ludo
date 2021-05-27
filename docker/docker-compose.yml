@@ -1,13 +1,24 @@
 version: '3'
 
 services:
+  web:
+    container_name: linux-ludo-web
+    build:
+      context: ../src/
+      dockerfile: LinuxLudo.Web/Dockerfile
+    ports:
+      - "80:80"
+    environment:
+      API_URL: "host=db;port=5432;database=ludo;username=root;password=secret"
+    networks:
+      - api
   api:
     container_name: linux-ludo-api
     build:
       context: ../src/
       dockerfile: LinuxLudo.API/Dockerfile
     ports:
-      - "80:80"
+      - "81:80"
     environment:
       DB_CONNECTION_STRING: "host=db;port=5432;database=ludo;username=root;password=secret"
     networks:
