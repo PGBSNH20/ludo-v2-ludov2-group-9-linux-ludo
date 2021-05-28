@@ -16,7 +16,7 @@ namespace LinuxLudo.Web.Services
     // This class is responsible for actually logging in/out through the API
     public class AuthenticationService : IAuthenticationService
     {
-        private const string API_URL = "https://localhost:5001/api/Auth";
+        private readonly string API_URL;
         private readonly HttpClient _client;
         private readonly AuthenticationStateProvider _authStateProvider;
         private readonly ILocalStorageService _localStorage;
@@ -26,6 +26,7 @@ namespace LinuxLudo.Web.Services
             _client = client;
             _authStateProvider = authStateProvider;
             _localStorage = localStorage;
+            API_URL = Environment.GetEnvironmentVariable("API_URL") ?? "https://localhost:5001";
         }
 
         public async Task<AuthenticatedUserModel> SignIn(AuthenticationUserModel user)
