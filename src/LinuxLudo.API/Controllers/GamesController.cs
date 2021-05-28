@@ -5,10 +5,12 @@ using LinuxLudo.API.Domain.Models;
 using LinuxLudo.API.Domain.Resources;
 using LinuxLudo.API.Domain.Response;
 using LinuxLudo.API.Domain.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LinuxLudo.API.Controllers
 {
+    [Authorize]
     [Route("/[controller]")]
     public class GamesController : Controller
     {

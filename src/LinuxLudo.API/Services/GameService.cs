@@ -1,11 +1,9 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using LinuxLudo.API.Domain.Models;
 using LinuxLudo.API.Domain.Repositories;
-using LinuxLudo.API.Domain.Response;
 using LinuxLudo.API.Domain.Services;
 
 namespace LinuxLudo.API.Services

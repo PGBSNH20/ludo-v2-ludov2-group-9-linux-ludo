@@ -76,10 +76,9 @@ namespace LinuxLudo.Web.Services
             return await Task.FromResult(response);
         }
 
-        public async Task<List<AvailableGame>> FetchAllGames()
+        /*public async Task<List<AvailableGame>> FetchAllGames()
         {
             var fetchResult = await _client.GetAsync(API_URL + "/Games");
-
             if (!fetchResult.IsSuccessStatusCode)
             {
                 Console.WriteLine("Fetching games failed!");
@@ -89,6 +88,6 @@ namespace LinuxLudo.Web.Services
             var resultContent = await fetchResult.Content.ReadAsStringAsync();
             var response = JsonSerializer.Deserialize<GamesResponseModel>(resultContent, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
             return response.Data;
-        }
+        }*/
     }
 }

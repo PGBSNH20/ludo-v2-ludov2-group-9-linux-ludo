@@ -55,7 +55,12 @@ namespace LinuxLudo.API.Database.Repositories
 
         public OpenGame FetchGameById(Guid id)
         {
-            return openGames.First(game => game.GameId == id);
+            if (openGames.Any(game => game.GameId == id))
+            {
+                return openGames.First(game => game.GameId == id);
+            }
+
+            return null;
         }
 
         private string GetAvailableColor(OpenGame game)

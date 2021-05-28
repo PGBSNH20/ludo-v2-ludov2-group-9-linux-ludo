@@ -1,4 +1,5 @@
 @page "/Game/{Id:guid}"
+@inject IAuthenticationService _authService
 @using LinuxLudo.Web.Domain.Models
 @using MessagePack
 @using Microsoft.AspNetCore.SignalR.Client
@@ -84,9 +85,6 @@
                     available games
                 </button>
             </div>
-
-            <input @bind="_username" class="flex items-center text-center" style="background-color: #000000; color: #FFFFFF;"
-        placeholder="Enter your username">
         }
         else
         {
@@ -103,12 +101,15 @@
     [Parameter]
     public Guid Id { get; set; }
 
+    [CascadingParameter]
+    private Task<AuthenticationState> AuthState { get; set; }
+
     private string _username;
-    private AvailableGame _game;
-    private const string Hub = "gamehub";
+    private AvailableGame _game = new AvailableGame("ID", "NAME", 4, "LOADING", 0);
 
     // SignalR
     private HubConnection _hub;
+    private const string hubName = "gamehub";
 
     // Canvas
     private BECanvasComponent _canvas;
@@ -135,25 +136,22 @@
     // When the page has fully loaded
     protected override async Task OnInitializedAsync()
     {
-        _game = new();
-
-        await FitCanvas();
-        _board = new GameBoard();
-
-        _gameService = _gameService.NewGameService(@Id, _username);
-
-        var allGames = await _gameService.FetchAllGames();
-        if (allGames.All(game => game.Id != Id.ToString()))
+        var authState = await AuthState;
+        if(authState.User.Identity.IsAuthenticated)
         {
-            Console.WriteLine($"No such game with id: {Id}");
-            _navManager.NavigateTo("/Play");
-        }
-        else
-        {
-            _game = allGames.First(game => game.Id == Id.ToString());
-        }
+            _username = authState.User.Identity.Name;
 
-        await SetupSignalR();
+            await FitCanvas();
+            _board = new GameBoard();
+            _gameService = _gameService.NewGameService(@Id, _username);
+
+            await SetupSignalR();
+            await _hub.SendAsync("RequestGameData", MessagePackSerializer.Serialize(Id));
+            StateHasChanged();
+        }else
+        {
+            _navManager.NavigateTo("/Login");
+        }
     }
 
     protected async Task FitCanvas()
@@ -209,7 +207,10 @@
 
     protected async Task SetupSignalR()
     {
-        _hub = _hubController.Connect(Hub).Hub();
+        _hub = _hubController.Connect(hubName).Hub();
+
+        // Called when the client request data from a single game
+        _hub.On<byte[]>("ReceiveGameData", (message) => ReceiveGameData(message));
 
         // Called whenever a user joins/leaves
         _hub.On<byte[]>("ReceiveConnectionChanged", (message) => ReceiveConnectionChanged(message));
@@ -291,23 +292,21 @@
         return false;
     }
 
-    private Player GetPlayer()
+    private Player GetPlayer() 
     {
-        if (_gameStatus != null && _gameStatus.Players.Any(p => p.Name == _username))
+        if(_gameStatus != null && _gameStatus.Players.Any(p => p.Name == _username))
         {
             return _gameStatus.Players.First(p => p.Name == _username);
         }
-        else
-        {
-            return new Player("dead", _username + " (SPECTATING)");
-        }
+
+        return new Player("COLOR", "NAME");
     }
 
     private async Task JoinGame()
     {
         if (_game.AmountPlaying < _game.MaxPlayers)
         {
-            await _hub.InvokeAsync("JoinGame", _username, Id);
+            await _hub.InvokeAsync("JoinGame", MessagePackSerializer.Serialize(new PlayerJoinMessage(_username, Id)));
             _hasJoinedGame = true;
             _gameRenderer.username = _username;
         }
@@ -397,6 +396,21 @@
         isPlayerTurn = false;
         _gameStatus.IsCompleted = true;
         _statusMessage = $"{(winner == _username ? "YOU" : winner)}" + " won the game!!!".ToUpper();
+        StateHasChanged();
+    }
+
+    private void ReceiveGameData(byte[] receivedMessage)
+    {
+        OpenGame game = MessagePackSerializer.Deserialize<OpenGame>(receivedMessage);
+        if(game == null)
+        {
+            // No matching game to url was found, redirect away
+            _navManager.NavigateTo("/Play");
+        }
+
+        _game.AmountPlaying = game.PlayersInGame.Count;
+        _game.Name = game.GameName;
+        _game.MaxPlayers = 4;
         StateHasChanged();
     }
 }

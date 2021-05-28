@@ -1,7 +1,15 @@
-﻿@using LinuxLudo.Web.Domain.Services
+﻿@inject IAuthenticationService _authService
 
 <div class="bg-purple-300 flex justify-center items-center">
-        <span class="font-bold text-white text-2xl">LinuxLudo</span> <img class="relative ml-4 float-left w-10 h-10" src="Images/logo.png"/>
+    <span class="font-bold text-white text-2xl">LinuxLudo</span> <img class="relative ml-4 float-left w-10 h-10"
+        src="Images/logo.png" />
+    <AuthorizeView>
+        <!-- Displayed only when logged IN -->
+        <Authorized>
+            <h1 class="navbar-name-text">Playing as&nbsp;<b>@userName</b>
+            </h1>
+        </Authorized>
+    </AuthorizeView>
 </div>
 
 <div class="text-white bg-blue-300 md:flex items-center md:justify-center text-center">
@@ -28,6 +36,19 @@
     <ul
         class="@($"flex flex-col {menuVisibleStr} bg-gray-700 px-4 py-2 md:flex md:flex-row md:bg-transparent items-center")">
         <NavLink class="md:pl-4 md:pr-4 md:py-1 hover:bg-gray-700" href="/Home">Home</NavLink>
+
+        <AuthorizeView>
+            <!-- Displayed only when logged IN -->
+            <Authorized>
+                <NavLink class="md:px-4 md:py-1 hover:bg-gray-700" href="/Play">Play</NavLink>
+                <NavLink class="md:px-4 md:py-1 hover:bg-gray-700" href="/Logout">Logout</NavLink>
+            </Authorized>
+
+            <!-- Displayed only when logged OUT -->
+            <NotAuthorized>
+                <NavLink class="md:px-4 md:py-1 hover:bg-gray-700" href="/Login">Login</NavLink>
+            </NotAuthorized>
+        </AuthorizeView>
     </ul>
 </div>
 
@@ -35,4 +56,20 @@
 {
     private bool menuVisible;
     private void ToggleMenu() => menuVisible = !menuVisible;
+
+    [CascadingParameter]
+    public Task<AuthenticationState> AuthState { get; set; }
+    private string userName;
+
+    // When the page has fully loaded
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthState;
+
+        // If the user is succesfully authenticated
+        if (authState.User.Identity.IsAuthenticated)
+        {
+            userName = authState.User.Identity.Name;
+        }
+    }
 }
