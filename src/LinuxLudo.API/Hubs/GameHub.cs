@@ -23,6 +23,15 @@ namespace LinuxLudo.API.Hubs
             await base.OnConnectedAsync();
         }
 
+        public async Task RequestGameData(byte[] receivedMessage)
+        {
+            // Requested game
+            OpenGame game = _repository.FetchGameById(MessagePackSerializer.Deserialize<Guid>(receivedMessage));
+
+            // Send data back about the game to specific client
+            await Clients.Client(Context.ConnectionId).SendAsync("ReceiveGameData", MessagePackSerializer.Serialize(game));
+        }
+
         public async Task GetAvailableGames()
         {
             var availableGames = MessagePackSerializer.Serialize(_repository.FetchAllGames());
@@ -31,9 +40,9 @@ namespace LinuxLudo.API.Hubs
             await Clients.Client(Context.ConnectionId).SendAsync("ReceiveAvailableGames", availableGames);
         }
 
-        public async Task CreateNewGame(byte[] message)
+        public async Task CreateNewGame(byte[] receivedMessage)
         {
-            string gameName = MessagePackSerializer.Deserialize<string>(message);
+            string gameName = MessagePackSerializer.Deserialize<string>(receivedMessage);
 
             // Creates a new game
             OpenGame game = new(Guid.NewGuid(), gameName);
@@ -43,24 +52,25 @@ namespace LinuxLudo.API.Hubs
             await Clients.Client(Context.ConnectionId).SendAsync("ReceiveCreateGame", MessagePackSerializer.Serialize(game.GameId));
         }
 
-        public async Task JoinGame(string username, Guid gameId)
+        public async Task JoinGame(byte[] receivedMessage)
         {
-            OpenGame game = _repository.FetchGameById(gameId);
+            PlayerJoinMessage message = MessagePackSerializer.Deserialize<PlayerJoinMessage>(receivedMessage);
+            OpenGame game = _repository.FetchGameById(message.GameId);
 
             // Adds the player if they don't already exist in the game
-            if (game.PlayersInGame.All(player => player.Name != username))
+            if (game.PlayersInGame.All(player => player.Name != message.Username))
             {
-                _repository.AddPlayer(_repository.FetchGameById(gameId), username);
+                _repository.AddPlayer(_repository.FetchGameById(message.GameId), message.Username);
 
                 // Adds a new connected user that is linked to the selected game
-                _repository.ConnectUser(new ConnectedUser(username, Context.ConnectionId, game));
+                _repository.ConnectUser(new ConnectedUser(message.Username, Context.ConnectionId, game));
             }
 
             // Add the new player to the joined game's group
-            await Groups.AddToGroupAsync(Context.ConnectionId, gameId.ToString());
+            await Groups.AddToGroupAsync(Context.ConnectionId, message.GameId.ToString());
 
             // Updates all clients with the latest player list
-            await SendConnectionChanged(gameId.ToString(), username, _repository.FetchGameById(gameId).PlayersInGame);
+            await SendConnectionChanged(message.GameId.ToString(), message.Username, _repository.FetchGameById(message.GameId).PlayersInGame);
 
             // Update the specific player on whose turn it is
             await Clients.Client(Context.ConnectionId).SendAsync("ReceivePlayerTurn", MessagePackSerializer.Serialize(game.CurrentTurnColor));

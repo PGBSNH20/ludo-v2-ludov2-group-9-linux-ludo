@@ -1,5 +1,5 @@
 @page "/Game/{Id:guid}"
-@using MessagePack
+@inject IAuthenticationService _authService
 @inject NavigationManager _navManager; // Used to navigate in the webbrowser to different urls
 @inject BrowserService _browserService;
 @inject IJSRuntime _jsRuntime;
@@ -129,17 +129,19 @@
     // When the page has fully loaded
     protected override async Task OnInitializedAsync()
     {
-        _game = new(Id.ToString(), "Adams game", 4, "Playing", 0);
-
+        _game = new("ID", "NAME", 4, "LOADING", 0);
         var authState = await AuthState;
         if(authState.User.Identity.IsAuthenticated)
         {
             _username = authState.User.Identity.Name;
 
-        await FitCanvas();
-        _board = new GameBoard();
-        _gameService = new GameService(@Id, _username);
-        await SetupSignalR();
+            await FitCanvas();
+            _board = new GameBoard();
+            _gameService = new GameService(@Id, _username);
+
+            await SetupSignalR();
+            await _hub.SendAsync("RequestGameData", MessagePackSerializer.Serialize(Id));
+            StateHasChanged();
         }else
         {
             _navManager.NavigateTo("/Login");
@@ -200,6 +202,9 @@
     protected async Task SetupSignalR()
     {
         _hub = _hubController.Connect(hubName).Hub();
+
+        // Called when the client request data from a single game
+        _hub.On<byte[]>("ReceiveGameData", (message) => ReceiveGameData(message));
 
         // Called whenever a user joins/leaves
         _hub.On<byte[]>("ReceiveConnectionChanged", (message) => ReceiveConnectionChanged(message));
@@ -281,23 +286,21 @@
         return false;
     }
 
-    private Player GetPlayer()
+    private Player GetPlayer() 
     {
-        if (_gameStatus != null && _gameStatus.Players.Any(p => p.Name == _username))
-        {
-            return _gameStatus.Players.First(p => p.Name == _username);
-        }
-        else
-        {
-            return new Player("dead", _username + " (SPECTATING)");
-        }
+    if(_gameStatus != null && _gameStatus.Players.Any(p => p.Name == _username))
+    {
+        return _gameStatus.Players.First(p => p.Name == _username);
+    }
+
+    return new Player("COLOR", "NAME");
     }
 
     private async Task JoinGame()
     {
         if (_game.AmountPlaying < _game.MaxPlayers)
         {
-            await _hub.InvokeAsync("JoinGame", _username, Id);
+            await _hub.InvokeAsync("JoinGame", MessagePackSerializer.Serialize(new PlayerJoinMessage(_username, Id)));
             _hasJoinedGame = true;
             _gameRenderer.username = _username;
         }
@@ -388,5 +391,19 @@
         _gameStatus.IsCompleted = true;
         _statusMessage = $"{(winner == _username ? "YOU" : winner)}" + " won the game!!!".ToUpper();
         StateHasChanged();
+    }
+
+    private void ReceiveGameData(byte[] receivedMessage)
+    {
+        OpenGame game = MessagePackSerializer.Deserialize<OpenGame>(receivedMessage);
+        if(game == null)
+        {
+            // No matching game to url was found, redirect away
+            _navManager.NavigateTo("/Play");
+        }
+
+        _game.AmountPlaying = game.PlayersInGame.Count;
+        _game.Name = game.GameName;
+        _game.MaxPlayers = 4;
     }
 }
