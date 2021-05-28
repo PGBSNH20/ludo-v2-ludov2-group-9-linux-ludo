@@ -24,7 +24,7 @@ Use a more readable tab size (opinionated).
 html {
   -moz-tab-size: 4;
   -o-tab-size: 4;
-     tab-size: 4;
+  tab-size: 4;
 }
 
 /**
@@ -93,7 +93,7 @@ Add the correct text decoration in Chrome, Edge, and Safari.
 
 abbr[title] {
   -webkit-text-decoration: underline dotted;
-          text-decoration: underline dotted;
+  text-decoration: underline dotted;
 }
 
 /**
@@ -621,8 +621,8 @@ video {
 
 .appearance-none {
   -webkit-appearance: none;
-     -moz-appearance: none;
-          appearance: none;
+  -moz-appearance: none;
+  appearance: none;
 }
 
 .bg-local {
@@ -766,12 +766,12 @@ video {
 
 .decoration-slice {
   -webkit-box-decoration-break: slice;
-          box-decoration-break: slice;
+  box-decoration-break: slice;
 }
 
 .decoration-clone {
   -webkit-box-decoration-break: clone;
-          box-decoration-break: clone;
+  box-decoration-break: clone;
 }
 
 .box-border {
@@ -1019,12 +1019,12 @@ video {
 
 .object-cover {
   -o-object-fit: cover;
-     object-fit: cover;
+  object-fit: cover;
 }
 
 .object-bottom {
   -o-object-position: bottom;
-     object-position: bottom;
+  object-position: bottom;
 }
 
 .opacity-90 {
@@ -1047,7 +1047,7 @@ video {
 
 .overscroll-contain {
   -ms-scroll-chaining: none;
-      overscroll-behavior: contain;
+  overscroll-behavior: contain;
 }
 
 .p-3 {
@@ -1360,9 +1360,9 @@ video {
 
 .select-none {
   -webkit-user-select: none;
-     -moz-user-select: none;
-      -ms-user-select: none;
-          user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
 
 .align-middle {
@@ -1423,7 +1423,7 @@ video {
 
 .gap-x-2 {
   -moz-column-gap: 0.5rem;
-       column-gap: 0.5rem;
+  column-gap: 0.5rem;
 }
 
 .gap-y-3 {
@@ -1618,13 +1618,13 @@ video {
   0%, 100% {
     transform: translateY(-25%);
     -webkit-animation-timing-function: cubic-bezier(0.8,0,1,1);
-            animation-timing-function: cubic-bezier(0.8,0,1,1);
+    animation-timing-function: cubic-bezier(0.8,0,1,1);
   }
 
   50% {
     transform: none;
     -webkit-animation-timing-function: cubic-bezier(0,0,0.2,1);
-            animation-timing-function: cubic-bezier(0,0,0.2,1);
+    animation-timing-function: cubic-bezier(0,0,0.2,1);
   }
 }
 
@@ -1632,24 +1632,24 @@ video {
   0%, 100% {
     transform: translateY(-25%);
     -webkit-animation-timing-function: cubic-bezier(0.8,0,1,1);
-            animation-timing-function: cubic-bezier(0.8,0,1,1);
+    animation-timing-function: cubic-bezier(0.8,0,1,1);
   }
 
   50% {
     transform: none;
     -webkit-animation-timing-function: cubic-bezier(0,0,0.2,1);
-            animation-timing-function: cubic-bezier(0,0,0.2,1);
+    animation-timing-function: cubic-bezier(0,0,0.2,1);
   }
 }
 
 .animate-none {
   -webkit-animation: none;
-          animation: none;
+  animation: none;
 }
 
 .animate-spin {
   -webkit-animation: spin 1s linear infinite;
-          animation: spin 1s linear infinite;
+  animation: spin 1s linear infinite;
 }
 
 .mix-blend-multiply {
@@ -1732,12 +1732,12 @@ video {
   --tw-backdrop-saturate: var(--tw-empty,/*!*/ /*!*/);
   --tw-backdrop-sepia: var(--tw-empty,/*!*/ /*!*/);
   -webkit-backdrop-filter: var(--tw-backdrop-blur) var(--tw-backdrop-brightness) var(--tw-backdrop-contrast) var(--tw-backdrop-grayscale) var(--tw-backdrop-hue-rotate) var(--tw-backdrop-invert) var(--tw-backdrop-opacity) var(--tw-backdrop-saturate) var(--tw-backdrop-sepia);
-          backdrop-filter: var(--tw-backdrop-blur) var(--tw-backdrop-brightness) var(--tw-backdrop-contrast) var(--tw-backdrop-grayscale) var(--tw-backdrop-hue-rotate) var(--tw-backdrop-invert) var(--tw-backdrop-opacity) var(--tw-backdrop-saturate) var(--tw-backdrop-sepia);
+  backdrop-filter: var(--tw-backdrop-blur) var(--tw-backdrop-brightness) var(--tw-backdrop-contrast) var(--tw-backdrop-grayscale) var(--tw-backdrop-hue-rotate) var(--tw-backdrop-invert) var(--tw-backdrop-opacity) var(--tw-backdrop-saturate) var(--tw-backdrop-sepia);
 }
 
 .backdrop-filter-none {
   -webkit-backdrop-filter: none;
-          backdrop-filter: none;
+  backdrop-filter: none;
 }
 
 .backdrop-blur-lg {
@@ -1824,7 +1824,7 @@ video {
     text-align: center;
   }
 
-   .sm\:tabular-nums {
+  .sm\:tabular-nums {
     --tw-ordinal: var(--tw-empty,/*!*/ /*!*/);
     --tw-slashed-zero: var(--tw-empty,/*!*/ /*!*/);
     --tw-numeric-figure: var(--tw-empty,/*!*/ /*!*/);

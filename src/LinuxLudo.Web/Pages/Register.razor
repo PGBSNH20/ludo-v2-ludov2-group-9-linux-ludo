@@ -12,18 +12,18 @@
     </div>
 }
 
-<h1 class="title-text">Register a new account</h1>
+<h1 class="mt-4 my-20 text-white text-lg flex items-center justify-center bg-green-800">Register a new account</h1>
 
-<div class="login-container">
+<div class="p-3 my-20 bg-gray-700 flex items-center justify-center">
     <EditForm Model="@userModel" OnValidSubmit="@OnValidSubmit">
         <DataAnnotationsValidator />
 
         <div class="form-group row">
-            <label for="username" class="col-md-2 col-form-label">Username:</label>
+            <label for="username" class="col-md-2 text-white">Username:</label>
 
             <div class="col-md-10">
                 <InputText id="username" class="form-control" @bind-Value="userModel.UserName"></InputText>
-                <div class="validation-message">
+                <div class="text-red-500">
                     <!-- Displays any error messages from the username form -->
                     <ValidationMessage For="@(() => userModel.UserName)" />
                 </div>
@@ -31,12 +31,12 @@
         </div>
 
         <div class="form-group row">
-            <label for="password" class="col-md-2 col-form-label">Password:</label>
+            <label for="password" class="col-md-2 text-white">Password:</label>
 
             <div class="col-md-10">
                 <InputText type="password" id="password" class="form-control" @bind-Value="userModel.Password">
                 </InputText>
-                <div class="validation-message">
+                <div class="text-red-500">
                     <!-- Displays any error messages from the password form -->
                     <ValidationMessage For="@(() => userModel.Password)" />
                 </div>
@@ -44,12 +44,12 @@
         </div>
 
         <div class="form-group row">
-            <label for="confirm-password" class="col-md-2 col-form-label">Confirm password:</label>
+            <label for="confirm-password" class="col-md-2 text-white">Confirm password:</label>
 
             <div class="col-md-10">
                 <InputText type="password" id="confirm-password" class="form-control"
                     @bind-Value="userModel.ConfirmPassword"></InputText>
-                <div class="validation-message">
+                <div class="text-red-500">
                     <!-- Displays any error messages from the confirmPassword form -->
                     <ValidationMessage For="@(() => userModel.ConfirmPassword)" />
                 </div>
@@ -59,7 +59,7 @@
         <div class="row">
             <div class="col-md-12">
                 <!-- Triggers OnValidSubmit() if the form requirements are met -->
-                <button type="submit" class="btn btn-success">
+                <button type="submit" class="w-full mt-4 bg-green-700 text-white">
                     Register account
                 </button>
             </div>

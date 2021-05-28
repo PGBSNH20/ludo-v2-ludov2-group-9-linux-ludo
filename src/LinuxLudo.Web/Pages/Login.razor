@@ -8,44 +8,44 @@
 @if (showAuthError)
 {
     <div class="alert alert-danger" role="alert">
-        <h1 class="error-msg" style="color: black;">@errorMsg</h1>
+        <h1 class="flex items-center justify-center" style="color: black;">@errorMsg</h1>
     </div>
 }
 
-<h1 class="title-text">Please login to continue</h1>
-<div class="login-container">
+<h1 class="mt-4 my-20 text-white text-lg flex items-center justify-center bg-green-800">Please login to continue</h1>
+<div class="p-3 my-20 bg-gray-700 flex items-center justify-center">
     <EditForm Model="userModel" OnValidSubmit="LoginUser" class="card card-body bg-dark">
         <DataAnnotationsValidator />
 
         <!-- Creates two forms (username/password) and binds the data in them to the userModel variables -->
-        <div class="form-container">
-            <div class="form-group row">
-                <div class="col-md-10">
+        <div class="p-3 m-3">
+            <div class="p-3">
+                <div class="mt-2">
                     <InputText id="username" class="form-control" @bind-Value="userModel.UserName"
                         placeholder="Enter your username" />
-                    <div class="validation-message">
+                    <div class="text-red-500">
                         <!-- Displays any error messages from the username form -->
                         <ValidationMessage For="@(() => userModel.UserName)" />
                     </div>
                 </div>
-                <div class="col-md-10">
+                <div class="mt-2">
                     <InputText type="password" id="password" class="form-control" @bind-Value="userModel.Password"
                         placeholder="Enter your password" />
-                    <div class="validation-message">
+                    <div class="text-red-500">
                         <!-- Displays any error messages from the password form -->
                         <ValidationMessage For="@(() => userModel.Password)" />
                     </div>
                 </div>
             </div>
 
-            <div class="row">
-                <div class="col-md-12">
+            <div class="p-3">
+                <div class="mt-2">
                     <!-- When the "submit" button type is clicked LoginUser is called (if valid form input) -->
-                    <button type="submit" class="btn btn-login">Login</button>
+                    <button type="submit" class="bg-green-700 text-white w-full">Login</button>
                 </div>
                 <div class="col-md-12">
                     <!-- Redirects to /Register -->
-                    <button type="submit" class="btn btn-register" @onclick=RedirectRegister>Register</button>
+                    <button type="submit" class="bg-red-700 text-white w-full mt-2" @onclick=RedirectRegister>Register</button>
                 </div>
             </div>
         </div>
