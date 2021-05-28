@@ -1,15 +1,12 @@
 ﻿@inject IAuthenticationService _authService
+@inject Blazored.LocalStorage.ILocalStorageService _localStorage;
 
 <div class="bg-purple-300 flex justify-center items-center">
     <span class="font-bold text-white text-2xl">LinuxLudo</span> <img class="relative ml-4 float-left w-10 h-10"
         src="Images/logo.png" />
-    <AuthorizeView>
-        <!-- Displayed only when logged IN -->
-        <Authorized>
-            <h1 class="navbar-name-text">Playing as&nbsp;<b>@userName</b>
-            </h1>
-        </Authorized>
-    </AuthorizeView>
+    <!-- Displayed only when logged IN -->
+    <h1 class="navbar-name-text">Playing as&nbsp;<b>@username</b> @(isGuest ? "(Guest)" : "")
+    </h1>
 </div>
 
 <div class="text-white bg-blue-300 md:flex items-center md:justify-center text-center">
@@ -59,7 +56,8 @@
 
     [CascadingParameter]
     public Task<AuthenticationState> AuthState { get; set; }
-    private string userName;
+    private string username = "Guest";
+    private bool isGuest = true;
 
     // When the page has fully loaded
     protected override async Task OnInitializedAsync()
@@ -69,7 +67,17 @@
         // If the user is succesfully authenticated
         if (authState.User.Identity.IsAuthenticated)
         {
-            userName = authState.User.Identity.Name;
+            username = authState.User.Identity.Name;
+            isGuest = false;
+        }
+        else
+        {
+            string guestUsername = await _localStorage.GetItemAsStringAsync("GUEST_USERNAME");
+            if (guestUsername != null)
+            {
+                username = guestUsername;
+                isGuest = true;
+            }
         }
     }
 }
