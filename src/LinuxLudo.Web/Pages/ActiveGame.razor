@@ -133,7 +133,8 @@
         if(authState.User.Identity.IsAuthenticated)
         {
             _username = authState.User.Identity.Name;
-        }else
+        }
+        else
         {
             string guestUsername = await _localStorage.GetItemAsStringAsync("GUEST_USERNAME");
             if (guestUsername == null)
@@ -148,7 +149,7 @@
            
         await FitCanvas();
         _board = new GameBoard();
-        _gameService = new GameService(@Id, _username);
+        _gameService = new GameService(Id, _username);
 
         await SetupSignalR();
         await _hub.SendAsync("RequestGameData", MessagePackSerializer.Serialize(Id));
@@ -196,6 +197,13 @@
 
         if (_hasJoinedGame)
         {
+            if(_gameRenderer.canvasWidth == 0 || _gameRenderer.canvasHeight == 0)
+            {
+                await FitCanvas();
+                _gameRenderer.canvasWidth = _canvasWidth;
+                _gameRenderer.canvasHeight = _canvasHeight;
+                StateHasChanged();
+            }
             await RenderGame();
         }
     }

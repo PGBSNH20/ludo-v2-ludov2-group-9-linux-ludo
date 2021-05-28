@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Blazor.Extensions.Canvas.Canvas2D;
@@ -14,7 +13,7 @@ namespace LinuxLudo.Web.Services
     {
         private readonly ElementReference redToken, greenToken, blueToken, yellowToken;
         private Canvas2DContext context;
-        private readonly int canvasWidth, canvasHeight;
+        public int canvasWidth, canvasHeight;
         public string username;
         private const string canvasBgHex = "#9CA6D9";
         private const string overlayTextColor = "#FFFFFF";
@@ -46,6 +45,8 @@ namespace LinuxLudo.Web.Services
 
         public async Task RenderGame(Canvas2DContext context, GameBoard board, GameStatus gameStatus, string statusMessage, char selectedToken)
         {
+            Console.WriteLine("TILESIZE: " + TileSize);
+            Console.WriteLine("CANVAS WIDTH: " + canvasWidth);
             this.context = context;
             this.board = board;
             this.gameStatus = gameStatus;

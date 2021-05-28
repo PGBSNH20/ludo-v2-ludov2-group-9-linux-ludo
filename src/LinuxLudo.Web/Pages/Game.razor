@@ -113,13 +113,13 @@ else
         gameService = new GameService();
 
         // Send initial receive request
-        await _hub.SendAsync("GetAvailableGames", username);
+        await _hub.SendAsync("GetAvailableGames");
     }
 
     private async Task CreateNewGame() => await _hub.SendAsync("CreateNewGame", MessagePackSerializer.Serialize(username));
     private async Task SubscribeHubEvents()
     {
-        // Called whenever a games status updates (player join/leave/game finished)
+        // Called whenever a games status updates (player /leave/game finished)
         _hub.On<byte[]>("ReceiveAvailableGames", (message) => ReceiveAvailableGames(message));
 
         // Received whenever the user requests to create a game (contains gameid)
@@ -131,6 +131,7 @@ else
     private void ReceiveAvailableGames(byte[] receivedMessage)
     {
         List<OpenGame> games = MessagePackSerializer.Deserialize<List<OpenGame>>(receivedMessage);
+        Console.WriteLine("RECEIVED AVAILABLE GAMES");
 
         // Adds the relevant data
         foreach (OpenGame game in games)

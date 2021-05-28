@@ -23,7 +23,13 @@ namespace LinuxLudo.API.Database.Repositories
         }
 
         public void ConnectUser(ConnectedUser user) => connectedUsers.Add(user);
-        public void DisconnectUser(ConnectedUser user) => connectedUsers?.Remove(user);
+        public void DisconnectUser(ConnectedUser user)
+        {
+            if (user != null)
+            {
+                connectedUsers.Remove(user);
+            }
+        }
         public ConnectedUser FetchUserById(string connectionId)
         {
             if (connectedUsers.Any(user => user.ConnectionId == connectionId))

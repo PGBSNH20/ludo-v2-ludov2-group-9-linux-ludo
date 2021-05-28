@@ -212,8 +212,11 @@ namespace LinuxLudo.API.Hubs
                 await SendConnectionChanged(user.JoinedGame.GameId.ToString(), user.Username, _repository.FetchGameById(user.JoinedGame.GameId).PlayersInGame);
             }
 
-            // Removes user fron connected list
-            _repository.DisconnectUser(_repository.FetchUserById(user.ConnectionId));
+            if (user?.ConnectionId != null)
+            {
+                // Removes user fron connected list
+                _repository.DisconnectUser(_repository.FetchUserById(user.ConnectionId));
+            }
 
             // Updates all subscribed clients on the new game data
             await Clients.All.SendAsync("ReceiveAvailableGames", _repository.FetchAllGames());
