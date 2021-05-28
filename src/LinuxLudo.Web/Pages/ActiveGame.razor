@@ -97,7 +97,7 @@
     private Task<AuthenticationState> AuthState { get; set; }
 
     private string _username;
-    private AvailableGame _game;
+    private AvailableGame _game = new AvailableGame("ID", "NAME", 4, "LOADING", 0);
 
     // SignalR
     private HubConnection _hub;
@@ -129,7 +129,6 @@
     // When the page has fully loaded
     protected override async Task OnInitializedAsync()
     {
-        _game = new("ID", "NAME", 4, "LOADING", 0);
         var authState = await AuthState;
         if(authState.User.Identity.IsAuthenticated)
         {
@@ -288,12 +287,12 @@
 
     private Player GetPlayer() 
     {
-    if(_gameStatus != null && _gameStatus.Players.Any(p => p.Name == _username))
-    {
-        return _gameStatus.Players.First(p => p.Name == _username);
-    }
+        if(_gameStatus != null && _gameStatus.Players.Any(p => p.Name == _username))
+        {
+            return _gameStatus.Players.First(p => p.Name == _username);
+        }
 
-    return new Player("COLOR", "NAME");
+        return new Player("COLOR", "NAME");
     }
 
     private async Task JoinGame()
@@ -405,5 +404,6 @@
         _game.AmountPlaying = game.PlayersInGame.Count;
         _game.Name = game.GameName;
         _game.MaxPlayers = 4;
+        StateHasChanged();
     }
 }
