@@ -3,6 +3,7 @@
 @using MessagePack
 @using Microsoft.AspNetCore.SignalR.Client
 @using LinuxLudo.Core.Models
+@using LinuxLudo.Web.Domain.Services
 @using LinuxLudo.Web.Hubs
 @using LinuxLudo.Web.Services
 @inject NavigationManager _navManager; // Used to navigate in the webbrowser to different urls
@@ -10,6 +11,7 @@
 @inject IJSRuntime _jsRuntime;
 @inject Blazored.LocalStorage.ILocalStorageService _localStorage;
 @inject HubController _hubController
+@inject IGameService _gameService
 
 <LayoutView>
     <img @ref="_redToken" class="hidden" id="redToken" src="Images/redtoken.png" />
@@ -121,7 +123,6 @@
     private const int statusMessageUpdateIntervalMs = 1000;
 
     // Game
-    private GameService _gameService;
     private GameStatus _gameStatus;
     private bool _hasJoinedGame;
     private string _statusMessage = "Waiting for players...";
@@ -139,7 +140,7 @@
         await FitCanvas();
         _board = new GameBoard();
 
-        _gameService = new GameService(@Id, _username);
+        _gameService = _gameService.NewGameService(@Id, _username);
 
         var allGames = await _gameService.FetchAllGames();
         if (allGames.All(game => game.Id != Id.ToString()))
