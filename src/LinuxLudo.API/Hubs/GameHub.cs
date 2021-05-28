@@ -17,14 +17,34 @@ namespace LinuxLudo.API.Hubs
         private readonly GameEngine engine = new();
         public GameHub(IGameHubRepository repository) { _repository = repository; }
 
+        public override async Task OnConnectedAsync()
+        {
+            await GetAvailableGames();
+            await base.OnConnectedAsync();
+        }
+
+        public async Task GetAvailableGames()
+        {
+            var availableGames = MessagePackSerializer.Serialize(_repository.FetchAllGames());
+
+            // Updates the specific connected player on what games are available on (/Play)
+            await Clients.Client(Context.ConnectionId).SendAsync("ReceiveAvailableGames", availableGames);
+        }
+
+        public async Task CreateNewGame(byte[] message)
+        {
+            string gameName = MessagePackSerializer.Deserialize<string>(message);
+
+            // Creates a new game
+            OpenGame game = new(Guid.NewGuid(), gameName);
+            _repository.AddGame(game);
+
+            // Sends game data back to requester (client)
+            await Clients.Client(Context.ConnectionId).SendAsync("ReceiveCreateGame", MessagePackSerializer.Serialize(game.GameId));
+        }
+
         public async Task JoinGame(string username, Guid gameId)
         {
-            // Creates a new game if game is not yet active
-            if (!_repository.FetchAllGames().Any(game => game.GameId == gameId))
-            {
-                _repository.AddGame(new OpenGame(gameId));
-            }
-
             OpenGame game = _repository.FetchGameById(gameId);
 
             // Adds the player if they don't already exist in the game

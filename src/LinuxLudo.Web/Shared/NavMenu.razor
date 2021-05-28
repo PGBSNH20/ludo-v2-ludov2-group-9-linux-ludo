@@ -1,6 +1,4 @@
-﻿@using LinuxLudo.Web.Domain.Services
-@using Microsoft.AspNetCore.Components.Authorization
-@inject IAuthenticationService _authService
+﻿@inject IAuthenticationService _authService
 
 <div class="bg-purple-300 flex justify-center items-center">
     <span class="font-bold text-white text-2xl">LinuxLudo</span> <img class="relative ml-4 float-left w-10 h-10"
@@ -58,6 +56,7 @@
 {
     private bool menuVisible;
     private void ToggleMenu() => menuVisible = !menuVisible;
+
     [CascadingParameter]
     public Task<AuthenticationState> AuthState { get; set; }
     private string userName;

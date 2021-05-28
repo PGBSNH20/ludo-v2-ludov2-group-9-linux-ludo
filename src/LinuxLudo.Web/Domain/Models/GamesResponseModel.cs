@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 
 namespace LinuxLudo.Web.Game
 {
@@ -7,13 +6,16 @@ namespace LinuxLudo.Web.Game
         public string Id { get; set; }
         public string Name { get; set; }
         public int MaxPlayers { get; set; }
-        public int State { get; set; }
-
+        public string State { get; set; }
         public int AmountPlaying { get; set; }
-    }
 
-    public class GamesResponseModel
-    {
-        public List<AvailableGame> Data { get; set; }
+        public AvailableGame(string id, string name, int maxPlayers, string state, int amountPlaying)
+        {
+            Id = id;
+            Name = name;
+            MaxPlayers = maxPlayers;
+            State = state;
+            AmountPlaying = amountPlaying;
+        }
     }
 }

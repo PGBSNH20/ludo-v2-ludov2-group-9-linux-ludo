@@ -1,11 +1,10 @@
 @page "/Play"
-@using LinuxLudo.Web.Services
-@using Microsoft.AspNetCore.Components.Authorization
 @inject NavigationManager _navManager; // Used to navigate in the webbrowser to different urls
 @inject Blazored.LocalStorage.ILocalStorageService _localStorage
+@inject HubController _hubController
+@inject IAuthenticationService _authService
 
 <!-- This page displays the actual Ludo game and can only be accessed when logged in/authenticated -->
-
 <AuthorizeView>
     <!-- Logged in/game view -->
     <Authorized>
@@ -35,10 +34,11 @@
                     </ul>
                 </div>
             </div>
+
+            <button style="background-color: #FFFF00; color: #000000;" @onclick=CreateNewGame>Create new game</button>
         </div>
     </Authorized>
 </AuthorizeView>
-
 
 @code
 {
@@ -47,6 +47,10 @@
     private string userName;
     private GameService gameService;
     private List<AvailableGame> availableGames;
+
+    // SignalR
+    private HubConnection _hub;
+    private const string hubName = "gamehub";
 
     // When the page is fully loaded/on startup
     protected override async Task OnInitializedAsync()
@@ -57,19 +61,55 @@
         if (authState.User.Identity.IsAuthenticated)
         {
             userName = authState.User.Identity.Name;
+
+            availableGames = new List<AvailableGame>();
+            gameService = new GameService();
+
+            _hub = _hubController.Connect(hubName).Hub();
+
+            // Subscribes to receive updates on what games are available and their data
+            await SubscribeHubEvents();
+
+            // Send initial receive request
+            await _hub.SendAsync("GetAvailableGames", userName);
         }
         else
         {
             _navManager.NavigateTo("/Login");
         }
-
-        availableGames = new List<AvailableGame>();
-        gameService = new GameService();
-        await FetchAvailableGames();
     }
 
-    private async Task FetchAvailableGames()
+    private async Task CreateNewGame() => await _hub.SendAsync("CreateNewGame", MessagePackSerializer.Serialize(userName));
+    private async Task SubscribeHubEvents()
     {
-        availableGames = await gameService.FetchAllGames();
+        // Called whenever a games status updates (player join/leave/game finished)
+        _hub.On<byte[]>("ReceiveAvailableGames", (message) => ReceiveAvailableGames(message));
+
+        // Received whenever the user requests to create a game (contains gameid)
+        _hub.On<byte[]>("ReceiveCreateGame", (message) => ReceiveCreateGame(message));
+
+        await _hub.StartAsync();
+    }
+
+    private void ReceiveAvailableGames(byte[] receivedMessage)
+    {
+        List<OpenGame> games = MessagePackSerializer.Deserialize<List<OpenGame>>(receivedMessage);
+
+        // Adds the relevant data
+        foreach (OpenGame game in games)
+        {
+            string status = game.PlayersInGame.Count >= 4 ? "Full" : game.PlayersInGame.Count == 0 ? "Empty" : "Playing";
+            availableGames.Add(new AvailableGame(game.GameId.ToString(), game.GameName, 4, status, game.PlayersInGame.Count));
+        }
+
+        // Sorts the games by least players first
+        availableGames.OrderBy(game => game.AmountPlaying);
+        StateHasChanged();
+    }
+
+    private void ReceiveCreateGame(byte[] receivedMessage)
+    {
+        Guid gameId = MessagePackSerializer.Deserialize<Guid>(receivedMessage);
+        _navManager.NavigateTo("/Game/" + gameId.ToString());
     }
 }

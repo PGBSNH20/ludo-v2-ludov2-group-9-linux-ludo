@@ -1,11 +1,5 @@
 @page "/Game/{Id:guid}"
-@using LinuxLudo.Web.Domain.Models
 @using MessagePack
-@using Microsoft.AspNetCore.Components.Authorization
-@using Microsoft.AspNetCore.SignalR.Client
-@using LinuxLudo.Core.Models
-@using LinuxLudo.Web.Hubs
-@using LinuxLudo.Web.Services
 @inject NavigationManager _navManager; // Used to navigate in the webbrowser to different urls
 @inject BrowserService _browserService;
 @inject IJSRuntime _jsRuntime;
@@ -83,9 +77,6 @@
                     available games
                 </button>
             </div>
-
-            <input @bind="_username" class="flex items-center text-center" style="background-color: #000000; color: #FFFFFF;"
-        placeholder="Enter your username">
         }
         else
         {
@@ -107,10 +98,10 @@
 
     private string _username;
     private AvailableGame _game;
-    private const string Hub = "gamehub";
 
     // SignalR
     private HubConnection _hub;
+    private const string hubName = "gamehub";
 
     // Canvas
     private BECanvasComponent _canvas;
@@ -138,7 +129,7 @@
     // When the page has fully loaded
     protected override async Task OnInitializedAsync()
     {
-        _game = new();
+        _game = new(Id.ToString(), "Adams game", 4, "Playing", 0);
 
         var authState = await AuthState;
         if(authState.User.Identity.IsAuthenticated)
@@ -147,20 +138,7 @@
 
         await FitCanvas();
         _board = new GameBoard();
-
         _gameService = new GameService(@Id, _username);
-
-        var allGames = await _gameService.FetchAllGames();
-        if (allGames.All(game => game.Id != Id.ToString()))
-        {
-            Console.WriteLine($"No such game with id: {Id}");
-            _navManager.NavigateTo("/Play");
-        }
-        else
-        {
-            _game = allGames.First(game => game.Id == Id.ToString());
-        }
-
         await SetupSignalR();
         }else
         {
@@ -221,7 +199,7 @@
 
     protected async Task SetupSignalR()
     {
-        _hub = _hubController.Connect(Hub).Hub();
+        _hub = _hubController.Connect(hubName).Hub();
 
         // Called whenever a user joins/leaves
         _hub.On<byte[]>("ReceiveConnectionChanged", (message) => ReceiveConnectionChanged(message));
