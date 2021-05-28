@@ -11,6 +11,11 @@ Instead of creating individual hubs for each game there is only one [hub](https:
 
 The hub then splits its users up into groups which are correlated to the game's **UUID**.
 
+**Note:** there are no unit tests as regards to the hub currently in the project due to problems with mocking a hub client connection.
+In order to fully test and simulate a connection every user must provide a **ConnectionId** from its context.
+As of right now (05/28) the lack of underlying documentation restricts us from mock said information, but will be added if a solution appears.
+The hubs core logic is still tested through the [GameEngineTest](https://github.com/PGBSNH20/ludo-v2-ludov2-group-9-linux-ludo/blob/main/src/LinuxLudo.Test/Game/GameEngineTest.cs).
+
 # GameHub methods
 The player's turn is updated through UpdatePlayerTurn() after any of the following methods have executed fully:
 - MoveToken()
