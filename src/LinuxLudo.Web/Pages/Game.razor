@@ -1,7 +1,7 @@
 @page "/Play"
 @inject NavigationManager _navManager; // Used to navigate in the webbrowser to different urls
 @inject Blazored.LocalStorage.ILocalStorageService _localStorage
-@inject HubController _hubController
+@inject IHubController _hubController
 @inject IAuthenticationService _authService
 
 <!-- This page displays the actual Ludo game and can only be accessed when logged in/authenticated -->

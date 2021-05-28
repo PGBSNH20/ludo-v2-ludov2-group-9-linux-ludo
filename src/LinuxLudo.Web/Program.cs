@@ -20,16 +20,12 @@ namespace LinuxLudo.Web
             var builder = WebAssemblyHostBuilder.CreateDefault(args);
             builder.RootComponents.Add<App>("#app");
 
-            builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
+            builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(Environment.GetEnvironmentVariable("API_URL") ?? builder.HostEnvironment.BaseAddress) });
             builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
             builder.Services.AddScoped<AuthenticationStateProvider, AuthStateProvider>();
-            builder.Services.AddScoped(sp => new HttpClient
-            {
-                BaseAddress = new Uri(builder.HostEnvironment.BaseAddress),
-            });
             builder.Services.AddScoped<BrowserService>();
             builder.Services.AddScoped<IGameService, GameService>();
-            builder.Services.AddScoped<HubController>();
+            builder.Services.AddScoped<IHubController, HubController>();
             builder.Services.AddBlazoredLocalStorage();
             builder.Services.AddAuthorizationCore();
 
