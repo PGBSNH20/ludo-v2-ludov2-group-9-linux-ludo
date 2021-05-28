@@ -1,7 +1,4 @@
 <Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
-  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="yarn run buildcss" />
-  </Target>
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
   </PropertyGroup>
@@ -20,5 +17,4 @@
   <ItemGroup>
     <ProjectReference Include="..\LinuxLudo.Core\LinuxLudo.Core.csproj" />
   </ItemGroup>
-
 </Project>

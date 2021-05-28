@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Net.Http;
 using System.Threading.Tasks;
+using LinuxLudo.Web.Domain.Services;
 using LinuxLudo.Web.Hubs;
 using LinuxLudo.Web.Services;
 
@@ -16,8 +17,12 @@ namespace LinuxLudo.Web
             var builder = WebAssemblyHostBuilder.CreateDefault(args);
             builder.RootComponents.Add<App>("#app");
 
-            builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
+            builder.Services.AddScoped(sp => new HttpClient
+            {
+                BaseAddress = new Uri(builder.Configuration["API_URL"]),
+            });
             builder.Services.AddScoped<BrowserService>();
+            builder.Services.AddScoped<IGameService, GameService>();
             builder.Services.AddScoped<HubController>();
             builder.Services.AddBlazoredLocalStorage();
 

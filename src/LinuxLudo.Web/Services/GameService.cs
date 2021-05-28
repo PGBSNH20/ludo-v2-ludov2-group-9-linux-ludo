@@ -5,27 +5,32 @@ using System.Net.Http.Json;
 using System.Text.Json;
 using System.Threading.Tasks;
 using LinuxLudo.Web.Domain.Models;
+using LinuxLudo.Web.Domain.Services;
 using LinuxLudo.Web.Game;
 
 namespace LinuxLudo.Web.Services
 {
-    public class GameService
+    public class GameService : IGameService
     {
-        private readonly Guid _gameId;
-        private readonly string _userName;
+        private Guid _gameId;
+        private string _userName;
         private readonly HttpClient _client;
-        private const string API_URL = "https://localhost:5001/api";
-
-        public GameService(Guid gameId, string userName)
-        {
-            _gameId = gameId;
-            _userName = userName;
-            _client = new();
-        }
+        private readonly string API_URL;
 
         public GameService()
         {
-            _client = new();
+            Console.WriteLine(Environment.GetEnvironmentVariable("API_URL") ?? "https://localhost:5001");
+            
+            API_URL = Environment.GetEnvironmentVariable("API_URL") ?? "https://localhost:5001";
+            _client = new HttpClient();
+            Console.WriteLine(API_URL);
+        }
+
+        public GameService NewGameService(Guid gameId, string userName)
+        {
+            _gameId = gameId;
+            _userName = userName;
+            return this;
         }
 
         // Verifies if the specified user can play (the game is not full/player is not already in a game)
