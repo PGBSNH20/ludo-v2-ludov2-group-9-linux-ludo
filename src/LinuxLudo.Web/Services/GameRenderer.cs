@@ -45,8 +45,6 @@ namespace LinuxLudo.Web.Services
 
         public async Task RenderGame(Canvas2DContext context, GameBoard board, GameStatus gameStatus, string statusMessage, char selectedToken)
         {
-            Console.WriteLine("TILESIZE: " + TileSize);
-            Console.WriteLine("CANVAS WIDTH: " + canvasWidth);
             this.context = context;
             this.board = board;
             this.gameStatus = gameStatus;

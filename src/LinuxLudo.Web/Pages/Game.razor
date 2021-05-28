@@ -131,7 +131,6 @@ else
     private void ReceiveAvailableGames(byte[] receivedMessage)
     {
         List<OpenGame> games = MessagePackSerializer.Deserialize<List<OpenGame>>(receivedMessage);
-        Console.WriteLine("RECEIVED AVAILABLE GAMES");
 
         // Adds the relevant data
         foreach (OpenGame game in games)
