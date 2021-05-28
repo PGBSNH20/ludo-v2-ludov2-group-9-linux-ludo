@@ -156,7 +156,7 @@
            
         await FitCanvas();
         _board = new GameBoard();
-        _gameService = new GameService(Id, _username);
+        _gameService = _gameService.NewGameService(Id, _username);
 
         await SetupSignalR();
         await _hub.SendAsync("RequestGameData", MessagePackSerializer.Serialize(Id));
