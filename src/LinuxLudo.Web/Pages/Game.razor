@@ -1,5 +1,6 @@
 @page "/Play"
 @using LinuxLudo.Web.Services
+@using Microsoft.AspNetCore.Components.Authorization
 @inject NavigationManager _navManager; // Used to navigate in the webbrowser to different urls
 @inject Blazored.LocalStorage.ILocalStorageService _localStorage
 
@@ -17,19 +18,20 @@
                 <div>
                     <ul>
                         @if (availableGames != null)
+                {
+                        foreach (AvailableGame game in availableGames)
                         {
-                            foreach (AvailableGame game in availableGames)
-                            {
                             <li>
-                                
-                                <button class="w-40 h-20 text-black text-lg bg-green-300 my-2 hover:my-4 hover:bg-green-700 transition-all transform hover:scale-125"
-                                        @onclick=@(() => _navManager.NavigateTo($"/Game/{game.Id}"))>
+
+                                <button
+                                class="w-40 h-20 text-black text-lg bg-green-300 my-2 hover:my-4 hover:bg-green-700 transition-all transform hover:scale-125"
+                                @onclick=@(() => _navManager.NavigateTo($"/Game/{game.Id}"))>
                                     <b>@game.Name</b> - @game.MaxPlayers
                                     players
                                 </button>
                             </li>
-                            }
                         }
+                }
                     </ul>
                 </div>
             </div>
@@ -40,6 +42,8 @@
 
 @code
 {
+    [CascadingParameter]
+    public Task<AuthenticationState> AuthState { get; set; }
     private string userName;
     private GameService gameService;
     private List<AvailableGame> availableGames;
@@ -47,11 +51,23 @@
     // When the page is fully loaded/on startup
     protected override async Task OnInitializedAsync()
     {
+        var authState = await AuthState;
+
+        // If the user is logged in
+        if (authState.User.Identity.IsAuthenticated)
+        {
+            userName = authState.User.Identity.Name;
+        }
+        else
+        {
+            _navManager.NavigateTo("/Login");
+        }
+
         availableGames = new List<AvailableGame>();
         gameService = new GameService();
         await FetchAvailableGames();
     }
-    
+
     private async Task FetchAvailableGames()
     {
         availableGames = await gameService.FetchAllGames();

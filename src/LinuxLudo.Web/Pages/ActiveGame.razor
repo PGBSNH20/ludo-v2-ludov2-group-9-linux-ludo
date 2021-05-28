@@ -1,6 +1,7 @@
 @page "/Game/{Id:guid}"
 @using LinuxLudo.Web.Domain.Models
 @using MessagePack
+@using Microsoft.AspNetCore.Components.Authorization
 @using Microsoft.AspNetCore.SignalR.Client
 @using LinuxLudo.Core.Models
 @using LinuxLudo.Web.Hubs
@@ -101,6 +102,9 @@
     [Parameter]
     public Guid Id { get; set; }
 
+    [CascadingParameter]
+    private Task<AuthenticationState> AuthState { get; set; }
+
     private string _username;
     private AvailableGame _game;
     private const string Hub = "gamehub";
@@ -136,6 +140,11 @@
     {
         _game = new();
 
+        var authState = await AuthState;
+        if(authState.User.Identity.IsAuthenticated)
+        {
+            _username = authState.User.Identity.Name;
+
         await FitCanvas();
         _board = new GameBoard();
 
@@ -153,6 +162,10 @@
         }
 
         await SetupSignalR();
+        }else
+        {
+            _navManager.NavigateTo("/Login");
+        }
     }
 
     protected async Task FitCanvas()

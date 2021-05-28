@@ -74,7 +74,6 @@ namespace LinuxLudo.Web.Services
         public async Task<List<AvailableGame>> FetchAllGames()
         {
             var fetchResult = await _client.GetAsync(API_URL + "/Games");
-
             if (!fetchResult.IsSuccessStatusCode)
             {
                 Console.WriteLine("Fetching games failed!");
