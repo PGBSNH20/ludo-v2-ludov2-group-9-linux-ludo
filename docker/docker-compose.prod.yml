@@ -6,10 +6,8 @@ networks:
 
 services:
   web:
+    image: thenerdyhamster/ludo-web
     container_name: web
-    build:
-      context: ../src/
-      dockerfile: LinuxLudo.Web/Dockerfile
     environment:
       API_URL: "http://api"
     ports:
@@ -18,12 +16,10 @@ services:
       - api
 
   api:
+    image: thenerdyhamster/ludo-api
     container_name: api
-    build:
-      context: ../src/
-      dockerfile: LinuxLudo.API/Dockerfile
     environment:
-      DB_CONNECTION_STRING: "host=db;port=5432;database=ludo;username=root;password=secret"
+      DB_CONNECTION_STRING: "host=db;port=${DB_PORT};database=${DB_NAME};username=${DB_USER};password=${DB_PWD}"
     networks:
       - db
       - api
@@ -31,13 +27,13 @@ services:
     image: postgres:13.2
     container_name: db
     environment:
-      - POSTGRES_USER=root
-      - POSTGRES_PASSWORD=secret
-      - POSTGRES_DB=ludo
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PWD}
+      - POSTGRES_DB=${DB_NAME}
     ports:
       - "5432:5432"
     volumes:
-      - pgdata:/var/lib/postgresql/data
+      - /var/lib/postgresql/data:/var/lib/postgresql/data
     networks:
       - db
 
