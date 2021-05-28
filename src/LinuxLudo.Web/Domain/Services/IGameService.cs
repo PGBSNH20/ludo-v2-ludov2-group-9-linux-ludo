@@ -12,6 +12,5 @@ namespace LinuxLudo.Web.Domain.Services
         public GameService NewGameService(Guid gameId, string username);
         public Task<bool> CanPlay();
         public Task<GameStatus> GetGameStatus();
-        public Task<List<AvailableGame>> FetchAllGames();
     }
 }

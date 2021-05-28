@@ -19,11 +19,8 @@ namespace LinuxLudo.Web.Services
 
         public GameService()
         {
-            Console.WriteLine(Environment.GetEnvironmentVariable("API_URL") ?? "https://localhost:5001");
-            
             API_URL = Environment.GetEnvironmentVariable("API_URL") ?? "https://localhost:5001";
             _client = new HttpClient();
-            Console.WriteLine(API_URL);
         }
 
         public GameService NewGameService(Guid gameId, string userName)
@@ -75,19 +72,5 @@ namespace LinuxLudo.Web.Services
             var response = JsonSerializer.Deserialize<GameStatus>(authContent, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
             return await Task.FromResult(response);
         }
-
-        /*public async Task<List<AvailableGame>> FetchAllGames()
-        {
-            var fetchResult = await _client.GetAsync(API_URL + "/Games");
-            if (!fetchResult.IsSuccessStatusCode)
-            {
-                Console.WriteLine("Fetching games failed!");
-                return null;
-            }
-
-            var resultContent = await fetchResult.Content.ReadAsStringAsync();
-            var response = JsonSerializer.Deserialize<GamesResponseModel>(resultContent, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
-            return response.Data;
-        }*/
     }
 }
