@@ -12,10 +12,9 @@ namespace LinuxLudo.API.Database.Repositories
         public List<OpenGame> openGames = new();
         public List<ConnectedUser> connectedUsers = new();
 
-        public void AddGame(OpenGame game)
-        {
-            openGames.Add(game);
-        }
+        public void AddGame(OpenGame game) => openGames.Add(game);
+        public void RemoveGame(OpenGame game) => openGames.Remove(game);
+
         public void AddPlayer(OpenGame game, string username)
         {
             string color = GetAvailableColor(game);
@@ -23,16 +22,14 @@ namespace LinuxLudo.API.Database.Repositories
             game.PlayersInGame.Add(player);
         }
 
-        public void ConnectUser(ConnectedUser user)
-        {
-            connectedUsers.Add(user);
-        }
-
+        public void ConnectUser(ConnectedUser user) => connectedUsers.Add(user);
         public void DisconnectUser(ConnectedUser user)
         {
-            connectedUsers.Remove(user);
+            if (user != null)
+            {
+                connectedUsers.Remove(user);
+            }
         }
-
         public ConnectedUser FetchUserById(string connectionId)
         {
             if (connectedUsers.Any(user => user.ConnectionId == connectionId))
@@ -40,18 +37,11 @@ namespace LinuxLudo.API.Database.Repositories
                 return connectedUsers.First(user => user.ConnectionId == connectionId);
             }
 
-            return new ConnectedUser("", "", null);
+            return null;
         }
 
-        public void RemovePlayer(OpenGame game, string username)
-        {
-            game.PlayersInGame.Remove(game.PlayersInGame.First(player => player.Name == username));
-        }
-
-        public IEnumerable<OpenGame> FetchAllGames()
-        {
-            return openGames;
-        }
+        public void RemovePlayer(OpenGame game, string username) => game.PlayersInGame.Remove(game.PlayersInGame.First(player => player.Name == username));
+        public IEnumerable<OpenGame> FetchAllGames() => openGames;
 
         public OpenGame FetchGameById(Guid id)
         {

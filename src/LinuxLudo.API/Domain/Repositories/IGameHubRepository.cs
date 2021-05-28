@@ -8,6 +8,7 @@ namespace LinuxLudo.API.Domain.Repositories
     public interface IGameHubRepository
     {
         void AddGame(OpenGame game);
+        void RemoveGame(OpenGame game);
 
         void AddPlayer(OpenGame game, string username);
         void RemovePlayer(OpenGame game, string username);
