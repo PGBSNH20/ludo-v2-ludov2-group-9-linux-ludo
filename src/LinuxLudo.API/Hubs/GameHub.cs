@@ -17,12 +17,6 @@ namespace LinuxLudo.API.Hubs
         private readonly GameEngine engine = new();
         public GameHub(IGameHubRepository repository) { _repository = repository; }
 
-        public override async Task OnConnectedAsync()
-        {
-            await GetAvailableGames();
-            await base.OnConnectedAsync();
-        }
-
         public async Task RequestGameData(byte[] receivedMessage)
         {
             // Requested game
@@ -56,24 +50,26 @@ namespace LinuxLudo.API.Hubs
         {
             PlayerJoinMessage message = MessagePackSerializer.Deserialize<PlayerJoinMessage>(receivedMessage);
             OpenGame game = _repository.FetchGameById(message.GameId);
-
-            // Adds the player if they don't already exist in the game
-            if (game.PlayersInGame.All(player => player.Name != message.Username))
+            if (game.PlayersInGame.Count < 4)
             {
-                _repository.AddPlayer(_repository.FetchGameById(message.GameId), message.Username);
+                // Adds the player if they don't already exist in the game
+                if (game.PlayersInGame.All(player => player.Name != message.Username))
+                {
+                    _repository.AddPlayer(_repository.FetchGameById(message.GameId), message.Username);
 
-                // Adds a new connected user that is linked to the selected game
-                _repository.ConnectUser(new ConnectedUser(message.Username, Context.ConnectionId, game));
+                    // Adds a new connected user that is linked to the selected game
+                    _repository.ConnectUser(new ConnectedUser(message.Username, Context.ConnectionId, game));
+                }
+
+                // Add the new player to the joined game's group
+                await Groups.AddToGroupAsync(Context.ConnectionId, message.GameId.ToString());
+
+                // Updates all clients with the latest player list
+                await SendConnectionChanged(message.GameId.ToString(), message.Username, _repository.FetchGameById(message.GameId).PlayersInGame);
+
+                // Update the specific player on whose turn it is
+                await Clients.Client(Context.ConnectionId).SendAsync("ReceivePlayerTurn", MessagePackSerializer.Serialize(game.CurrentTurnColor));
             }
-
-            // Add the new player to the joined game's group
-            await Groups.AddToGroupAsync(Context.ConnectionId, message.GameId.ToString());
-
-            // Updates all clients with the latest player list
-            await SendConnectionChanged(message.GameId.ToString(), message.Username, _repository.FetchGameById(message.GameId).PlayersInGame);
-
-            // Update the specific player on whose turn it is
-            await Clients.Client(Context.ConnectionId).SendAsync("ReceivePlayerTurn", MessagePackSerializer.Serialize(game.CurrentTurnColor));
         }
 
         public async Task NotifyRollDice(string username, int roll)
@@ -132,6 +128,7 @@ namespace LinuxLudo.API.Hubs
 
                         // Player has won the game
                         await Clients.Group(game.GameId.ToString()).SendAsync("ReceiveGameOver", victoryMessage);
+                        _repository.RemoveGame(game);
                         return;
                     }
                 }
@@ -213,9 +210,13 @@ namespace LinuxLudo.API.Hubs
 
                 // Update the clients that user has left
                 await SendConnectionChanged(user.JoinedGame.GameId.ToString(), user.Username, _repository.FetchGameById(user.JoinedGame.GameId).PlayersInGame);
-
             }
 
+            // Removes user fron connected list
+            _repository.DisconnectUser(_repository.FetchUserById(user.ConnectionId));
+
+            // Updates all subscribed clients on the new game data
+            await Clients.All.SendAsync("ReceiveAvailableGames", _repository.FetchAllGames());
             await base.OnDisconnectedAsync(exception);
         }
     }

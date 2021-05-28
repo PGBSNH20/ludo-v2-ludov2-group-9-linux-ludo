@@ -5,48 +5,76 @@
 @inject IAuthenticationService _authService
 
 <!-- This page displays the actual Ludo game and can only be accessed when logged in/authenticated -->
-<AuthorizeView>
-    <!-- Logged in/game view -->
-    <Authorized>
-        <div class="text-center">
-            <div class="my-2">
-                <h1 class="font-bold flex text-lg justify-center items-center">Available games</h1>
-            </div>
 
-            <div class="flex flex-row justify-center">
-                <div>
-                    <ul>
-                        @if (availableGames != null)
-                {
+@if (!askForUsername)
+{
+    <div class="text-center">
+        <div class="my-2">
+            <h1 class="font-bold flex text-lg justify-center items-center">Available games</h1>
+        </div>
+
+        <div class="flex flex-row justify-center">
+            <div>
+                <ul>
+                    @if (availableGames != null)
+                    {
                         foreach (AvailableGame game in availableGames)
                         {
                             <li>
-
                                 <button
-                                class="w-40 h-20 text-black text-lg bg-green-300 my-2 hover:my-4 hover:bg-green-700 transition-all transform hover:scale-125"
-                                @onclick=@(() => _navManager.NavigateTo($"/Game/{game.Id}"))>
-                                    <b>@game.Name</b> - @game.MaxPlayers
+                        class="w-40 h-20 text-black text-lg bg-green-300 my-2 hover:my-4 hover:bg-green-700 transition-all transform hover:scale-125"
+                        @onclick=@(() => _navManager.NavigateTo($"/Game/{game.Id}"))>
+                                    <b>@game.Name's game</b> - @game.AmountPlaying/@(game.MaxPlayers)
                                     players
                                 </button>
                             </li>
                         }
-                }
-                    </ul>
+                    }
+                </ul>
+            </div>
+        </div>
+
+        <button style="background-color: #FFFF00; color: #000000;" @onclick=CreateNewGame>Create new game</button>
+    </div>
+}
+else
+{
+    <EditForm Model="userModel" OnValidSubmit="SetUsername" class="card card-body bg-dark">
+        <DataAnnotationsValidator />
+
+        <!-- Creates two forms (username/password) and binds the data in them to the userModel variables -->
+    <div class="form-container">
+            <div class="flex flex-row justify-center">
+                <div class="col-md-10">
+                    <InputText id="username" class="form-control" style="background-color: blue; color: white;"
+                    @bind-Value="userModel.UserName" placeholder="Choose a username" />
+                    <div class="validation-message">
+                        <!-- Displays any error messages from the username form -->
+                    <ValidationMessage For="@(() => userModel.UserName)" />
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <!-- When the "submit" button type is clicked LoginUser is called (if valid form input) -->
+                    <button type="submit" class="btn btn-login" style="background-color: green; color: white;">Set
+                            username</button>
+                    </div>
                 </div>
             </div>
-
-            <button style="background-color: #FFFF00; color: #000000;" @onclick=CreateNewGame>Create new game</button>
         </div>
-    </Authorized>
-</AuthorizeView>
+    </EditForm>
+}
 
 @code
 {
     [CascadingParameter]
     public Task<AuthenticationState> AuthState { get; set; }
-    private string userName;
+    private AuthenticationUserModel userModel = new() { Password = "GUEST_000" };
+    private string username;
     private GameService gameService;
     private List<AvailableGame> availableGames;
+    private bool askForUsername = false;
 
     // SignalR
     private HubConnection _hub;
@@ -60,26 +88,35 @@
         // If the user is logged in
         if (authState.User.Identity.IsAuthenticated)
         {
-            userName = authState.User.Identity.Name;
-
-            availableGames = new List<AvailableGame>();
-            gameService = new GameService();
-
-            _hub = _hubController.Connect(hubName).Hub();
-
-            // Subscribes to receive updates on what games are available and their data
-            await SubscribeHubEvents();
-
-            // Send initial receive request
-            await _hub.SendAsync("GetAvailableGames", userName);
+            username = authState.User.Identity.Name;
         }
-        else
+
+        _hub = _hubController.Connect(hubName).Hub();
+
+        // Subscribes to receive updates on what games are available and their data
+        await SubscribeHubEvents();
+
+        if (!authState.User.Identity.IsAuthenticated)
         {
-            _navManager.NavigateTo("/Login");
+            string guestUsername = await _localStorage.GetItemAsStringAsync("GUEST_USERNAME");
+            if (guestUsername == null)
+            {
+                askForUsername = true;
+            }
+            else
+            {
+                username = guestUsername;
+            }
         }
+
+        availableGames = new List<AvailableGame>();
+        gameService = new GameService();
+
+        // Send initial receive request
+        await _hub.SendAsync("GetAvailableGames", username);
     }
 
-    private async Task CreateNewGame() => await _hub.SendAsync("CreateNewGame", MessagePackSerializer.Serialize(userName));
+    private async Task CreateNewGame() => await _hub.SendAsync("CreateNewGame", MessagePackSerializer.Serialize(username));
     private async Task SubscribeHubEvents()
     {
         // Called whenever a games status updates (player join/leave/game finished)
@@ -99,7 +136,8 @@
         foreach (OpenGame game in games)
         {
             string status = game.PlayersInGame.Count >= 4 ? "Full" : game.PlayersInGame.Count == 0 ? "Empty" : "Playing";
-            availableGames.Add(new AvailableGame(game.GameId.ToString(), game.GameName, 4, status, game.PlayersInGame.Count));
+            availableGames.Add(new AvailableGame(game.GameId.ToString(), game.GameName, 4, status,
+            game.PlayersInGame.Count));
         }
 
         // Sorts the games by least players first
@@ -111,5 +149,25 @@
     {
         Guid gameId = MessagePackSerializer.Deserialize<Guid>(receivedMessage);
         _navManager.NavigateTo("/Game/" + gameId.ToString());
+    }
+
+    private void ReceivePlayerName(byte[] receivedMessage)
+    {
+        string name = MessagePackSerializer.Deserialize<string>(receivedMessage);
+        if (name == null || name == "")
+        {
+            askForUsername = true;
+        }
+        else
+        {
+            username = name;
+        }
+        StateHasChanged();
+    }
+
+    private async Task SetUsername()
+    {
+        await _localStorage.SetItemAsStringAsync("GUEST_USERNAME", userModel.UserName);
+        _navManager.NavigateTo("/Play", true);
     }
 }

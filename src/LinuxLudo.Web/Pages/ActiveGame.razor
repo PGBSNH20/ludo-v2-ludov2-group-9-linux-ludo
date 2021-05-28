@@ -14,7 +14,7 @@
 
     <div hidden=@(!_hasJoinedGame)>
         <h1 class="text-lg text-center">
-            <b>@_game.Name</b>
+            <b>@_game.Name's Game</b>
         </h1>
         <div class="mt-4 flex justify-center items-center">
             <BECanvas Width="@_canvasWidth" Height="@_canvasHeight" @ref="_canvas"></BECanvas>
@@ -59,7 +59,7 @@
         if (_game.MaxPlayers > 0)
         {
             <div class="flex flex-col items-center text-center">
-                <h1 class="text-black w-1/4 text-center text-lg font-bold mb-6">@_game.Name</h1>
+                <h1 class="text-black w-1/4 text-center text-lg font-bold mb-6">@_game.Name's game</h1>
                 <h2 class="text-base" style=@(GameIsFull ? "color: red;" : "")>
                     Slots taken:
                     <b>@_game.AmountPlaying</b>/<b>@_game.MaxPlayers</b>
@@ -133,18 +133,26 @@
         if(authState.User.Identity.IsAuthenticated)
         {
             _username = authState.User.Identity.Name;
-
-            await FitCanvas();
-            _board = new GameBoard();
-            _gameService = new GameService(@Id, _username);
-
-            await SetupSignalR();
-            await _hub.SendAsync("RequestGameData", MessagePackSerializer.Serialize(Id));
-            StateHasChanged();
         }else
         {
-            _navManager.NavigateTo("/Login");
+            string guestUsername = await _localStorage.GetItemAsStringAsync("GUEST_USERNAME");
+            if (guestUsername == null)
+            {
+                _navManager.NavigateTo("/Play");
+            }
+            else
+            {
+                _username = guestUsername;
+            }
         }
+           
+        await FitCanvas();
+        _board = new GameBoard();
+        _gameService = new GameService(@Id, _username);
+
+        await SetupSignalR();
+        await _hub.SendAsync("RequestGameData", MessagePackSerializer.Serialize(Id));
+        StateHasChanged();
     }
 
     protected async Task FitCanvas()
@@ -211,10 +219,10 @@
         // Called whenever a user rolls the dice (NOT WHEN TOKEN MOVES)
         _hub.On<byte[]>("ReceiveRollDice", (message) => ReceiveRollDice(message));
 
-        // Called whenever the current player turn is updated
+        // Called whenever a players token changes position
         _hub.On<byte[]>("ReceiveTokenMove", (message) => ReceiveTokenMove(message));
 
-        // Called whenever the current player turn is updated
+        // Called whenever a user rolls and brings out a token
         _hub.On<byte[]>("ReceiveBringOutToken", (message) => ReceiveBringOutToken(message));
 
         // Called whenever the current player turn is updated
@@ -228,7 +236,6 @@
 
         // Called whenever a player has won the game (no tokens left)
         _hub.On<byte[]>("ReceiveGameOver", (message) => ReceiveGameOver(message));
-
         await _hub.StartAsync();
     }
 
@@ -406,4 +413,7 @@
         _game.MaxPlayers = 4;
         StateHasChanged();
     }
+
+    
+    private void ReceivePlayerName(byte[] receivedMessage) => _username = MessagePackSerializer.Deserialize<string>(receivedMessage);
 }
