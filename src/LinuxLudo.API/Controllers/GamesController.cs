@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace LinuxLudo.API.Controllers
 {
     [Authorize]
-    [Route("/api/[controller]")]
+    [Route("/[controller]")]
     public class GamesController : Controller
     {
         private readonly IGameService _gameService;

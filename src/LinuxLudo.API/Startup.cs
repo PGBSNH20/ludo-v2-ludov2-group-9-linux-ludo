@@ -33,14 +33,17 @@ namespace LinuxLudo.API
             Configuration = configuration;
         }
 
-        public IConfiguration Configuration { get; }
+        private IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
             services.Configure<JwtSettings>(Configuration.GetSection("Jwt"));
             var jwtSettings = Configuration.GetSection("Jwt").Get<JwtSettings>();
-            services.AddDbContext<AppDbContext>(opts => opts.UseNpgsql(Configuration.GetConnectionString("Default")));
+          
+            var connectionString = Environment.GetEnvironmentVariable("DB_CONNECTION_STRING") ?? Configuration.GetConnectionString("Default");
+            services.AddDbContext<AppDbContext>(opts => opts.UseNpgsql(connectionString));
+          
             services.AddIdentity<User, Role>(opts =>
                 {
                     opts.Password.RequireNonAlphanumeric = false;
@@ -48,6 +51,8 @@ namespace LinuxLudo.API
                 })
                 .AddEntityFrameworkStores<AppDbContext>()
                 .AddDefaultTokenProviders();
+ 
+            
             services.AddAutoMapper(typeof(Startup));
             services.AddSignalR(opts =>
             {
@@ -126,9 +131,9 @@ namespace LinuxLudo.API
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, AppDbContext context)
         {
-
+            context.Database.Migrate();
             app.UseResponseCompression();
             if (env.IsDevelopment())
             {

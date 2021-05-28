@@ -1,10 +1,18 @@
 @page "/Game/{Id:guid}"
 @inject IAuthenticationService _authService
+@using LinuxLudo.Web.Domain.Models
+@using MessagePack
+@using Microsoft.AspNetCore.SignalR.Client
+@using LinuxLudo.Core.Models
+@using LinuxLudo.Web.Domain.Services
+@using LinuxLudo.Web.Hubs
+@using LinuxLudo.Web.Services
 @inject NavigationManager _navManager; // Used to navigate in the webbrowser to different urls
 @inject BrowserService _browserService;
 @inject IJSRuntime _jsRuntime;
 @inject Blazored.LocalStorage.ILocalStorageService _localStorage;
 @inject HubController _hubController
+@inject IGameService _gameService
 
 <LayoutView>
     <img @ref="_redToken" class="hidden" id="redToken" src="Images/redtoken.png" />
@@ -116,7 +124,6 @@
     private const int statusMessageUpdateIntervalMs = 1000;
 
     // Game
-    private GameService _gameService;
     private GameStatus _gameStatus;
     private bool _hasJoinedGame;
     private string _statusMessage = "Waiting for players...";
