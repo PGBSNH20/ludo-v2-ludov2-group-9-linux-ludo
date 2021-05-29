@@ -26,7 +26,7 @@ namespace LinuxLudo.Web.Services
             _client = client;
             _authStateProvider = authStateProvider;
             _localStorage = localStorage;
-            API_URL = Environment.GetEnvironmentVariable("API_URL") ?? "https://localhost:5001";
+            API_URL = Environment.GetEnvironmentVariable("API_URL") ?? "https://localhost:5001" + "/api/Auth";
         }
 
         public async Task<AuthenticatedUserModel> SignIn(AuthenticationUserModel user)
