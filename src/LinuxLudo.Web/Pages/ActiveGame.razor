@@ -197,9 +197,9 @@
             _gameStatus = new();
             _context = await _canvas.CreateCanvas2DAsync();
 
-            StateHasChanged();
             _gameRenderer = new GameRenderer(_username, _canvasWidth, _canvasHeight, _redToken, _greenToken, _blueToken,
             _yellowToken);
+            StateHasChanged();
         }
 
         if (_hasJoinedGame)
@@ -430,5 +430,5 @@
     }
 
     
-    private void ReceivePlayerName(byte[] receivedMessage) => _username = MessagePackSerializer.Deserialize<string>(receivedMessage);
+    private void ReceivePlayerName(byte[] receivedMessage)  => _username = MessagePackSerializer.Deserialize<string>(receivedMessage);
 }

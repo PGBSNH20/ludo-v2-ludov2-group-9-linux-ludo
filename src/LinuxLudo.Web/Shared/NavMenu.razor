@@ -65,7 +65,7 @@
         var authState = await AuthState;
 
         // If the user is succesfully authenticated
-        if (authState.User.Identity.IsAuthenticated)
+        if (authState != null && authState.User.Identity.IsAuthenticated)
         {
             username = authState.User.Identity.Name;
             isGuest = false;
