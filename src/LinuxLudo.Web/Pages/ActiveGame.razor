@@ -42,21 +42,27 @@
             }
         </div>
 
-        <div class="flex flex-row justify-center @(CanPlayerRoll() ? "" : "hidden")">
+        @if(CanPlayerRoll())
+        {
+        <div class="container mx-auto flex justify-center mt-32 bg-gray-200">
             <h1 class="mr-8">
                 <b>Select your token</b>
-                <div class="bg-gray-700 p-3 relative rounded"
+                <div class="radio-group inline-flex flex-1 flex-row flex-initial justify-center rounded-lg shadow-md"
                     style="content: attr(label); display: inline-block; text-align: center; width: 100%;">
                     @foreach (char tokenSelection in tokenSelections)
                     {
-                        <input class="w-auto h-full outline-none cursor-pointer @(IsTokenDead(tokenSelection) ? "hidden" : "")"
-                        @onchange="@(() => UpdateTokenSelection(tokenSelection))"
-                        checked="@(_selectedToken.Equals(tokenSelection))" label=@tokenSelection type="radio"
-                        id=@($"token-{tokenSelection}") name="token" value=@($"token-{tokenSelection}")>
+                        @if(!IsTokenDead(tokenSelection))
+                        {
+                        <label class="inline-flex items-center mt-3">
+                        <input type="radio" class="form-radio h-5 w-5 text-gray-600" @onchange="@(() => UpdateTokenSelection(tokenSelection))"
+                        id=@($"token-{tokenSelection}") name="token" value=@($"token-{tokenSelection}") checked="@(_selectedToken.Equals(tokenSelection))">@tokenSelection
+                        </label>
+                        }
                     }
                 </div>
             </h1>
         </div>
+        }
     </div>
 
     @if (!_hasJoinedGame)
@@ -74,12 +80,12 @@
                 </h2>
             </div>
             <div class="flex items-center flex-col pt-12" hidden=@(!_hasJoinedGame)>
-                <button class="text-white text-center min-w-96 min-h-64 px-4 w-10 h-20 bg-yellow-700" disabled=@(GameIsFull)
+                <button class="text-white text-center min-w-96 min-h-64 px-4 w-auto h-20 bg-yellow-700" disabled=@(GameIsFull)
             id="play-btn" @onclick=JoinGame>
                     @(GameIsFull ? "Game is full" : "Join game")
                 </button>
                 <button
-            class="text-white text-center min-w-96 min-h-64 px-4 w-auto bg-blue-400 transition transform hover:scale-125"
+            class="text-white text-center min-w-96 min-h-64 px-4 w-auto h-20 bg-blue-400 transition transform hover:scale-125"
             id="browse-btn" @onclick=@(() => _navManager.NavigateTo("/Play"))>
                     Browse
                     available games
